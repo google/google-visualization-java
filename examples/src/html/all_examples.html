@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Examples</title>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+
+  // Load the Visualization API and the ready-made Google table visualization.
+  google.load('visualization', '1', {'packages':['table,piechart,orgchart,barchart']});
+
+  // Set a callback to run when the API is loaded.
+  google.setOnLoadCallback(init);
+
+  // Send the queries to the data sources.
+  function init() {
+
+    var query = new google.visualization.Query('simpleexample?tq=select name,population');
+    query.send(handleSimpleDsResponse);
+
+    query = new google.visualization.Query('csv?url=http://localhost:8080/myWebApp/csv_example.csv');
+    query.send(handleCsvDsResponse);
+
+    query = new google.visualization.Query('advanced?tableId=planets&tq=select planet,mass');
+    query.send(handleAdvancedDsResponse);
+
+    drawToolbar();
+  }
+
+  // Handle the simple data source query response
+  function handleSimpleDsResponse(response) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
+    }
+
+    var data = response.getDataTable();
+    var chart = new google.visualization.PieChart(document.getElementById('simple_div'));
+    chart.draw(data, {width: 600, height: 150, is3D: true});
+  }
+
+  // Handle the csv data source query response
+  function handleCsvDsResponse(response) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
+    }
+
+    var data = response.getDataTable();
+    var chart = new google.visualization.OrgChart(document.getElementById('csv_div'));
+    chart.draw(data, {width: 600, height: 150, is3D: true});
+  }
+
+  // Handle the advanced data source query response
+  function handleAdvancedDsResponse(response) {
+    if (response.isError()) {
+      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+      return;
+    }
+
+    var data = response.getDataTable();
+    var chart = new google.visualization.BarChart(document.getElementById('advanced_div'));
+    chart.draw(data, {width: 600, height: 150, is3D: true});
+  }
+
+  // Draw the toolbar.
+  function drawToolbar() {
+    var components = [
+        {type: 'html', datasource: 'http://localhost:8080/myWebApp/simpleexample'},
+        {type: 'csv', datasource: 'http://localhost:8080/myWebApp/simpleexample'},
+    ];
+
+    var container = document.getElementById('toolbar_div');
+    google.visualization.drawToolbar(container, components);
+  }
+
+  </script>
+</head>
+<body>
+  <h1> Hello! Data Source! </h1>
+  A pie chart to show the population of a group of animals.
+  The data is taken from the simple data source.
+  <div id="simple_div"></div>
+  Use this toolbar to get the data in CSV/HTML.
+  <div id="toolbar_div"></div>
+
+  <h1> CSV Data Source </h1>
+  An organization chart.
+  The data is taken from the csv data source.
+  <div id="csv_div" style="width: 400px"></div>
+
+  <h1> Advanced Data Source </h1>
+  A bar chart to show planetary masses.
+  The data is taken from the advanced data source.
+  <div id="advanced_div"></div>
+</body>
+</html>
+

@@ -1,0 +1,86 @@
+<project name="gviz-visualization-java" default="all" basedir=".">
+
+  <!-- Paths for build outputs -->
+  <property name="build" location="../build"/>
+  <property name="build.class" location="${build}/class"/>
+  <property name="build.genfiles" location="${build}/genfiles"/>
+
+  <!-- Paths for sources -->
+  <property name="src" location="../src"/>
+  <property name="datasource" value="java/com/google/visualization/datasource"/>
+  <property name="src.datasource" location="${src}/${datasource}"/>
+  <property name="src.example" location="../examples/src/${datasource}/example"/>
+
+  <!-- User properties -->
+  <property file="build.properties"/>
+  
+  <!-- Clean build output -->
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+
+  <!-- Create build output directories -->
+  <target name="create-dirs">
+    <mkdir dir="${build.class}"/>
+    <mkdir dir="${build.genfiles}"/>
+  </target>
+  
+  <!-- Generate query parser -->
+  <target name="parser-javacc" depends="create-dirs">
+    <mkdir dir="${build.genfiles}/${datasource}/query/parser"/>
+    <java classname="javacc" failonerror="true">
+      <arg value="-OUTPUT_DIRECTORY=${build.genfiles}/${datasource}/query/parser"/>
+      <arg value="${src.datasource}/query/parser/QueryParser.jj"/>
+      <classpath>
+        <pathelement location="${javacc.zip}"/>
+      </classpath>
+    </java>
+  </target>
+
+  <!-- Create datasource library jar.
+       NOTE: If you want to use the SqlDataSourceHelper you will have to provide mysql jar
+             in your runtime environment.
+             See: http://www.mysql.com/products/connector/j/ -->
+  <target name="datasource" depends="parser-javacc">
+    <javac srcdir="${src.datasource}:${build.genfiles}/${datasource}/query/parser"
+           destdir="${build.class}">
+      <classpath>
+        <pathelement location="${google-collect.jar}"/>
+        <pathelement location="${icu4j.jar}"/>
+	<pathelement location="${jakarta-commons-lang.jar}"/>
+	<pathelement location="${jakarta-commons-logging.jar}"/>
+        <pathelement location="${opencsv.jar}"/>
+	<pathelement location="${servlet-api.jar}"/>
+      </classpath>
+    </javac>
+    <jar destfile="${build}/datasource.jar"
+         basedir="${build}/class"
+         excludes="com/google/visualization/datasource/example/*"/>
+  </target>
+
+
+  <!-- Create datasource library jar that includes the examples.
+       NOTE: If you want to run the com.google.visualization.datasource.example.SqlDataSourceServlet
+             example you will have to provide
+             mysql jar in your runtime environment.
+             See: http://www.mysql.com/products/connector/j/ -->
+  <target name="example" depends="datasource">
+    <javac srcdir="${src.example}" destdir="${build.class}">
+      <classpath>
+        <pathelement location="${google-collect.jar}"/>
+        <pathelement location="${icu4j.jar}"/>
+	<pathelement location="${jakarta-commons-lang.jar}"/>
+	<pathelement location="${jakarta-commons-logging.jar}"/>
+	<pathelement location="${servlet-api.jar}"/>
+      </classpath>
+    </javac>
+    <jar destfile="${build}/datasource-examples.jar"
+         basedir="${build}/class"
+         includes="com/google/visualization/datasource/example/*"/>
+  </target>
+
+  <target name="build" depends="example"/>
+
+  <target name="all" depends="clean,build"/>
+
+</project>
