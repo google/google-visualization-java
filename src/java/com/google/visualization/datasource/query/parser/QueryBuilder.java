@@ -17,6 +17,7 @@ package com.google.visualization.datasource.query.parser;
 import com.google.visualization.datasource.base.InvalidQueryException;
 import com.google.visualization.datasource.query.Query;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,7 +67,7 @@ public class QueryBuilder {
    */
   public Query parseQuery(String tqValue) throws InvalidQueryException {
     Query query;
-    if (tqValue == null || tqValue.isEmpty()) {
+    if (StringUtils.isEmpty(tqValue)) {
       query = new Query();
     } else {
       try {

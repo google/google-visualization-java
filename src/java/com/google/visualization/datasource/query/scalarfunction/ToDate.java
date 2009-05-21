@@ -142,4 +142,11 @@ public class ToDate implements ScalarFunction {
           + "on values that are not date, dateTime or number values");
     }
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return FUNCTION_NAME + "(" + argumentsQueryStrings.get(0) + ")"; 
+  }
 }

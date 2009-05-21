@@ -22,13 +22,13 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import java.util.List;
 
 /**
- * A column that is referred to by an aggregation, e.g., min(c1).
+ * A column that is referred to by an aggregation, for example, min(c1).
  *
  * @author Yonatan B.Y.
  */
 public class AggregationColumn extends AbstractColumn {
   /**
-   * When creating the ID of the column, this will separate between the column
+   * When creating the ID of the column, this separates the column
    * on which aggregation is performed and the type of aggregation performed
    * on it.
    */
@@ -126,13 +126,13 @@ public class AggregationColumn extends AbstractColumn {
   }
 
   /**
-   * Checks if it makes sense to have the aggregation type on
+   * Checks whether it makes sense to have the aggregation type on
    * the aggregated column. The type of the column is taken from the given
-   * table description. Thorws a column exception when the column is invald.
+   * table description. Throws a column exception if the column is invald.
    *
    * @param dataTable The data table.
    *
-   * @throws InvalidQueryException Thrown when the column is invalid.
+   * @throws InvalidQueryException Thrown if the column is invalid.
    */
   @Override
   public void validateColumn(DataTable dataTable) throws InvalidQueryException {
@@ -156,7 +156,7 @@ public class AggregationColumn extends AbstractColumn {
    *
    * @param dataTable The data table.
    *
-   * @return the value type of the column.
+   * @return The value type of the column.
    */
   @Override
   public ValueType getValueType(DataTable dataTable) {

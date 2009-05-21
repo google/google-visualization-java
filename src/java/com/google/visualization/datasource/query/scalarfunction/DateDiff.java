@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * The binary scalar function datediff().
- * Returns the difference in days between two a date / date time values.
+ * Returns the difference in days between two dates or date time values.
  *
  * @author Liron L.
  */
@@ -70,11 +70,11 @@ public class DateDiff implements ScalarFunction {
    * Executes this scalar function on the given values. Returns values[0] - values[1] expressed
    * as a number value denoting the number of days from one date to the other. Both values can be
    * of type date or date-time. Only the date parts of date-time values are used in the calculation.
-   * Thus the returned number will always be an integer.
+   * Thus the returned number is always an integer.
    * The method does not validate the parameters, the user must check the
    * parameters before calling this method.
    *
-   * @param values A list with the values that the scalar function is to be performed on.
+   * @param values A list of values on which the scalar function will be performed.
    *
    * @return Value holding the difference, in whole days, between the two given Date/DateTime
    *     values, or a null value (of type number) if one of the values is null.
@@ -146,13 +146,22 @@ public class DateDiff implements ScalarFunction {
   }
 
   /**
-   * Returns true iff the given type is Date or DateTime.
+   * Returns true if the given type is Date or DateTime.
    *
    * @param type The given type.
    *
-   * @return True iff the given type is Date or DateTime.
+   * @return True if the given type is Date or DateTime.
    */
   private boolean isDateOrDateTimeValue(ValueType type) {
     return ((type == ValueType.DATE) || (type == ValueType.DATETIME));
+  }
+  
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return FUNCTION_NAME + "(" + argumentsQueryStrings.get(0) + ", " + argumentsQueryStrings.get(1)
+        + ")";
   }
 }

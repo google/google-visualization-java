@@ -17,6 +17,8 @@ package com.google.visualization.datasource.query;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import org.apache.commons.lang.text.StrBuilder;
+
 import java.util.List;
 
 /**
@@ -29,21 +31,21 @@ import java.util.List;
 public class QuerySort {
 
   /**
-   * The list of columns to sort by.
+   * The list of columns by which to sort.
    */
   private List<ColumnSort> sortColumns;
 
   /**
-   * Construct an empty sort list.
+   * Constructs an empty sort list.
    */
   public QuerySort() {
     sortColumns = Lists.newArrayList();
   }
 
   /**
-   * Returns true iff the sort list is empty.
+   * Returns true if the sort list is empty.
    *
-   * @return True iff the sort list is empty.
+   * @return True if the sort list is empty.
    */
   public boolean isEmpty() {
     return sortColumns.isEmpty();
@@ -150,5 +152,21 @@ public class QuerySort {
       if (other.sortColumns != null) return false;
     } else if (!sortColumns.equals(other.sortColumns)) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser would produce an equal QuerySort.
+   * The string returned does not contain the ORDER BY keywords.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    StrBuilder builder = new StrBuilder();
+    List<String> stringList = Lists.newArrayList();
+    for (ColumnSort colSort : sortColumns) {
+      stringList.add(colSort.toQueryString());
+    }
+    builder.appendWithSeparators(stringList, ", ");
+    return builder.toString();
   }
 }

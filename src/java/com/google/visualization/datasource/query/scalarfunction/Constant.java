@@ -21,7 +21,7 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import java.util.List;
 
 /**
- * A constant function, i.e., a 0-ary function that always returns the same value, given at the
+ * A constant function, i.e., a 0-ary function that always returns the same value, given at
  * construction time. The value can be of any supported {@link ValueType}.
  *
  * @author Liron L.
@@ -46,12 +46,12 @@ public class Constant implements ScalarFunction {
    * {@inheritDoc}
    */
   public String getFunctionName() {
-    return String.valueOf(value);
+    return value.toQueryString();
   }
 
   /**
-   * Executes the scalar function constant(). The <code>values</code> is ignored. Returns the value
-   * supplied at construction time.
+   * Executes the scalar function constant(). The <code>values</code> parameter is ignored.
+   * Returns the value supplied at construction time.
    *
    * @param values Ignored.
    *
@@ -62,7 +62,7 @@ public class Constant implements ScalarFunction {
   }
 
   /**
-   * Returns the return type of the function. In this case, this matches the type of the value
+   * Returns the return type of the function. This matches the type of the value
    * supplied at construction time. The <code>types</code> parameter is ignored.
    *
    * @param types Ignored.
@@ -74,7 +74,7 @@ public class Constant implements ScalarFunction {
   }
 
   /**
-   * Validates that there is no parameters given for the function. Throws a
+   * Validates that there are no parameters given for the function. Throws a
    * ScalarFunctionException otherwise.
    *
    * @param types A list with parameters types. Should be empty for this type of function.
@@ -101,5 +101,12 @@ public class Constant implements ScalarFunction {
   @Override
   public int hashCode() {
     return (value == null) ? 0 : value.hashCode(); 
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return value.toQueryString(); 
   }
 }

@@ -76,8 +76,8 @@ import java.util.List;
   }
 
   /**
-   * Compares its two arguments for order. Returns a negative integer, zero, or
-   * a positive integer as the first argument is less than, equal to, or greater
+   * Compares two arguments for order. Returns a negative integer, zero, or
+   * a positive integer if the first argument is less than, equal to, or greater
    * than the second.
    *
    * @param r1 the first row to be compared.

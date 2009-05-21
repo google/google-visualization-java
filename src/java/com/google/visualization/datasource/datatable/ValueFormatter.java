@@ -51,6 +51,8 @@ import java.util.Map;
  * can be used for parsing/formatting values when there is no specified pattern.
  * Otherwise, create a class instance by specifying a pattern and locale.
  *
+ * Note: This class is not thread safe since it uses {@code UFormat}. 
+ *
  * @author Yonatan B.Y.
  */
 
@@ -75,11 +77,6 @@ public class ValueFormatter {
    * The {@code ValueType}.
    */
   private ValueType type;
-
-  /**
-   * A cache of all default formatters generated for this class.
-   */
-  private static Map<StringLocalePair, ValueFormatter> defaultFormatters = Maps.newHashMap();
 
   /**
    * The default pattern for parsing a string to a text value.
@@ -197,7 +194,7 @@ public class ValueFormatter {
   }
 
   /**
-   * Returns the default pattern for the specified value type and locale.
+   * Creates a default formatter for the specified value type and locale.
    * If locale is null, uses the default locale returned by {@code LocaleUtil#getDefaultLocale}.
    *
    * @param type The value type.
@@ -205,15 +202,26 @@ public class ValueFormatter {
    *
    * @return A default formatter for the given type and locale.
    */
-  public static ValueFormatter getDefault(ValueType type, ULocale locale) {
+  public static ValueFormatter createDefault(ValueType type, ULocale locale) {
     String pattern = getDefaultPatternByType(type);
-    StringLocalePair key = new StringLocalePair(pattern, locale);
-    ValueFormatter formatter = defaultFormatters.get(key);
-    if (formatter == null) {
-      formatter = createFromPattern(type, pattern, locale);
-      defaultFormatters.put(key, formatter);
+    return createFromPattern(type, pattern, locale);
+  }
+
+  /**
+   * Creates default formatters for all the value types for the specified locale.
+   * Returns a map of default formatters by type.
+   * The map can be used for iterating over a data table and parsing/formatting its values.
+   *
+   * @param locale The data table locale.
+   *
+   * @return A map of default formatters by type with the given locale.
+   */
+  public static Map<ValueType, ValueFormatter> createDefaultFormatters(ULocale locale) {
+    Map<ValueType, ValueFormatter> foramtters = Maps.newHashMap();
+    for (ValueType type : ValueType.values()) {
+      foramtters.put(type, createDefault(type, locale));
     }
-    return formatter;
+    return foramtters;
   }
 
   /**
@@ -389,6 +397,7 @@ public class ValueFormatter {
 
   /**
    * Returns the internal <code>UFormat</code> object.
+   * 
    * @return The internal <code>UFormat</code> object.
    */
   public UFormat getUFormat() {
@@ -397,6 +406,7 @@ public class ValueFormatter {
 
   /**
    * Returns the pattern for this formatter.
+   * 
    * @return The pattern for this formatter.
    */
   public String getPattern() {
@@ -405,6 +415,7 @@ public class ValueFormatter {
 
   /**
    * Returns the ulocale.
+   * 
    * @return The ulocale.
    */
   public ULocale getLocale() {
@@ -413,47 +424,10 @@ public class ValueFormatter {
 
   /**
    * Returns the type.
+   * 
    * @return The type.
    */
   public ValueType getType() {
     return type;
-  }
-
-  /**
-   * A simple implementation of a <{@code String}, {@code ULocale}> pair object.
-   */
-  private static class StringLocalePair {
-
-    /* The string. */
-    private String str;
-
-    /* The locale. */
-    private ULocale locale;
-
-    /* Constructor */
-    public StringLocalePair(String str, ULocale locale) {
-      this.str = str;
-      this.locale = locale;
-    }
-
-    /* Equals implementation. */
-    @Override
-    public boolean equals(Object o) {
-      if (!(o instanceof StringLocalePair)) {
-        return false;
-      }
-      StringLocalePair other = (StringLocalePair) o;
-      return ((str == other.str) || (str != null && str.equals(other.str)))
-          && ((locale == other.locale) || (locale != null && locale.equals(other.locale)));
-    }
-
-    /* HashCode implementation. */
-    @Override
-    public int hashCode() {
-      int result = 1;
-      result = 31 * result + (str == null ? 0 : str.hashCode());
-      result = 31 * result + (locale == null ? 0 : locale.hashCode());
-      return result;
-    }
   }
 }

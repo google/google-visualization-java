@@ -78,7 +78,7 @@ public abstract class ComparisonFilter implements QueryFilter {
     }
 
     /**
-     * True iff this instance requires the two types to be equal.
+     * True if this instance requires the two types to be equal.
      */
     private boolean requiresEqualTypes;
 
@@ -104,15 +104,15 @@ public abstract class ComparisonFilter implements QueryFilter {
   }
 
   /**
-   * Returns true iff s1 is "like" s2, in the sql-sense, i.e., if s2 has any
+   * Returns true if s1 is "like" s2, in the sql-sense, i.e., if s2 has any
    * %'s or _'s, they are treated as special characters corresponding to an
    * arbitrary sequence of characters in s1 or to an abitrary character in s1
-   * respectively. All other characters in s2 need to matched exactly to
+   * respectively. All other characters in s2 need to match exactly to
    * characters in s1. You cannot escape these characters, so that you cannot
    * match an explicit '%' or '_'.
    * @param s1 The first string.
    * @param s2 The second string.
-   * @return True iff s1 is "like" s2, in the sql-sense.
+   * @return True if s1 is "like" s2, in the sql-sense.
    */
   private boolean isLike(String s1, String s2) {
     StringTokenizer tokenizer = new StringTokenizer(s2, "%_", true);
@@ -132,7 +132,7 @@ public abstract class ComparisonFilter implements QueryFilter {
 
   /**
    * Matches the given two values against the operator. E.g., if the operator is
-   * GT, returns true iff v1 > v2. This implementation uses the
+   * GT, returns true if v1 > v2. This implementation uses the
    * compareTo() method.
    *
    * @param v1 The first value.

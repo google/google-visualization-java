@@ -16,7 +16,6 @@ package com.google.visualization.datasource.render;
 
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A utility to escape strings.
@@ -44,13 +43,13 @@ public class EscapeUtil {
    * This method is used to escape strings embedded in the json response. The method is based on
    * {@link http://svn.apache.org/viewvc/incubator/shindig/trunk/java/common/src/main/java/org/apache/shindig/common/JsonSerializer.java?view=markup appendString}.
    * The method escapes the following in order to enable safe parsing of the json string:
-   * 1) quotes - ' and "
+   * 1) single and double quotes - ' and "
    * 2) backslash - /
    * 3) html brackets - <>
    * 4) control characters - \n \t \r ..
    * 5) special characters - out of range unicode characters (formatted to the uxxxx format)
    *
-   * @param str The original string to escape
+   * @param str The original string to escape.
    *
    * @return The escaped string.
    */
@@ -142,14 +141,6 @@ public class EscapeUtil {
       }
     }
     return sb.toString();
-  }
-
-  public static String jsonEscape2(String str) {
-    String escapedString = StringUtils.replace(str, "'", "\\47");
-    escapedString = StringUtils.replace(escapedString, "\"", "\\42");
-    escapedString = StringUtils.replace(escapedString, "<script>", "\\74script\\76");
-    escapedString = StringUtils.replace(escapedString, "</script>", "\\74/script\\76");
-    return escapedString;
   }
 
   /**

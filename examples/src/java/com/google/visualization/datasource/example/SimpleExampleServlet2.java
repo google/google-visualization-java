@@ -16,10 +16,14 @@ package com.google.visualization.datasource.example;
 import com.google.visualization.datasource.DataSourceHelper;
 import com.google.visualization.datasource.DataSourceRequest;
 import com.google.visualization.datasource.base.DataSourceException;
+import com.google.visualization.datasource.base.ReasonType;
 import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.value.ValueType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +46,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SimpleExampleServlet2 extends HttpServlet {
 
+  /**
+   * The log used throughout the data source library.
+   */
+  private static final Log log = LogFactory.getLog(SimpleExampleServlet2.class.getName());
+  
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
@@ -63,7 +72,15 @@ public class SimpleExampleServlet2 extends HttpServlet {
 
       // Set the response.
       DataSourceHelper.setServletResponse(newData, dsRequest, resp);
-
+    } catch (RuntimeException rte) {
+      log.error("A runtime exception has occured", rte);
+      DataSourceException dataSourceException = new DataSourceException(
+          ReasonType.INTERNAL_ERROR, rte.getMessage());
+      if (dsRequest != null) {
+        DataSourceHelper.setServletErrorResponse(dataSourceException, dsRequest, resp);
+      } else {
+        DataSourceHelper.setServletErrorResponse(dataSourceException, req, resp);
+      }
     } catch (DataSourceException e) {
       if (dsRequest != null) {
         DataSourceHelper.setServletErrorResponse(e, dsRequest, resp);

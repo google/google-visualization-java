@@ -44,23 +44,23 @@ public class QuerySelection {
   /**
    * Copy constructor.
    *
-   * @param source The source query selection to construct from.
+   * @param source The source query selection from which to construct.
    */
   public QuerySelection(QuerySelection source) {
     columns = Lists.newArrayList(source.columns);
   }
 
   /**
-   * Returns true iff the selection list is empty.
+   * Returns true if the selection list is empty.
    *
-   * @return True iff the selection list is empty.
+   * @return True if the selection list is empty.
    */
   public boolean isEmpty() {
     return columns.isEmpty();
   }
 
   /**
-   * Add a column to the column list.
+   * Adds a column to the column list.
    *
    * @param column The column to select.
    */
@@ -148,5 +148,15 @@ public class QuerySelection {
       return false;
     }
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser would produce an equal QuerySelection.
+   * The string is returned without the SELECT keyword.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    return Query.columnListToQueryString(columns); 
   }
 }

@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.visualization.datasource.base.InvalidQueryException;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,10 +28,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Describes the labels of a Query, as passed on the query in
+ * Describes the labels of a Query, as passed in the query under
  * the "label" clause.
  *
- * A label can be specified for each column, but doesn't have to be.
+ * A label can optionally be specified for each column.
  * If not specified, each column type has a default label.
  *
  * @author Itai R.
@@ -42,14 +43,14 @@ public class QueryLabels {
   private static final Log log = LogFactory.getLog(QueryLabels.class.getName());
 
   /**
-   * A map of all of the columns that require non default labels, and the
+   * A map of all of the columns that require non-default labels, and the
    * label specified for them.
-   * Columns with default labels are simply not in the map.
+   * Columns with default labels are not in the map.
    */
   private Map<AbstractColumn, String> columnLabels;
 
   /**
-   * Default empty constructor, with no labels (they can be added later)
+   * Default empty constructor, with no labels. Labels can be added later.
    */
   public QueryLabels() {
     columnLabels = Maps.newHashMap();
@@ -78,7 +79,7 @@ public class QueryLabels {
    * Returns the label of the specified column, or null if no label was
    * specified.
    *
-   * @param column The column of which we want the label.
+   * @param column The column for which the label is required.
    *
    * @return The label, or null if no label was specified for this column.
    */
@@ -113,6 +114,19 @@ public class QueryLabels {
     }
     return result;
   }
+  
+  /**
+   * Returns all the columns that are AggregationColumns.
+   *
+   * @return All the columns that are AggregationColumns.
+   */
+  public List<AggregationColumn> getAggregationColumns() {
+    List<AggregationColumn> result = Lists.newArrayList();
+    for (AbstractColumn col : columnLabels.keySet()) {
+      result.addAll(col.getAllAggregationColumns());
+    }
+    return result;
+  }
 
   @Override
   public int hashCode() {
@@ -132,5 +146,22 @@ public class QueryLabels {
       if (other.columnLabels != null) return false;
     } else if (!columnLabels.equals(other.columnLabels)) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed into the query parser, produces a QueryLabels equal to this one.
+   * The string returned does not contain the LABEL keyword.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    StrBuilder builder = new StrBuilder();
+    List<String> stringList = Lists.newArrayList();
+    for (AbstractColumn col : columnLabels.keySet()) {
+      String label = columnLabels.get(col);
+      stringList.add(col.toQueryString() + " " + Query.stringToQueryStringLiteral(label));
+    }
+    builder.appendWithSeparators(stringList, ", ");
+    return builder.toString(); 
   }
 }

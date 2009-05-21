@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.visualization.datasource.base.InvalidQueryException;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,7 +31,7 @@ import java.util.Set;
  * Describes the formatting options of a Query, as passed on the query
  * in the "format" clause.
  *
- * Format can be specified for each column, but doesn't have to be.
+ * Format can be specified for each column, but does not have to be.
  * If not specified, each column type has a default format.
  *
  * Each format is a string pattern, as used in the ICU UFormat class.
@@ -46,9 +47,9 @@ public class QueryFormat {
   private static final Log log = LogFactory.getLog(QueryFormat.class.getName());
 
   /**
-   * A map of all of the columns that require non default patterns, and the
+   * A map of all of the columns that require non-default patterns, and the
    * pattern specified for them.
-   * Default formatted columns are simply not in the map.
+   * Columns with default patterns are not in the map.
    */
   private Map<AbstractColumn, String> columnPatterns;
 
@@ -82,7 +83,7 @@ public class QueryFormat {
    * Returns the pattern of the specified column, or null if no pattern was
    * specified.
    *
-   * @param column The column of which we want the pattern.
+   * @param column The column for which the pattern is required.
    *
    * @return The pattern, or null if no pattern was specified for this column.
    */
@@ -120,6 +121,19 @@ public class QueryFormat {
     return result;
   }
 
+  /**
+   * Returns all the columns that are AggregationColumns.
+   *
+   * @return All the columns that are AggregationColumns.
+   */
+  public List<AggregationColumn> getAggregationColumns() {
+    List<AggregationColumn> result = Lists.newArrayList();
+    for (AbstractColumn col : columnPatterns.keySet()) {
+      result.addAll(col.getAllAggregationColumns());
+    }
+    return result;
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -138,5 +152,22 @@ public class QueryFormat {
       if (other.columnPatterns != null) return false;
     } else if (!columnPatterns.equals(other.columnPatterns)) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed into the query parser, produces a QueryFormat equal to this one.
+   * The string returned does not contain the FORMAT keyword.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    StrBuilder builder = new StrBuilder();
+    List<String> stringList = Lists.newArrayList();
+    for (AbstractColumn col : columnPatterns.keySet()) {
+      String pattern = columnPatterns.get(col);
+      stringList.add(col.toQueryString() + " " + Query.stringToQueryStringLiteral(pattern));
+    }
+    builder.appendWithSeparators(stringList, ", ");
+    return builder.toString(); 
   }
 }

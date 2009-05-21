@@ -22,7 +22,9 @@ import com.google.visualization.datasource.query.AbstractColumn;
 import com.google.visualization.datasource.query.AggregationColumn;
 import com.google.visualization.datasource.query.AggregationType;
 import com.google.visualization.datasource.query.Query;
+import com.google.visualization.datasource.query.QueryFormat;
 import com.google.visualization.datasource.query.QueryGroup;
+import com.google.visualization.datasource.query.QueryLabels;
 import com.google.visualization.datasource.query.QuerySelection;
 import com.google.visualization.datasource.query.SimpleColumn;
 
@@ -128,7 +130,14 @@ public final class QuerySplitter {
    * @return The split query.
    */
   private static QueryPair splitSQL(Query query) {
-    if (!query.getAllScalarFunctionsColumns().isEmpty()) {
+    // Situations we currently do not support good splitting of:
+    // - Queries with scalar functions.
+    // - Queries with pivot that also contain labels or formatting on aggregation columns.
+    if (!query.getAllScalarFunctionsColumns().isEmpty() 
+        || (query.hasPivot()
+            && ((query.hasUserFormatOptions() &&
+                !query.getUserFormatOptions().getAggregationColumns().isEmpty())
+             || (query.hasLabels() && !query.getLabels().getAggregationColumns().isEmpty())))) {
       Query completionQuery = new Query();
       completionQuery.copyFrom(query);
       return new QueryPair(new Query(), completionQuery);
@@ -218,11 +227,29 @@ public final class QuerySplitter {
       // When there is no pivoting, sql does everything (except options, labels, format).
       dataSourceQuery.copyFrom(query);
       dataSourceQuery.setOptions(null);
-      dataSourceQuery.setLabels(null);
-      dataSourceQuery.setUserFormatOptions(null);
       completionQuery.setOptions(query.getOptions());
-      completionQuery.setLabels(query.getLabels());
-      completionQuery.setUserFormatOptions(query.getUserFormatOptions());
+      try {
+        if (query.hasLabels()) {
+          dataSourceQuery.setLabels(null);
+          QueryLabels labels = query.getLabels();
+          QueryLabels newLabels = new QueryLabels();
+          for (AbstractColumn column : labels.getColumns()) {
+            newLabels.addLabel(new SimpleColumn(column.getId()), labels.getLabel(column));
+          }
+          completionQuery.setLabels(newLabels);
+        }
+        if (query.hasUserFormatOptions()) {
+          dataSourceQuery.setUserFormatOptions(null);
+          QueryFormat formats = query.getUserFormatOptions();
+          QueryFormat newFormats = new QueryFormat();
+          for (AbstractColumn column : formats.getColumns()) {
+            newFormats.addPattern(new SimpleColumn(column.getId()), formats.getPattern(column));
+          }
+          completionQuery.setUserFormatOptions(newFormats);
+        }
+      } catch (InvalidQueryException e) {
+        // Should not happen.
+      }
     }
     return new QueryPair(dataSourceQuery, completionQuery);
   }

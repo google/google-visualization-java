@@ -23,7 +23,7 @@ package com.google.visualization.datasource.query;
 public class ColumnSort {
 
   /**
-   * The column to sort by.
+   * The column by which to sort.
    */
   private AbstractColumn column;
 
@@ -34,7 +34,7 @@ public class ColumnSort {
 
   /**
    * Construct and new column sort condition.
-   * @param column The column to sort by.
+   * @param column The column by which to sort.
    * @param order The requested ordering.
    */
   public ColumnSort(AbstractColumn column, SortOrder order) {
@@ -43,8 +43,8 @@ public class ColumnSort {
   }
 
   /**
-   * Returns the column to sort by.
-   * @return The column to sort by.
+   * Returns the column by which to sort.
+   * @return The column by which to sort.
    */
   public AbstractColumn getColumn() {
     return column;
@@ -56,5 +56,14 @@ public class ColumnSort {
    */
   public SortOrder getOrder() {
     return order;
+  }
+  
+  /**
+   * Creates a string that when fed to the query parser should return a ColumnSort equal to this
+   * one. Used mainly for debugging purposes.
+   * @return A query string.
+   */
+  public String toQueryString() {
+    return column.toQueryString() + (order == SortOrder.DESCENDING ? " DESC" : "");   
   }
 }

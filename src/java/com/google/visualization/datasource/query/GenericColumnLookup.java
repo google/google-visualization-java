@@ -27,7 +27,7 @@ import java.util.Map;
 public class GenericColumnLookup implements ColumnLookup {
 
   /**
-   * A map from the column to their index in the table description.
+   * A map from the column to its index in the table description.
    */
   private Map<AbstractColumn, Integer> columnIndexByColumn;
 

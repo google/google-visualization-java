@@ -47,13 +47,13 @@ import java.util.List;
   public ScalarFunctionColumn scalarFunctionColumn;
 
   /**
-   * When creating the id of the column, this will separate between the values
+   * When creating the id of the column, this is used as a separator between the values
    * in the pivot-by columns.
    */
   public static final String PIVOT_COLUMNS_SEPARATOR = ",";
 
   /**
-   * When creating the id of the column, this will separate between the list of
+   * When creating the id of the column, this is used as a separator between the list of
    * values and the ScalarFunctionColumn.
    */
   public static final String PIVOT_SCALAR_FUNCTION_SEPARATOR = " ";
@@ -114,7 +114,7 @@ import java.util.List;
 
   /**
    * Creates a prefix for a pivoted column label, containing all the values of
-   * the pivoted columns. Returns the empty string if no pivoting was used.
+   * the pivoted columns. Returns an empty string if no pivoting was used.
    *
    * @return A prefix for the pivoted column label.
    */

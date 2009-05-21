@@ -46,19 +46,19 @@ import java.util.List;
   public AggregationColumn aggregation;
 
   /**
-   * Indication if this table comes from a query that has more than one
+   * Indication whether this table comes from a query that has more than one
    * aggregation.
    */
   private boolean isMultiAggregationQuery;
 
   /**
-   * When creating the id of the column, this will separate between the values
+   * When creating the id of the column, this is used as a separator between the values
    * in the pivot columns.
    */
   public static final String PIVOT_COLUMNS_SEPARATOR = ",";
 
   /**
-   * When creating the id of the column, this will separate between the list of
+   * When creating the id of the column, this is used as a separator between the list of
    * values and the column aggregation.
    */
   public static final String PIVOT_AGGREGATION_SEPARATOR = " ";
@@ -69,7 +69,7 @@ import java.util.List;
    *
    * @param values The list of values.
    * @param aggregationColumn The aggregation column.
-   * @param isMultiAggregationQuery Whether or not this table comes from a
+   * @param isMultiAggregationQuery Whether this table comes from a
    *     query with more than one aggregation.
    */
   public ColumnTitle(List<Value> values,
@@ -106,7 +106,7 @@ import java.util.List;
 
   /**
    * Creates a prefix for a pivoted column id, containing all the values of the
-   * pivoted columns. Returns the empty string if no pivoting was used.
+   * pivoted columns. Returns an empty string if no pivoting was used.
    *
    * @return A prefix for the pivoted column id.
    */
@@ -120,7 +120,7 @@ import java.util.List;
 
   /**
    * Creates a prefix for a pivoted column label, containing all the values of
-   * the pivoted columns. Returns the empty string if no pivoting was used.
+   * the pivoted columns. Returns an empty string if no pivoting was used.
    *
    * @return A prefix for the pivoted column label.
    */
@@ -192,8 +192,8 @@ import java.util.List;
       // Create a new column description and copy original formatters.
       result = new ColumnDescription(columnId, type, label);
     } else {
-      // In case this is a non numeric column and the aggregation type is COUNT.
-      // Create a new column description.
+      // Create a new column description if this is a non numeric column and the aggregation 
+      // type is COUNT.
       result = new ColumnDescription(columnId, ValueType.NUMBER, label);
     }
 
@@ -201,7 +201,7 @@ import java.util.List;
   }
 
   /**
-   * Checks if this aggregation values and column values are of the same type.
+   * Checks whether the aggregation values and column values are of the same type.
    *
    * @param valueType The type of values in the aggregated column.
    * @param aggregationType The aggregation type.

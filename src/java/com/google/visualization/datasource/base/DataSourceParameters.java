@@ -14,6 +14,7 @@
 
 package com.google.visualization.datasource.base;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -120,7 +121,7 @@ public class DataSourceParameters {
    * @throws DataSourceException Thrown if parsing of request parameters fails.
    */
   public DataSourceParameters(String tqxValue) throws DataSourceException {
-    if (tqxValue == null || tqxValue.isEmpty()) {
+    if (StringUtils.isEmpty(tqxValue)) {
       // Return the default values in case tqx is empty.
       return;
     }

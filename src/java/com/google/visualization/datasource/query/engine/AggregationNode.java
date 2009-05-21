@@ -25,10 +25,10 @@ import java.util.Set;
 
 /**
  * An aggregation node is a node in an aggregation tree. This node holds a value, equal to the
- * value in the corresponding group-by column. It also holds value aggregators (one per each
+ * value in the corresponding group-by column. It also holds: value aggregators (one for each
  * aggregation column), a reference to its parent in the tree, and a set of references to its
  * children. Each child is associated with a unique value, which corresponds to the value held
- * in the child node. See also {@link AggregationTree} for more details.
+ * in the child node. See {@link AggregationTree} for more details.
  *
  * @author Yoav G.
  */
@@ -48,7 +48,7 @@ public class AggregationNode {
    private Value value;
 
   /**
-   * Maps an column id to its aggregator. The column id should belong to the list of aggregation
+   * Maps a column id to its aggregator. The column id should belong to the list of aggregation
    * columns.
    */
   private Map<String, ValueAggregator> columnAggregators = Maps.newHashMap();
@@ -134,7 +134,7 @@ public class AggregationNode {
    * Adds a new child.
    *
    * @param key The value defining the new child.
-   * @param columnsToAggregate A set of ids of the columns to aggregate.
+   * @param columnsToAggregate The ids of the columns to aggregate.
    * @param table The table.
    */
   public void addChild(Value key, Set<String> columnsToAggregate, DataTable table) {
@@ -159,8 +159,8 @@ public class AggregationNode {
   }
 
   /**
-   * Returns the value of this node (which is also the key of this node in the
-   * children set of his parent).
+   * Returns the value of this node. This is also the key of this node in the
+   * children set of this parent.
    *
    * @return The value of this node.
    */

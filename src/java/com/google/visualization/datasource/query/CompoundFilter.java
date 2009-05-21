@@ -27,9 +27,9 @@ import java.util.Set;
 
 /**
  * A compound filter.
- * This filter is a logical aggregation of other filters. Currently, we suppose
- * union and intersection, i.e. OR and AND. An OR complex filter matches if
- * any of its sub-filters matches. An AND complex filter matches if all of
+ * This filter is a logical aggregation of other filters. Currently, 
+ * union (OR) and intersection (AND) are supported. An OR complex filter matches if
+ * any of its sub-filters match. An AND complex filter matches if all of
  * its sub-filters match.
  *
  * @author Yonatan B.Y.
@@ -37,7 +37,7 @@ import java.util.Set;
 public class CompoundFilter implements QueryFilter {
 
   /**
-   * The different types a CompoundFilter can be of. Currently supported are
+   * The available types of CompoundFilter. Currently supported are
    * AndFilter and OrFilter.
    */
   public static enum LogicalOperator {
@@ -51,7 +51,7 @@ public class CompoundFilter implements QueryFilter {
   private List<QueryFilter> subFilters;
 
   /**
-   * The type of this compound filter (whether it's and or or).
+   * The type of this compound filter ('and' or 'or').
    */
   private LogicalOperator operator;
 
@@ -77,7 +77,7 @@ public class CompoundFilter implements QueryFilter {
    *    continuing to check the rest of the sub-filters; and dually for an AND
    *    filter.
    * 2. The sub-filters are evaluated in order.
-   * 3. If the collection of sub-filters is empty, a GoogleRuntimeException is
+   * 3. If the collection of sub-filters is empty, a RuntimeException is
    *    thrown.
    *
    * @param table The table containing this row.

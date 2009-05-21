@@ -30,7 +30,7 @@ import java.util.List;
 public class QueryGroup {
 
   /**
-   * The list of group by column.
+   * The list of group-by columns.
    */
   private List<AbstractColumn> columns;
 
@@ -51,9 +51,9 @@ public class QueryGroup {
   }
 
   /**
-   * Returns the list of group by IDs. This list is immutable.
+   * Returns the list of group-by IDs. This list is immutable.
    *
-   * @return The list of group by IDs. This list is immutable.
+   * @return The list of group-by IDs. This list is immutable.
    */
   public List<String> getColumnIds() {
     List<String> columnIds = Lists.newArrayList();
@@ -64,9 +64,9 @@ public class QueryGroup {
   }
 
   /**
-   * Returns a list of all simple columns IDs in this group.
+   * Returns a list of all simple columns' IDs in this group.
    *
-   * @return A list of all simple columns IDs in this group.
+   * @return A list of all simple columns' IDs in this group.
    */
   public List<String> getSimpleColumnIds() {
     List<String> columnIds = Lists.newArrayList();
@@ -77,18 +77,18 @@ public class QueryGroup {
   }
 
   /**
-   * Returns the list of group by columns. This list is immutable.
+   * Returns the list of group-by columns. This list is immutable.
    *
-   * @return The list of group by columns. This list is immutable.
+   * @return The list of group-by columns. This list is immutable.
    */
   public List<AbstractColumn> getColumns() {
     return ImmutableList.copyOf(columns);
   }
 
   /**
-   * Returns the list of simple columns mentioned in the group by section.
+   * Returns the list of simple columns included in the group-by section.
    *
-   * @return The list of simple columns mentioned in the group by section.
+   * @return The list of simple columns included in the group-by section.
    */
   public List<SimpleColumn> getSimpleColumns() {
     List<SimpleColumn> simpleColumns = Lists.newArrayList();
@@ -99,10 +99,10 @@ public class QueryGroup {
   }
 
   /**
-   * Returns the list of scalar function columns mentioned in the group by
+   * Returns the list of scalar function columns included in the group-by
    * section.
    *
-   * @return The list of scalar function columns mentioned in the group by
+   * @return The list of scalar function columns included in the group-by
    *     section
    */
   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
@@ -131,5 +131,15 @@ public class QueryGroup {
       if (other.columns != null) return false;
     } else if (!columns.equals(other.columns)) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser would produce an equal QueryGroup.
+   * The string is returned without the GROUP BY keywords.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    return Query.columnListToQueryString(columns); 
   }
 }

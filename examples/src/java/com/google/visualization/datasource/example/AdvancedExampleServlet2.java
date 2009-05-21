@@ -28,6 +28,9 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.query.AbstractColumn;
 import com.google.visualization.datasource.query.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +63,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AdvancedExampleServlet2 extends HttpServlet {
 
+  /**
+   * The log used throughout the data source library.
+   */
+  private static final Log log = LogFactory.getLog(AdvancedExampleServlet2.class.getName());
+  
   /**
    * A Map of animal names to link in wikipedia describing them.
    */
@@ -157,6 +165,7 @@ public class AdvancedExampleServlet2 extends HttpServlet {
 
       DataSourceHelper.setServletResponse(newData, dsRequest, resp);
     } catch (RuntimeException rte) {
+      log.error("A runtime exception has occured", rte);
       DataSourceException dataSourceException = new DataSourceException(
           ReasonType.INTERNAL_ERROR, rte.getMessage());
       if (dsRequest != null) {

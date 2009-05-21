@@ -86,7 +86,7 @@ public class CurrentDateTime implements ScalarFunction {
   }
 
   /**
-   * Validates that there is no parameters given for the function. Throws a
+   * Validates that there are no parameters given for the function. Throws a
    * ScalarFunctionException otherwise.
    *
    * @param types A list with parameters types. Should be empty for this type of function.
@@ -99,5 +99,12 @@ public class CurrentDateTime implements ScalarFunction {
       throw new InvalidQueryException("The " + FUNCTION_NAME + " function should not get "
           + "any parameters");
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return FUNCTION_NAME + "()"; 
   }
 }

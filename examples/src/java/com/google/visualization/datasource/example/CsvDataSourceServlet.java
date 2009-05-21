@@ -78,7 +78,7 @@ public class CsvDataSourceServlet extends DataSourceServlet {
       log.error("url is malformed: " + url);
       throw new DataSourceException(ReasonType.INVALID_REQUEST, "url is malformed: " + url);
     } catch (IOException e) {
-      log.error("Couldn't read from url: " + url);
+      log.error("Couldn't read from url: " + url, e);
       throw new DataSourceException(ReasonType.INVALID_REQUEST, "Couldn't read from url: " + url);
     }
     DataTable dataTable = null;
@@ -86,7 +86,7 @@ public class CsvDataSourceServlet extends DataSourceServlet {
     try {
       dataTable = CsvDataSourceHelper.read(reader, null, true, requestLocale);
     } catch (IOException e) {
-      log.error("Couldn't read from url: " + url);
+      log.error("Couldn't read from url: " + url, e);
       throw new DataSourceException(ReasonType.INVALID_REQUEST, "Couldn't read from url: " + url);
     }
     return dataTable;

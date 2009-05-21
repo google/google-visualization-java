@@ -54,10 +54,10 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A collection of static methods that perform the actual operations involved in executing a query,
- * i.e., selection, sorting, paging (limit and offset), grouping and pivoting, filtering, and
- * applying of labels and custom formatting. This also takes care of calculated columns a.k.a.
- * scalar function columns.
+ * A collection of static methods that perform the operations involved in executing a query,
+ * i.e., selection, sorting, paging (limit and offset), grouping and pivoting, filtering, 
+ * applying labels, and custom formatting. This also takes care of calculated columns.
+ * This also takes care of scalar function columns.
  *
  * @author Yoah B.D.
  * @author Yonatan B.Y.
@@ -103,6 +103,7 @@ public final class QueryEngine {
   /**
    * Returns the data that is the result of executing the query. The query is validated against the
    * data table before execution and an InvalidQueryException is thrown if it is invalid.
+   * This function may change the given DataTable.
    *
    * @param query The query.
    * @param table The table to execute the query on.
@@ -116,7 +117,7 @@ public final class QueryEngine {
       columnIndices.put(new SimpleColumn(columnsDescription.get(i).getId()), i);
     }
 
-    // A map of column lookups by their list of pivot values. It is utilized in
+    // A map of column lookups by their list of pivot values. This is utilized in
     // the grouping and pivoting queries.
     TreeMap<List<Value>, ColumnLookup> columnLookups =
         Maps.newTreeMap(GroupingComparators.VALUE_LIST_COMPARATOR);
@@ -146,14 +147,14 @@ public final class QueryEngine {
    * @param table The original table.
    * @param query The query.
    *
-   * @return The paginated table, or the original if no pagination needed.
+   * @return The paginated table, or the original if no pagination is needed.
    */
   private static DataTable performPagination(DataTable table, Query query)
       throws TypeMismatchException {
     int rowOffset = query.getRowOffset();
     int rowLimit = query.getRowLimit();
 
-    // If nothing is needed - just return the original table
+    // Return the original table if no pagination is needed
     if (((rowLimit == -1) || (table.getRows().size() <= rowLimit)) && (rowOffset == 0)) {
       return table;
     }
@@ -169,17 +170,17 @@ public final class QueryEngine {
     if (toIndex < numRows) { // Data truncated
       Warning warning = new Warning(ReasonType.DATA_TRUNCATED, "Data has been truncated due to user"
           + "request (LIMIT in query)");
-      table.addWarning(warning);
+      newTable.addWarning(warning);
     }
 
     return newTable;
   }
 
   /**
-   * Returns a table having the same rows as table, only sorted according to the
-   * query's sort.
+   * Returns a table sorted according to the query's sort.
+   * The returned table has the same rows as the original table.
    *
-   * @param table The original table.
+   * @param table The table to sort.
    * @param query The query.
    *
    * @return The sorted table.
@@ -189,9 +190,9 @@ public final class QueryEngine {
       return table;
     }
     QuerySort sortBy = query.getSort();
-    // A table description column lookup is enough since sorting by a column
-    // that has multiple matching columns after pivoting - is impossible (e.g,
-    // it's impossible to sort by an aggregation column when there's a pivot).
+    // A table description column lookup is enough because sorting by a column
+    // that has multiple matching columns after pivoting is impossible. For example,
+    // it is impossible to sort by an aggregation column when there is a pivot.
     DataTableColumnLookup columnLookup = new DataTableColumnLookup(table);
     TableRowComparator comparator = new TableRowComparator(sortBy, locale, columnLookup);
     Collections.sort(table.getRows(), comparator);
@@ -199,10 +200,10 @@ public final class QueryEngine {
   }
 
   /**
-   * Returns a table having only the rows from table that match the filter
-   * provided by query's filter.
+   * Returns a table that has only the rows from the given table that match the filter
+   * provided by a query.
    *
-   * @param table The original table.
+   * @param table The table to filter.
    * @param query The query.
    *
    * @return The filtered table.
@@ -225,10 +226,10 @@ public final class QueryEngine {
   }
 
   /**
-   * Returns a table having only the columns from table that are selected by
-   * the query's selection.
+   * Returns a table that has only the columns from the given table that are specified by
+   * the query.
    *
-   * @param table The original table.
+   * @param table The table from which to select.
    * @param query The query.
    * @param columnIndicesReference A reference to a ColumnIndices instance, so that
    *     this function can change the internal ColumnIndices.
@@ -255,11 +256,11 @@ public final class QueryEngine {
     int currIndex = 0;
     for (AbstractColumn col : selectedColumns) {
       // If the query has pivoting, then AggregationColumns in the SELECT are
-      // discarded, since they are only there to control the pivoting itself.
+      // discarded, since they are only there to control the pivoting.
       List<Integer> colIndices = columnIndices.getColumnIndices(col);
       selectedIndices.addAll(colIndices);
       // If the selected column does not exist in the columnIndices, then it is
-      // a scalar function column that wasn't in the original table, and was not
+      // a scalar function column that was not in the original table, and was not
       // calculated in the grouping and pivoting stage.
       if (colIndices.size() == 0) {
         newColumnDescriptions.add(new ColumnDescription(col.getId(),
@@ -286,11 +287,11 @@ public final class QueryEngine {
         boolean wasFound = false;
         Set<List<Value>> pivotValuesSet = columnLookups.keySet();
         for (List<Value> values : pivotValuesSet) {
-          // If the current column-lookup contains the current column and it's
+          // If the current column-lookup contains the current column and it is
           // either a column that contains aggregations or a column that
-          // contains only group-by columns and was not found yet, get its value
-          // in the current row. Otherwise- continue. If the column contains
-          // only group by columns so it should appear only once, even though
+          // contains only group-by columns and was not yet found, get its value
+          // in the current row. Otherwise continue. If the column contains
+          // only group-by columns it should appear only once, even though
           // it may appear in many column lookups.
           if (columnLookups.get(values).containsColumn(col)
               && ((col.getAllAggregationColumns().size() != 0) || !wasFound)) {
@@ -298,7 +299,7 @@ public final class QueryEngine {
             newRow.addCell(sourceRow.getCell(columnLookups.get(values).getColumnIndex(col)));
           }
         }
-        // If the column was not found in any of the column lookups-
+        // If the column was not found in any of the column lookups
         // calculate its value (e.g., scalar function column that was not
         // calculated in a previous stage).
         if (!wasFound) {
@@ -312,12 +313,12 @@ public final class QueryEngine {
   }
 
   /**
-   * Returns true iff the query has aggregation columns and the table is not
+   * Returns true if the query has aggregation columns and the table is not
    * empty.
    *
    * @param query The given query.
    *
-   * @return true iff the query has aggregation columns and the table is not
+   * @return true if the query has aggregation columns and the table is not
    *     empty.
    */
   private static boolean queryHasAggregation(Query query) {
@@ -330,15 +331,16 @@ public final class QueryEngine {
    * on the given table, using the information provided in the query's group
    * and pivot.
    *
-   * The new table generated has columns as follows:
-   * Columns 1..A are the original group-by columns, in the order they are
+   * The new table generated has columns as follows where A is the number of group-by columns,
+   * B is the number of combinations of values of pivot-by columns, and X is the number of 
+   * aggregations requested:
+   * - Columns 1..A are the original group-by columns, in the order they are
    * given in the group-by list.
-   * Columns (A+1)..B are pivot and aggregation columns, where each such
+   * - Columns (A+1)..B are pivot and aggregation columns, where each
    * column's id is composed of values of the pivot-by columns in the
    * original table, and an aggregation column, with separators between them.
-   * where A is the number of group-by columns and B is (the number of
-   * combinations of values of pivot-by columns) X (the number of aggregations
-   * requested). Note that the aggregations requested can be all on the same
+   * 
+   * Note that the aggregations requested can be all on the same
    * aggregation column or on different aggregation columns. To this
    * mechanism, it doesn't matter.
    *
@@ -353,11 +355,11 @@ public final class QueryEngine {
    * @param table The original table.
    * @param query The query.
    * @param columnIndices A map, in which this method sets the indices
-   *     of the new columns, if grouping is indeed performed, and then any
+   *     of the new columns, if grouping is performed, and then any
    *     previous values in it are cleared. If grouping is not performed, it is
    *     left as is.
    *
-   * @return The new table, after the grouping and pivoting was performed.
+   * @return The new table, after grouping and pivoting was performed.
    */
   private static DataTable performGroupingAndPivoting(DataTable table, Query query,
       ColumnIndices columnIndices, TreeMap<List<Value>, ColumnLookup> columnLookups)
@@ -382,8 +384,18 @@ public final class QueryEngine {
     List<String> groupAndPivotIds = Lists.newArrayList(groupByIds);
     groupAndPivotIds.addAll(pivotByIds);
 
-    List<AggregationColumn> columnAggregations = selection.getAggregationColumns();
+    List<AggregationColumn> tmpColumnAggregations = selection.getAggregationColumns();
     List<ScalarFunctionColumn> selectedScalarFunctionColumns = selection.getScalarFunctionColumns();
+    
+    // Remove duplicates from tmpColumnAggregations, creating columnAggregations:
+    List<AggregationColumn> columnAggregations =
+      Lists.newArrayListWithExpectedSize(tmpColumnAggregations.size());
+    for (AggregationColumn aggCol : tmpColumnAggregations) {
+      if (!columnAggregations.contains(aggCol)) {
+        columnAggregations.add(aggCol);
+      }
+    }
+    
     List<String> aggregationIds = Lists.newArrayList();
     for (AggregationColumn col : columnAggregations) {
       aggregationIds.add(col.getAggregatedColumn().getId());
@@ -400,9 +412,9 @@ public final class QueryEngine {
     List<ColumnDescription> newColumnDescriptions = Lists.newArrayList();
     newColumnDescriptions.addAll(table.getColumnDescriptions());
 
-    // Add to the table description the scalar function columns mentioned in the
-    // group and pivot. The groups of rows will be defined according to the
-    // values of those columns, and so it's necessary to add them before the
+    // Add to the table description the scalar function columns included in the
+    // group and pivot. The groups of rows are defined according to the
+    // values of those columns, and so it is necessary to add them before the
     // calculations of the groups, pivots and aggregations.
     for (ScalarFunctionColumn column : groupAndPivotScalarFunctionColumns) {
       newColumnDescriptions.add(new ColumnDescription(column.getId(),
@@ -447,18 +459,18 @@ public final class QueryEngine {
     // uniqueness and the tree for the order).
     TreeSet<List<Value>> pivotValuesSet =
         Sets.newTreeSet(GroupingComparators.VALUE_LIST_COMPARATOR);
-    // This MetaTable will hold all the data in the table, and we will then
-    // dump its contents into the real table.
+    // This MetaTable holds all the data in the table, this data is then
+    // dumped into the real table.
     MetaTable metaTable = new MetaTable();
     for (AggregationColumn columnAggregation : columnAggregations) {
       for (AggregationPath path : paths) {
 
-        // A ColumnTitle is composed of both all the values for the pivot-by
-        // columns, and a ColumnAggregation. That's why we iterate over all
+        // A ColumnTitle is composed of all the values for the pivot-by
+        // columns, and a ColumnAggregation. That is why it is necessary to iterate over all
         // ColumnAggregations and create a ColumnTitle for each one.
         List<Value> originalValues = path.getValues();
 
-        // We separate originalValues into the rowValues and columnValues. The
+        // Separate originalValues into the rowValues and columnValues. The
         // rowValues are the values of the group-by columns and the columnValues
         // are the values of the pivot-by columns.
         List<Value> rowValues = originalValues.subList(0, groupByIds.size());
@@ -495,7 +507,7 @@ public final class QueryEngine {
     DataTable result = createDataTable(groupByIds, columnTitles, table, scalarFunctionColumnTitles);
     List<ColumnDescription> colDescs = result.getColumnDescriptions();
 
-    // Fill the columnIndices and columnLookups parameters for the group by
+    // Fill the columnIndices and columnLookups parameters for the group-by
     // columns and the aggregation columns.
     columnIndices.clear();
     int columnIndex = 0;
@@ -552,10 +564,10 @@ public final class QueryEngine {
     }
 
     // Fill the columnIndices and columnLookups parameters for the scalar
-    // function column titles (must be done after the calculation of the values
+    // function column titles. This must be done after the calculation of the values
     // in the scalar function column cells, or else the scalar function columns
-    // won't calculate their value recursively, but return the current value.
-    // (See the logic of the getValue() method in ScalarFunctionColumn).
+    // will not calculate their value recursively, but return the current value.
+    // See the logic of the getValue() method in ScalarFunctionColumn.
     for (ScalarFunctionColumnTitle scalarFunctionColumnTitle
         : scalarFunctionColumnTitles) {
       columnIndices.put(scalarFunctionColumnTitle.scalarFunctionColumn,
@@ -573,7 +585,7 @@ public final class QueryEngine {
   }
 
   /**
-   * Apply the labels to columns as specified in the user query.
+   * Apply labels to columns as specified in the user query.
    * If a column is specified in the query, but is not part of the data table,
    * this is still a valid situation, and the "invalid" column id is ignored.
    *
@@ -616,9 +628,9 @@ public final class QueryEngine {
 
   /**
    * Add column formatters according to a given patterns list. Namely,
-   * the gadget can send a map of patterns by column ids. The following
+   * a visualization gadget can send a map of patterns by column ids. The following
    * method builds the appropriate formatters for these patterns.
-   * An illegal pattern is recorded for later sending warning.
+   * An illegal pattern is recorded for later sending of a warning.
    *
    * @param table The original table.
    * @param query The query.
@@ -647,6 +659,7 @@ public final class QueryEngine {
           allSucceeded = false;
         } else {
           indexToFormatter.put(i, f);
+          table.getColumnDescription(i).setPattern(pattern); // May override datasource pattern.
         }
       }
       if (!allSucceeded) {

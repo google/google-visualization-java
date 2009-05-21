@@ -24,14 +24,14 @@ import java.util.Set;
  * A query filter.
  * Any class that implements this interface can act as a filter, i.e., be the
  * part of a query that decides for a given TableRow if that row is part of the
- * result rows or not.
+ * result set.
  *
  * @author Yonatan B.Y.
  */
 public interface QueryFilter {
 
   /**
-   * Checks if this row should be part of the result set or not.
+   * Checks if this row should be part of the result set.
    *
    * @param table The table containing this row.
    * @param row The row to check.
@@ -55,8 +55,8 @@ public interface QueryFilter {
   List<ScalarFunctionColumn> getScalarFunctionColumns();
 
   /**
-   * Returns a string that when parsed by the query parser, should return an
-   * identical filter.
+   * Returns a string that, when parsed by the query parser, should return an
+   * identical filter. The string returned does not contain the WHERE keyword.
    *
    * @return A string form of this filter.
    */

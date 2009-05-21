@@ -36,8 +36,7 @@ public class ColumnColumnFilter extends ComparisonFilter {
   private AbstractColumn firstColumn;
 
   /**
-   * The second column, i.e. the column that the first column is compared
-   * against.
+   * The second column. This is the column with which the first column is compared.
    */
   private AbstractColumn secondColumn;
 

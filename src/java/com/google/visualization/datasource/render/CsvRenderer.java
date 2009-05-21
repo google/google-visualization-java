@@ -20,12 +20,14 @@ import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.TableCell;
 import com.google.visualization.datasource.datatable.TableRow;
 import com.google.visualization.datasource.datatable.ValueFormatter;
+import com.google.visualization.datasource.datatable.value.ValueType;
 
 import com.ibm.icu.util.ULocale;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Takes a data table and returns a csv string.
@@ -68,7 +70,9 @@ public class CsvRenderer {
     for (ColumnDescription column : columns) {
       sb.append(escapeString(column.getLabel())).append(separator);
     }
-    
+
+    Map<ValueType, ValueFormatter> formatters = ValueFormatter.createDefaultFormatters(locale);
+
     // Remove last comma.
     int length = sb.length();
     sb.replace(length - 1, length, "\n");
@@ -80,8 +84,7 @@ public class CsvRenderer {
       for (TableCell cell : cells) {
         String formattedValue = cell.getFormattedValue();
         if (formattedValue == null) {
-          formattedValue = ValueFormatter.getDefault(
-              cell.getType(), locale).format(cell.getValue());
+          formattedValue = formatters.get(cell.getType()).format(cell.getValue());
         }
         if (cell.isNull()) {
           sb.append("null");

@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -113,6 +114,7 @@ public class HtmlRenderer {
     }
     tableElement.appendChild(trElement);
 
+    Map<ValueType, ValueFormatter> formatters = ValueFormatter.createDefaultFormatters(locale);
     // Table tr elements.
     int rowCount = 0;
     for (TableRow row : dataTable.getRows()) {
@@ -127,8 +129,7 @@ public class HtmlRenderer {
         TableCell cell = cells.get(c);
         String cellFormattedText = cell.getFormattedValue();
         if (cellFormattedText == null) {
-          cellFormattedText = ValueFormatter.getDefault(
-              cell.getType(), locale).format(cell.getValue());
+          cellFormattedText = formatters.get(cell.getType()).format(cell.getValue());
         }
 
         Element tdElement = document.createElement("td");
@@ -144,14 +145,17 @@ public class HtmlRenderer {
               BooleanValue booleanValue = (BooleanValue) cell.getValue();
               tdElement.setAttribute("align", "center");
               if (booleanValue.getValue()) {
-                tdElement.setTextContent("&#10004;");
+                tdElement.setTextContent("\u2714"); // Check mark.
               } else {
-                tdElement.setTextContent("&#10007;");
+                tdElement.setTextContent("\u2717"); // X mark.
               }
               break;
             default:
-              String value = StringUtils.isEmpty(cellFormattedText) ? "&nbsp;" : cellFormattedText;
-              tdElement.setTextContent(value);
+              if (StringUtils.isEmpty(cellFormattedText)) {
+                tdElement.setTextContent("\u00a0"); // nbsp.
+              } else {
+                tdElement.setTextContent(cellFormattedText);
+              }
           }
         }
         trElement.appendChild(tdElement);

@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * A column.
- * This can be either a column by ID or an aggregation column (like min(c1)),
+ * This can be either a column by ID, or an aggregation column such as min(c1),
  * etc.
  *
  * @author Yonatan B.Y.
@@ -42,15 +42,15 @@ public abstract class AbstractColumn {
   public abstract String getId();
 
   /**
-   * Returns a list of all simple (primitive) column IDs mentioned in this
-   * AbstractColumn. It is a list to support calculated columns in the future.
+   * Returns a list of all simple (primitive) column IDs included in this
+   * AbstractColumn. This is a list to support calculated columns in the future.
    * For example, a simple column would just return a list containing its own
    * ID. An aggregation column would just return a list containing the ID of
-   * its aggregated column. In the future, when calculated columns are
-   * introduced, a calculated column would return a list with more than one
+   * its aggregated column. In future, when calculated columns are
+   * introduced, a calculated column will return a list with more than one
    * element.
    *
-   * @return A list of all simple column IDs mentioned in this AbstractColumn.
+   * @return A list of all simple column IDs included in this AbstractColumn.
    */
   public abstract List<String> getAllSimpleColumnIds();
 
@@ -80,50 +80,50 @@ public abstract class AbstractColumn {
   }
 
   /**
-   * Returns a list of all simple columns mentioned in this abstract column.
+   * Returns a list of all simple columns included in this abstract column.
    *
-   * @return A list of all simple columns mentioned in this abstract column.
+   * @return A list of all simple columns included in this abstract column.
    */
   public abstract List<SimpleColumn> getAllSimpleColumns();
 
   /**
-   * Returns a list of all aggregation columns mentioned in this abstract
+   * Returns a list of all aggregation columns included in this abstract
    * column.
    *
-   * @return A list of all aggregation columns mentioned in this abstract
+   * @return A list of all aggregation columns included in this abstract
    *     column.
    */
   public abstract List<AggregationColumn> getAllAggregationColumns();
 
   /**
-   * Returns a list of all scalar function columns mentioned in this abstract
+   * Returns a list of all scalar function columns included in this abstract
    * column.
    *
-   * @return A list of all scalar function columns mentioned in this abstract
+   * @return A list of all scalar function columns included in this abstract
    *     column.
    */
   public abstract List<ScalarFunctionColumn> getAllScalarFunctionColumns();
 
   /**
-   * Check whether the column is valid. i.e., aggregation columns and
-   * scalar function column are valid if the aggregation or scalar function
+   * Checks whether the column is valid. Aggregation columns and
+   * scalar function columns are valid if the aggregation or scalar function
    * respectively matches its arguments (inner columns).
    *
    * @param dataTable The data table.
    *
-   * @throws InvalidQueryException Thrown when the column is not valid.
+   * @throws InvalidQueryException Thrown if the column is not valid.
    */
   public abstract void validateColumn(DataTable dataTable) throws InvalidQueryException;
 
   /**
-   * Returns the value type of the column. If it's a simple column returns the
-   * value type of the column itself, if it's an aggregation or scalar function
+   * Returns the value type of the column. For a simple column, returns the
+   * value type of the column itself. For an aggregation or scalar function
    * column, returns the value type of the column after evaluating the function.
-   * e.g., the value type of year(a1) is NUMBER.
+   * For example, the value type of year(a1) is NUMBER.
    *
    * @param dataTable The data table.
    *
-   * @return the value type of the column.
+   * @return The value type of the column.
    */
   public abstract ValueType getValueType(DataTable dataTable);
 

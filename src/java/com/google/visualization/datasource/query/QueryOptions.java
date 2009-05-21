@@ -29,13 +29,13 @@ public class QueryOptions {
   private boolean noValues;
 
   /**
-   * Should be set to indicate not to format the values, but return only the
-   * raw data. By default we return both raw and formatted values.
+   * Should be set to indicate not to format the values, but to return only the
+   * raw data. By default returns both raw and formatted values.
    */
   private boolean noFormat;
 
   /**
-   * Constructs a query options with all boolean options set to false.
+   * Constructs query options with all boolean options set to false.
    */
   public QueryOptions() {
     noValues = false;
@@ -79,9 +79,9 @@ public class QueryOptions {
   }
 
   /**
-   * Returns true iff all options are set to their default values.
+   * Returns true if all options are set to their default values.
    *
-   * @return True iff all options are set to their default values.
+   * @return True if all options are set to their default values.
    */
   public boolean isDefault() {
     return !noFormat && !noValues;
@@ -105,5 +105,16 @@ public class QueryOptions {
     if (noFormat != other.noFormat) return false;
     if (noValues != other.noValues) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser should return a QueryOptions equal to this
+   * one. Used mainly for debugging purposes. The string returned does not contain the
+   * OPTIONS keyword.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+     return (noValues ? "NO_VALUES" : "") + (noFormat ? "NO_FORMAT" : "");    
   }
 }

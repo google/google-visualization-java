@@ -61,11 +61,21 @@ public interface ScalarFunction {
 
   /**
    * Validates that the number and types of the function parameters are valid.
-   * Throws an exception when they aren't.
+   * Throws an exception if they are not valid.
    *
    * @param types The given types of the function's parameters.
    *
    * @throws InvalidQueryException Thrown when the parameters are invalid.
    */
   void validateParameters(List<ValueType> types) throws InvalidQueryException;
+  
+  /**
+   * Returns a string that when given to the query parser will yield a similar scalar function.
+   * Takes as arguments the query strings of the arguments.
+   * 
+   * @param argumentQueryStrings The query strings of the actual arguments.
+   * 
+   * @return The query string.
+   */
+  String toQueryString(List<String> argumentQueryStrings);
 }

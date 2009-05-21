@@ -41,7 +41,7 @@ public class QueryPivot {
   }
 
   /**
-   * Add a column to pivot.
+   * Adds a column to pivot.
    *
    * @param column The column to add.
    */
@@ -63,9 +63,9 @@ public class QueryPivot {
   }
 
   /**
-   * Returns a list of all simple columns IDs in this pivot.
+   * Returns a list of all simple columns' IDs in this pivot.
    *
-   * @return A list of all simple columns IDs in this pivot.
+   * @return A list of all simple columns' IDs in this pivot.
    */
   public List<String> getSimpleColumnIds() {
     List<String> columnIds = Lists.newArrayList();
@@ -128,5 +128,15 @@ public class QueryPivot {
       if (other.columns != null) return false;
     } else if (!columns.equals(other.columns)) return false;
     return true;
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser would produce an equal QueryPivot.
+   * The string is returned without the PIVOT keywors.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    return Query.columnListToQueryString(columns); 
   }
 }

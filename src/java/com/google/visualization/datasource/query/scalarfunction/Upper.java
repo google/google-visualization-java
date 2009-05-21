@@ -22,7 +22,7 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import java.util.List;
 
 /**
- * A unary scalar function that changes a text value to all-upper-case.
+ * A unary scalar function that changes text to upper case.
  *
  * @author Yaniv S.
  */
@@ -85,5 +85,12 @@ public class Upper implements ScalarFunction {
       throw new InvalidQueryException(FUNCTION_NAME +
               " takes a text parameter");
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return FUNCTION_NAME + "(" + argumentsQueryStrings.get(0) + ")"; 
   }
 }

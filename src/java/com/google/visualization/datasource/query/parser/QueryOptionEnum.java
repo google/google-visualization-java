@@ -19,7 +19,7 @@ import com.google.visualization.datasource.query.QueryOptions;
 /**
  * Helper enum for the auto-generated parser. Holds a single query option (a single element of the
  * OPTIONS clause). This is used by the parser, i.e., referenced from the QueryParser.jj file.
- * It is needed because queryOptions uses boolean setX() functions, and doesn't have a datatype
+ * It is needed because queryOptions uses boolean setX() functions, and does not have a datatype
  * to hold a single value, and such a datatype is needed for convenience of parsing purposes in
  * the .jj parser. You can use the setInQueryOptions() method of this enum, to set the option to
  * true in a QueryOptions instance.

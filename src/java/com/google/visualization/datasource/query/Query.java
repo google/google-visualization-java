@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.visualization.datasource.base.InvalidQueryException;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,10 +26,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Holds the query data with all of the clauses. This class is the result of parsing the query
+ * Holds the query data and clauses. This class is the result of parsing the query
  * string that comes from the user.
- * The clauses that can be included in a query are select, filter, sort, group by, pivot, options,
- * labels, format, limit and offset.
+ * The clauses that can be included in a query are: select, filter, sort, group by, pivot, options,
+ * labels, format, limit, and offset.
  * For more details see the
  * <a href="http://code.google.com/apis/visualization/documentation/querylanguage.html">
  * query language reference
@@ -54,7 +55,7 @@ public class Query {
 
   /**
    * Checks the given list for duplicates. Throws an exception if a duplicate
-   * is found, giving as a message a description containing detail on which
+   * is found, giving as a message a description containing information on which
    * item was found to be duplicate, and in which clause it occurred (the
    * clause name is given).
    *
@@ -85,14 +86,14 @@ public class Query {
 
   /**
    * The required selection.
-   * If the selection is null, or that its empty, then the original
+   * If the selection is null, or is empty, the original
    * selection that was defined in the report is used.
    */
   protected QuerySelection selection = null;
 
   /**
    * The required filter.
-   * If the filter is null, then the results aren't filtered at all.
+   * If the filter is null, then the results are not filtered at all.
    */
   private QueryFilter filter = null;
 
@@ -111,8 +112,7 @@ public class Query {
    * If the caller specified this parameter, and the data table returned from
    * the data source contains more than this number of rows, then the result is
    * truncated, and the query result contains a warning with this reason.
-   * If this value is set to -1 it is just ignored, but this can only be done
-   * internally.
+   * If this value is set to -1, which can only be done internally, this is ignored.
    * (0 is a legal value, denoting no rows should be retrieved).
    */
   private int rowLimit = -1;
@@ -121,7 +121,7 @@ public class Query {
    * The number of rows that should be removed from the beginning of the
    * data table.
    * Together with the row limit parameter, this enables pagination.
-   * The default value is 0, (skip 0 rows) - which means to start from the
+   * The default value is 0, (skip 0 rows) - which means start from the
    * first row.
    */
   private int rowOffset = 0;
@@ -193,10 +193,10 @@ public class Query {
   }
 
   /**
-   * Returns true iff there is a nontrivial selection, i.e. if not all columns
+   * Returns true if there is a non-trivial selection, i.e. if not all columns
    * should be selected.
    *
-   * @return True iff there is a nontrivial selection.
+   * @return True if there is a non-trivial selection.
    */
   public boolean hasSelection() {
     return (selection != null) && (!selection.isEmpty());
@@ -223,7 +223,7 @@ public class Query {
   /**
    * Returns whether or not this query has a filter defined.
    *
-   * @return true iff this query has a filter defined.
+   * @return true if this query has a filter defined.
    */
   public boolean hasFilter() {
     return (filter != null);
@@ -333,10 +333,10 @@ public class Query {
   }
 
   /**
-   * Returns true iff this query has a row limit set. A value of -1 means no
+   * Returns true if this query has a row limit set. A value of -1 means no
    * limit so in case of -1 this function returns true.
    *
-   * @return True iff this query has a row limit set.
+   * @return True if this query has a row limit set.
    */
   public boolean hasRowLimit() {
     return rowLimit > -1;
@@ -389,10 +389,10 @@ public class Query {
   }
 
   /**
-   * Returns true iff this query has a row offset set. A value of 0 means no
+   * Returns true if this query has a row offset set. A value of 0 means no
    * offset so in case of 0 this function returns true.
    *
-   * @return True iff this query has a row offset set.
+   * @return True if this query has a row offset set.
    */
   public boolean hasRowOffset() {
     return rowOffset > 0;
@@ -416,9 +416,9 @@ public class Query {
   }
 
   /**
-   * Returns true iff this query has user format options defined.
+   * Returns true if this query has user format options defined.
    *
-   * @return True iff this query has user format options defined.
+   * @return True if this query has user format options defined.
    */
   public boolean hasUserFormatOptions() {
     return (userFormatOptions != null)
@@ -443,9 +443,9 @@ public class Query {
   }
 
   /**
-   * Returns true iff this query has labels defined.
+   * Returns true if this query has labels defined.
    *
-   * @return True iff this query has labels defined.
+   * @return True if this query has labels defined.
    */
   public boolean hasLabels() {
     return (labels != null)
@@ -471,9 +471,9 @@ public class Query {
   }
 
   /**
-   * Returns true iff this query has any nondefault options set.
+   * Returns true if this query has any nondefault options set.
    *
-   * @return True iff this query has any nondefault options set.
+   * @return True if this query has any nondefault options set.
    */
   public boolean hasOptions() {
     return (options != null)
@@ -481,9 +481,9 @@ public class Query {
   }
 
   /**
-   * Returns true iff the query is empty, i.e. has no clauses or all the clauses are empty.
+   * Returns true if the query is empty, i.e. has no clauses or all the clauses are empty.
    *
-   * @return true iff the query is empty. 
+   * @return true if the query is empty. 
    */
   public boolean isEmpty() {
     return (!hasSort() && !hasSelection() && !hasFilter() && !hasGroup() && !hasPivot()
@@ -492,7 +492,7 @@ public class Query {
   }
 
   /**
-   * Copies all information from given query to this query.
+   * Copies all information from the given query to this query.
    *
    * @param query The query to copy from.
    */
@@ -510,21 +510,21 @@ public class Query {
   }
 
   /**
-   * Validates the query. Runs a sanity check on the query and verifies that there are no
-   * duplicates and that the query follows a basic set of rules that are required for executing
-   * it.
+   * Validates the query. Runs a sanity check on the query, verifies that there are no
+   * duplicates, and that the query follows a basic set of rules required for its execution.
+   * 
    * Specifically, verifies the following:
    * - There are no duplicate columns in the clauses.
    * - No column appears both as a selection and as an aggregation.
-   * - When aggregation is used, check that all selected columns are valid (a column is valid in
-   *   this sense if it is either grouped by, or is a scalar function column whose arguments are all
+   * - When aggregation is used, checks that all selected columns are valid (a column is valid if
+   *   it is either grouped-by, or is a scalar function column the arguments of which are all 
    *   valid columns).
-   * - No column is both grouped-by and aggregated in the select clause.
-   * - No column both appears as pivot and aggregated in the select clause.
+   * - No column is both grouped-by, and aggregated in, the select clause.
+   * - No column both appears as pivot, and aggregated in, the select clause.
    * - No grouping/pivoting is used when there is no aggregation in the select clause.
-   * - If aggregation is used in the select clause, no column is ordered-by that isn't in the select
-   *   clause.
-   * - No column appears both as a group by and a pivot.
+   * - If aggregation is used in the select clause, no column is ordered-by that is not in the
+   *   select clause.
+   * - No column appears both as a group-by and a pivot.
    * - If pivoting is used, the order by clause does not contain aggregation columns.
    * - The order-by clause does not contain aggregation columns that were not defined in the select
    *   clause.
@@ -577,7 +577,7 @@ public class Query {
     }
 
     // When aggregation is used, check that all selected columns are valid
-    // (a column is valid in this sense if it is either grouped by, or is a
+    // (a column is valid if it is either grouped-by, or is a
     // scalar function column whose arguments are all valid columns).
     if (!selectionAggregated.isEmpty()) {
       for (AbstractColumn col : selectionColumns) {
@@ -601,7 +601,7 @@ public class Query {
     // Cannot use grouping or pivoting when no aggregations are defined in the
     // selection.
     if (hasGroup() && selectionAggregated.isEmpty()) {
-      String messageToLogAndUser = "Cannot use GROUP when no "
+      String messageToLogAndUser = "Cannot use GROUP BY when no "
           + "aggregations are defined in SELECT.";
       log.error(messageToLogAndUser);
       throw new InvalidQueryException(messageToLogAndUser);
@@ -613,7 +613,7 @@ public class Query {
       throw new InvalidQueryException(messageToLogAndUser);
     }
 
-    // Cannot order by a column that isn't in the selection when aggregations
+    // Cannot order by a column that is not in the selection when aggregations
     // are defined.
     if (hasSort() && !selectionAggregated.isEmpty()) {
       for (AbstractColumn column : sort.getColumns()) {
@@ -643,7 +643,7 @@ public class Query {
       for (String id : groupColumnIds) {
         if (pivotColumnIds.contains(id)) {
           String messageToLogAndUser = "Column [" + id + "] cannot appear" +
-              " both in GROUP and in PIVOT.";
+              " both in GROUP BY and in PIVOT.";
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -804,7 +804,7 @@ public class Query {
 
   /**
    * Checks that the given column is valid, i.e., is in the given list of
-   * columns, or is a scalar function column that all its inner columns are
+   * columns, or is a scalar function column and all its inner columns are
    * valid (i.e., in the list).
    *
    * @param columns The given list of columns.
@@ -832,8 +832,8 @@ public class Query {
   }
 
   /**
-   * Checks that the selection of the given column is valid, given the group
-   * columns. A column is valid in this sense if it is either grouped by, or is
+   * Checks the selection of the given column is valid, given the group
+   * columns. A column is valid in this sense if it is either grouped-by, or is
    * a scalar function column whose arguments are all valid columns.
    *
    * @param groupColumns The group columns.
@@ -944,7 +944,7 @@ public class Query {
       }
     } else if (!selection.equals(other.selection)) {
       return false;
-    }
+    } 
     if (sort == null) {
       if (other.sort != null) {
         return false;
@@ -960,5 +960,88 @@ public class Query {
       return false;
     }
     return true;
+  }
+  
+  /**
+   * Creates a comma separated string of the query strings of the given columns.
+   * 
+   * @param l The list of columns.
+   * 
+   * @return A comma separated string of the query strings of the given columns.
+   */
+  /* package */ static String columnListToQueryString(List<AbstractColumn> l) {
+    StrBuilder builder = new StrBuilder();
+    List<String> stringList = Lists.newArrayList();
+    for (AbstractColumn col : l) {
+      stringList.add(col.toQueryString());
+    }
+    builder.appendWithSeparators(stringList, ", ");
+    return builder.toString();
+  }
+  
+  /**
+   * Creates a query-language representation of the given string, i.e., delimits it with either
+   * double-quotes (") or single-quotes ('). Throws a runtime exception if the given string
+   * contains both double-quotes and single-quotes and so cannot be expressed in the query
+   * language. 
+   * 
+   * @param s The string to create a query-language representation for.
+   * 
+   * @return The query-language representation of the given string.
+   */
+  /* package */ static String stringToQueryStringLiteral(String s) {
+    if (s.contains("\"")) {
+      if (s.contains("'")) {
+        throw new RuntimeException("Cannot represent string that contains both double-quotes (\") "
+            + " and single quotes (').");
+      } else {
+        return "'" + s + "'";
+      }
+    } else {
+      return "\"" + s + "\"";
+    }
+  }
+  
+  /**
+   * Returns a string that when fed to the query parser will yield an identical Query.
+   * Used mainly for debugging purposes.
+   * 
+   * @return The query string.
+   */
+  public String toQueryString() {
+    List<String> clauses = Lists.newArrayList();
+    if (hasSelection()) {               
+      clauses.add("SELECT " + selection.toQueryString());
+    }
+    if (hasFilter()) {
+      clauses.add("WHERE " + filter.toQueryString());      
+    }
+    if (hasGroup()) {
+      clauses.add("GROUP BY " + group.toQueryString());
+    }
+    if (hasPivot()) {
+      clauses.add("PIVOT " + pivot.toQueryString());
+    }
+    if (hasSort()) {
+      clauses.add("ORDER BY " + sort.toQueryString());
+    }
+    if (hasRowLimit()) {
+      clauses.add("LIMIT " + rowLimit);
+    }
+    if (hasRowOffset()) {
+      clauses.add("OFFSET " + rowOffset);
+    }
+    if (hasLabels()) {
+      clauses.add("LABEL " + labels.toQueryString());
+    }
+    if (hasUserFormatOptions()) {
+      clauses.add("FORMAT " + userFormatOptions.toQueryString());
+    }
+    if (hasOptions()) {
+      clauses.add("OPTIONS " + options.toQueryString());
+    }
+    StrBuilder result = new StrBuilder();
+    result.appendWithSeparators(clauses, " ");
+    return result.toString();
   }
 }

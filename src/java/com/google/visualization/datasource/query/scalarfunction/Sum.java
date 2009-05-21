@@ -66,8 +66,7 @@ public class Sum implements ScalarFunction {
    * The method does not validate the parameters, the user must check the
    * parameters before calling this method.
    *
-   * @param values A list with the values that the scalar function is performed
-   *     on them.
+   * @param values A list of values on which the scalar function is performed.
    *
    * @return Value with the sum of all given values, or number null value if one
    *     of the values is null.
@@ -98,7 +97,7 @@ public class Sum implements ScalarFunction {
    * Validates that all function parameters are of type NUMBER, and that there
    * are exactly 2 parameters. Throws a ScalarFunctionException otherwise.
    *
-   * @param types A list with parameters types.
+   * @param types A list of parameter types.
    *
    * @throws InvalidQueryException Thrown if the parameters are invalid.
    */
@@ -113,5 +112,12 @@ public class Sum implements ScalarFunction {
             + FUNCTION_NAME + " on values that are not numbers");
       }
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return "(" + argumentsQueryStrings.get(0) + " + " + argumentsQueryStrings.get(1) + ")"; 
   }
 }

@@ -23,9 +23,9 @@ import java.util.List;
 
 /**
  * Helper functions to assist the generated parser to deal with generic types. Unfortunately,
- * javacc doesn't handle it well, when there are generic types, like List<QueryFilter>, inside
- * the .jj file. Our solution is to use ArrayLists in the .jj file and then convert them
- * using this class. This class uses unsafe operations, but it is unavoidable.
+ * javacc is not good at handling generic types, such as List<QueryFilter>, inside
+ * the .jj file. One solution is to use ArrayLists in the .jj file and then convert them
+ * using this class. This class uses unsafe operations, which is unavoidable.
  *
  * @author Yonatan B.Y.
  */

@@ -34,7 +34,6 @@ import com.google.visualization.datasource.render.JsonRenderer;
 
 import com.ibm.icu.util.ULocale;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -146,6 +145,7 @@ public class DataSourceHelper {
         DataSourceHelper.setServletErrorResponse(e, req, resp);
       }
     } catch (RuntimeException e) {
+      log.error("A runtime exception has occured", e);
       DataSourceException dsException =
           new DataSourceException(ReasonType.INTERNAL_ERROR, e.getMessage());
       if (dsRequest != null) {
@@ -360,14 +360,13 @@ public class DataSourceHelper {
   public static Query parseQuery(String queryString) throws InvalidQueryException {
     QueryBuilder queryBuilder = QueryBuilder.getInstance();
     Query query = queryBuilder.parseQuery(queryString);
-    query.validate();
 
     return query;
   }
 
   /**
    * Applies the given <code>Query</code> on the given <code>DataTable</code> and returns the
-   * resulting <code>DataTable</code>.
+   * resulting <code>DataTable</code>. This method may change the given DataTable.
    *
    * @param query The query object.
    * @param dataTable The data table on which to apply the query.
@@ -444,7 +443,7 @@ public class DataSourceHelper {
       try {
         agg.validateColumn(dataTable);
       } catch (RuntimeException e) {
-        log.error(ExceptionUtils.getStackTrace(e));
+        log.error("A runtime exception has occured", e);
         throw new InvalidQueryException(e.getMessage());
       }
     }

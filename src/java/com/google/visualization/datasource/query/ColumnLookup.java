@@ -16,7 +16,7 @@ package com.google.visualization.datasource.query;
 
 /**
  * A column lookup.
- * Maps columns to their index in a columns container (e.g., DateTable).
+ * Maps columns to their index in a column container (e.g., DateTable).
  *
  * @author Liron L.
  */

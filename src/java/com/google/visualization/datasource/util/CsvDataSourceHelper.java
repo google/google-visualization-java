@@ -38,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class with static utility methods that are specific for building a
@@ -92,7 +93,10 @@ public class CsvDataSourceHelper {
     if (reader == null) {
       return dataTable;
     }
+
     CSVReader csvReader = new CSVReader(reader);
+    Map<ValueType, ValueFormatter> defaultFormatters =
+        ValueFormatter.createDefaultFormatters(locale);
 
     // Parse the CSV.
     String[] line;
@@ -167,7 +171,7 @@ public class CsvDataSourceHelper {
           String pattern = columnDescription.getPattern();
           ValueFormatter valueFormatter;
           if (pattern == null || pattern.equals("")) {
-            valueFormatter = ValueFormatter.getDefault(valueType, locale);
+            valueFormatter = defaultFormatters.get(valueType);
           } else {
             valueFormatter = ValueFormatter.createFromPattern(valueType, pattern, locale);
           }

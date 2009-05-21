@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 /**
  * A utility class for the QueryParser. The functions here are called from the .jj file.
  *
- * Note on errors: Since this class handles user generated query, all errors detected cause both
- * logging, and an exception thrown to the user.
+ * Note on errors: Since this class handles a user generated query, all errors detected cause both
+ * logging, and an exception that is thrown to the user.
  *
  * @author Yonatan B.Y.
  */
@@ -98,7 +98,7 @@ import org.apache.commons.logging.LogFactory;
    * 
    * @return The parsed time-of-day.
    * 
-   * @throws InvalidQueryException If the string is not parse-able as a time-of-day of format
+   * @throws InvalidQueryException If the string can not be parsed into a time-of-day of format
    *     HH:mm:ss[.SSS].
    */
   public static TimeOfDayValue stringToTimeOfDay(String s)
@@ -142,7 +142,7 @@ import org.apache.commons.logging.LogFactory;
    * 
    * @return The parsed date-time
    * 
-   * @throws InvalidQueryException If the string is not parse-able as a date-time of format
+   * @throws InvalidQueryException If the string can not be parsed into a date-time of format
    *     yyyy-MM-dd HH:mm:ss[.SSS].
    */
   public static DateTimeValue stringToDatetime(String s)
@@ -190,11 +190,11 @@ import org.apache.commons.logging.LogFactory;
 
 
   /**
-   * Strips a single character from the beginning of the string and a single character from its
-   * end. Throws a runtime exception if the string is of length < 2. Is used for stripping the
-   * quotes (whether single, double, or back-quotes) from, e.g., "foo", 'bar', and `baz`.
+   * Strips the first and last characters from a string.
+   * Throws a runtime exception if the string is less than 2 characters long. Used for stripping
+   * quotes (whether single, double, or back-quotes) from, for example, "foo", 'bar', and `baz`.
    *
-   * @param s The string to strip the quotes from.
+   * @param s The string from which to strip the quotes.
    *
    * @return The stripped string.
    */

@@ -66,8 +66,7 @@ public class Product implements ScalarFunction {
    * The method does not validate the parameters, the user must check the
    * parameters before calling this method.
    *
-   * @param values A list with the values that the scalar function is performed
-   *     on them.
+   * @param values A list of values on which the scalar function is performed.
    *
    * @return Value with the product of all given values, or number null value
    *     if one of the values is null.
@@ -113,5 +112,12 @@ public class Product implements ScalarFunction {
             + FUNCTION_NAME + " on values that are not numbers");
       }
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return "(" + argumentsQueryStrings.get(0) + " * " + argumentsQueryStrings.get(1) + ")"; 
   }
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * A time component extractor. This class encompasses all the unary scalar functions
  * that extract a time component from a date/datetime/timeofday value. e.g.,
- * year, month, second, etc.
+ * year, month, second.
  *
  * @author Liron L.
  */
@@ -78,7 +78,7 @@ public class TimeComponentExtractor implements ScalarFunction {
   }
 
   /**
-   * A map mapping a TimeComponent to a TimeComponentExtractor that extracts this TimeComponent.
+   * A mapping of a TimeComponent to a TimeComponentExtractor that extracts this TimeComponent.
    * This is used to keep a single instance of every type of extractor.
    */
   private static Map<TimeComponent, TimeComponentExtractor> timeComponentsPool;
@@ -97,7 +97,7 @@ public class TimeComponentExtractor implements ScalarFunction {
    }
 
   /**
-   * This static block Builds the timeComponentsPool that maps TimeComponents to
+   * This static block builds the timeComponentsPool that maps TimeComponents to
    * TimeComponentExtractors that extract this TimeComponent.
    */
   static {
@@ -137,8 +137,7 @@ public class TimeComponentExtractor implements ScalarFunction {
    * Date/DateTime/TimeOfDay value. The method does not validate the parameters,
    * the user must check the parameters before calling this method.
    *
-   * @param values A list with the values that the scalar function is performed
-   *     on them.
+   * @param values A list of the values on which the scalar function is performed.
    *
    * @return Value with the timeComponent value of the given value, or number
    *     null value if value is null.
@@ -209,7 +208,7 @@ public class TimeComponentExtractor implements ScalarFunction {
         } else { // DATETIME
           component = ((DateTimeValue) value).getMonth();
         }
-        component = component / 3 + 1; // We add 1 to get quarters 1-4 instead of 0-3. 
+        component = component / 3 + 1; // Add 1 to get 1-4 instead of 0-3. 
         break;
       case DAY_OF_WEEK:
         GregorianCalendar calendar =
@@ -241,12 +240,12 @@ public class TimeComponentExtractor implements ScalarFunction {
 
   /**
    * Validates that there is only one parameter given for the function, and
-   * that its type is DATE or DATETIME (if the timeComponent to extract is year,
-   * month or day), or that it's DATETIME or TIMEOFDAY (if the timeComponent is
-   * hour, minute, second or millisecond). Throws a ScalarFunctionException if
+   * that its type is DATE or DATETIME if the timeComponent to extract is year,
+   * month or day, or that it is DATETIME or TIMEOFDAY if the timeComponent is
+   * hour, minute, second or millisecond. Throws a ScalarFunctionException if
    * the parameters are invalid.
    *
-   * @param types A list with parameters types.
+   * @param types A list of parameter types.
    *
    * @throws InvalidQueryException Thrown if the parameters are invalid.
    */
@@ -294,5 +293,12 @@ public class TimeComponentExtractor implements ScalarFunction {
   @Override
   public int hashCode() {
     return (timeComponent == null) ? 0 : timeComponent.hashCode();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String toQueryString(List<String> argumentsQueryStrings) {
+    return getFunctionName() + "(" + argumentsQueryStrings.get(0) + ")"; 
   }
 }

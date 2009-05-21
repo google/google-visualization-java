@@ -37,13 +37,13 @@ import java.util.List;
 public class ScalarFunctionColumn extends AbstractColumn {
 
   /**
-   * A separator between function type and the columns it operates on. Used for creating the ID of
-   * the column.
+   * A separator between function type and the columns on which it operates. 
+   * Used for creating the column ID.
    */
   public static final String COLUMN_FUNCTION_TYPE_SEPARATOR = "_";
 
   /**
-   * When creating the ID of the column, this will separate between the columns
+   * When creating the ID of the column, this is used as a separator between the columns
    * on which the function is performed.
    */
   public static final String COLUMN_COLUMN_SEPARATOR = ",";
@@ -72,7 +72,7 @@ public class ScalarFunctionColumn extends AbstractColumn {
   }
 
   /**
-   * Returns the ID of the scalar function column, that is constructed from the
+   * Returns the ID of the scalar function column. THe ID is constructed from the
    * function's name and the IDs of the inner columns on which the function is
    * performed.
    *
@@ -90,7 +90,7 @@ public class ScalarFunctionColumn extends AbstractColumn {
 
   /**
    * Returns a list of the inner simple column IDs of the scalar function
-   * column (i.e., the columns that the function is performed on them).
+   * column (i.e., the columns on which the function is performed).
    *
    * @return A list of the inner simple column IDs.
    */
@@ -123,9 +123,9 @@ public class ScalarFunctionColumn extends AbstractColumn {
 
   /**
    * Returns the cell of the column in the given row. If the given column
-   * lookup contains this column, returns its cell in the given row using the
-   * lookup. If not, recursively gets the inner column values and uses them to
-   * evaluate the value and create a cell based on this value. The base of the
+   * lookup contains this column, returns the cell in the given row using the
+   * lookup. Otherwise, recursively gets the inner column values and uses them to
+   * evaluate the value and create a cell based on that value. The base of the
    * recursion is a simple column, aggregation column or another scalar function
    * column that exists in the column lookup (i.e., its value was already calculated).
    *
@@ -151,7 +151,7 @@ public class ScalarFunctionColumn extends AbstractColumn {
   }
 
   /**
-   * Returns a list of all simple columns. It includes simple columns that are
+   * Returns a list of all simple columns. This includes simple columns that are
    * inside scalar function columns (e.g, year(a1)), but does not include simple
    * columns that are inside aggregation columns (e.g., sum(a1)).
    *
@@ -185,9 +185,9 @@ public class ScalarFunctionColumn extends AbstractColumn {
   }
 
   /**
-   * Returns a list of all scalar function columns. In this case, returns
-   * itself and the other inner scalar function columns (if there are any).
-   * e.g., the column max(year(a1), year(a2)) will return the 3 colums:
+   * Returns a list of all scalar function columns. Returns itself and
+   * other inner scalar function columns (if there are any).
+   * e.g., the column max(year(a1), year(a2)) will return the 3 columns:
    * max(year(a1), year(a2)), year(a1), year(a2).
    *
    * @return A list of all scalar function columns.
@@ -202,10 +202,9 @@ public class ScalarFunctionColumn extends AbstractColumn {
   }
 
   /**
-   * Checks that the column is valid. in this case checks if the
-   * scalar function matches its arguments (inner columns) and all its inner
-   * columns are valid too. Throws a ColumnException if the scalar function has
-   * invalid arguments.
+   * Checks that the column is valid. Checks the scalar function matches 
+   * its arguments (inner columns) and all its inner columns are valid too. 
+   * Throws a ColumnException if the scalar function has invalid arguments.
    *
    * @param dataTable The table description.
    *
@@ -218,14 +217,13 @@ public class ScalarFunctionColumn extends AbstractColumn {
       column.validateColumn(dataTable);
       types.add(column.getValueType(dataTable));
     }
-    // Throws a InvalidColumnException when the function arguments types are
+    // Throws an InvalidColumnException when the function arguments types are
     // invalid.
     scalarFunction.validateParameters(types);
   }
 
   /**
-   * Returns the value type of the column. In this case returns the value type
-   * of the column after evaluating the scalar function.
+   * Returns the value type of the column after evaluating the scalar function.
    * e.g., the value type of year(date1) is NUMBER.
    *
    * @param dataTable The table description.
@@ -269,8 +267,11 @@ public class ScalarFunctionColumn extends AbstractColumn {
    */
   @Override
   public String toQueryString() {
-    throw new RuntimeException("toQueryString() not yet implemented for "
-        + "scalar function columns.");
+    List<String> columnQueryStrings = Lists.newArrayList();
+    for (AbstractColumn column : columns) {
+      columnQueryStrings.add(column.toQueryString());
+    }
+    return scalarFunction.toQueryString(columnQueryStrings);
   }
 
   /**

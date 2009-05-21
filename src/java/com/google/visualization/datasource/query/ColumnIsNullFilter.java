@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A filter that matches null values. Its isMatch function returns true iff
+ * A filter that matches null values. Its isMatch function returns true if
  * the value at the column is a null value (as defined by TableCell.isNull()).
  *
  * @author Yonatan B.Y.

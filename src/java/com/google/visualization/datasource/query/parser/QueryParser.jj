@@ -373,9 +373,9 @@ QueryFilter logicalExpression() throws InvalidQueryException :
     { return filter; }
 }
 
-// A possible or expression, i.e., an OR of several possible-and expressions.
+// A possible OR expression, i.e., an OR of several possible AND expressions.
 // It is "possible" because it can also match a single expression without any
-// ORs and then it's just returned as is.
+// ORs and then it is just returned as is.
 QueryFilter possibleOrExpression() throws InvalidQueryException :
 {
   ArrayList subFilters = new ArrayList();
@@ -396,9 +396,9 @@ QueryFilter possibleOrExpression() throws InvalidQueryException :
     }
 }
 
-// A possible and expression, i.e., an AND of several possible-not expressions.
+// A possible AND expression, i.e., an AND of several possible NOT expressions.
 // It is "possible" because it can also match a single expression without any
-// ANDs and then it's just returned as is.
+// ANDs and then it is just returned as is.
 QueryFilter possibleAndExpression() throws InvalidQueryException :
 {
   ArrayList subFilters = new ArrayList();
@@ -594,9 +594,9 @@ AbstractColumn arithmeticExpression() throws InvalidQueryException :
   { return column; }
 }
 
-// A possible sum or subtraction expression of possible-multiplication-or-division expressions.
+// A possible sum or subtraction expression of possible multiplication or division expressions.
 // It is "possible" because it can also match a single expression without any
-// multiplications and divisions, and then it's just returned as is.
+// multiplications and divisions, and then it is just returned as is.
 AbstractColumn possibleSummationOrSubtraction() throws
     InvalidQueryException :
 {

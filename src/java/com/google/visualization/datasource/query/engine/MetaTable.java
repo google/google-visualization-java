@@ -28,7 +28,7 @@ import java.util.Map;
 /* package */ class MetaTable {
 
   /**
-   * The data itself. A map that gives for each row a map that gives for each column the cell 
+   * The data. A map that gives, for each row and column, a map of the cell 
    * associated with that row and that column.
    */
   private Map<RowTitle, Map<ColumnTitle, TableCell>> data;
@@ -60,8 +60,8 @@ import java.util.Map;
   /**
    * Retrieves a cell from the MetaTable.
    *
-   * @param rowTitle The row to retrieve from.
-   * @param columnTitle The column to retrieve from.
+   * @param rowTitle The row from which to retrieve the cell.
+   * @param columnTitle The column from which to retrieve the cell.
    *
    * @return The cell that is at row rowTitle and column columnTitle or null
    *     if no such cell exists.
@@ -87,9 +87,9 @@ import java.util.Map;
   }
 
   /**
-   * Returns true iff this MetaTable is empty, i.e., contains no rows.
+   * Returns true if this MetaTable is empty, i.e., contains no rows.
    *
-   * @return True iff this MetaTable is empty.
+   * @return True if this MetaTable is empty.
    */
   public boolean isEmpty() {
     return data.isEmpty();

@@ -20,7 +20,7 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.query.AggregationType;
 
 /**
- * Aggregates a set of values. Adds each value at a time, to the aggregated set.
+ * Aggregates a set of values. Adds one value at a time to the aggregated set.
  * This allows getting the values of: minimum, maximum, sum, count and average for the aggregated
  * set. Each one of these values is available only where appropriate (for instance, you cannot
  * average on text values).
@@ -38,12 +38,12 @@ import com.google.visualization.datasource.query.AggregationType;
   private ValueType valueType;
 
   /**
-   * The maximum value met so far.
+   * The maximum value found so far.
    */
   private Value max;
 
   /**
-   * The minimum value met so far.
+   * The minimum value found so far.
    */
   private Value min;
 
@@ -112,7 +112,7 @@ import com.google.visualization.datasource.query.AggregationType;
    *
    * @return The average (or null if no non-null values were aggregated).
    *
-   * @throws UnsupportedOperationException In case the column type does not support average.
+   * @throws UnsupportedOperationException If the column type does not support average.
    */
   private Double getAverage() {
     if (valueType != ValueType.NUMBER) {
@@ -124,7 +124,7 @@ import com.google.visualization.datasource.query.AggregationType;
   /**
    * Returns a single value.
    * Note: The aggregation of a zero number of rows returns a null value for
-   * all aggregation types except of count. The type of Null value is numeric
+   * all aggregation types except from count. The type of Null value is numeric
    * for sum and average and identical to its column values for min and max.
    *
    * @param type The type of aggregation requested.
