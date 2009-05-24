@@ -54,25 +54,26 @@ public class ColumnColumnFilter extends ComparisonFilter {
     this.secondColumn = secondColumn;
   }
 
-   /**
-    * Implements isMatch from the QueryFilter interface. This implementation
-    * retrieves from the row, the data in the required columns, and compares
-    * the first against the second, using the operator given in the
-    * constructor.
-    *
-    * @param table The table containing this row.
-    * @param row The row to check.
-    *
-    * @return true if this row should be part of the result set, i.e., if the
-    *     operator is true when run on the values in the two columns; false
-    *     otherwise.
-    */
-   public boolean isMatch(DataTable table, TableRow row) {
-     DataTableColumnLookup lookup = new DataTableColumnLookup(table);
-     Value firstValue = firstColumn.getValue(lookup, row);
-     Value secondValue = secondColumn.getValue(lookup, row);
-     return isOperatorMatch(firstValue, secondValue);
-   }
+  /**
+   * Implements isMatch from the QueryFilter interface. This implementation
+   * retrieves from the row, the data in the required columns, and compares
+   * the first against the second, using the operator given in the
+   * constructor.
+   *
+   * @param table The table containing this row.
+   * @param row The row to check.
+   *
+   * @return true if this row should be part of the result set, i.e., if the
+   *     operator is true when run on the values in the two columns; false
+   *     otherwise.
+   */
+  @Override
+  public boolean isMatch(DataTable table, TableRow row) {
+    DataTableColumnLookup lookup = new DataTableColumnLookup(table);
+    Value firstValue = firstColumn.getValue(lookup, row);
+    Value secondValue = secondColumn.getValue(lookup, row);
+    return isOperatorMatch(firstValue, secondValue);
+  }
 
   /**
    * Returns all the simple column IDs this filter uses, in this case
@@ -80,9 +81,9 @@ public class ColumnColumnFilter extends ComparisonFilter {
    *
    * @return All the column IDs this filter uses.
    */
+  @Override
   public Set<String> getAllColumnIds() {
-    Set<String> columnIds =
-        Sets.newHashSet(firstColumn.getAllSimpleColumnIds());
+    Set<String> columnIds = Sets.newHashSet(firstColumn.getAllSimpleColumnIds());
     columnIds.addAll(secondColumn.getAllSimpleColumnIds());
     return columnIds;
   }
@@ -95,11 +96,23 @@ public class ColumnColumnFilter extends ComparisonFilter {
    *
    * @return A list of all scalarFunctionColumns this filter uses.
    */
+  @Override
   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
     List<ScalarFunctionColumn> scalarFunctionColumns = Lists.newArrayList();
     scalarFunctionColumns.addAll(firstColumn.getAllScalarFunctionColumns());
     scalarFunctionColumns.addAll(secondColumn.getAllScalarFunctionColumns());
     return scalarFunctionColumns;
+  }
+
+  /**
+   * {@InheritDoc}
+   */
+  @Override
+  protected List<AggregationColumn> getAggregationColumns() {
+    List<AggregationColumn> aggregationColumns = Lists.newArrayList();
+    aggregationColumns.addAll(firstColumn.getAllAggregationColumns());
+    aggregationColumns.addAll(secondColumn.getAllAggregationColumns());
+    return aggregationColumns;
   }
 
   /**
@@ -126,7 +139,7 @@ public class ColumnColumnFilter extends ComparisonFilter {
   @Override
   public String toQueryString() {
     return firstColumn.toQueryString() + " " + operator.toQueryString()
-        + " " + secondColumn.toQueryString();
+    + " " + secondColumn.toQueryString();
   }
 
   @Override

@@ -34,7 +34,7 @@ import java.util.Set;
  *
  * @author Yonatan B.Y.
  */
-public class CompoundFilter implements QueryFilter {
+public class CompoundFilter extends QueryFilter {
 
   /**
    * The available types of CompoundFilter. Currently supported are
@@ -85,6 +85,7 @@ public class CompoundFilter implements QueryFilter {
    *
    * @return true if this row should be part of the result set, false otherwise.
    */
+  @Override
   public boolean isMatch(DataTable table, TableRow row) {
     if (subFilters.isEmpty()) {
       throw new RuntimeException("Compound filter with empty subFilters "
@@ -106,6 +107,7 @@ public class CompoundFilter implements QueryFilter {
    *
    * @return All the columnIds this filter uses.
    */
+  @Override
   public Set<String> getAllColumnIds() {
     Set<String> result = Sets.newHashSet();
     for (QueryFilter subFilter : subFilters) {
@@ -117,14 +119,27 @@ public class CompoundFilter implements QueryFilter {
   /**
    * Returns a list of all scalarFunctionColumns this filter uses, in this case
    * the union of all the results of getScalarFunctionColumns() of all its
-   * subfilters.
+   * sub-filters.
    *
    * @return A list of all scalarFunctionColumns this filter uses.
    */
+  @Override
   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
     List<ScalarFunctionColumn> result = Lists.newArrayList();
     for (QueryFilter subFilter : subFilters) {
       result.addAll(subFilter.getScalarFunctionColumns());
+    }
+    return result;
+  }
+  
+  /**
+   * {@InheritDoc}
+   */
+  @Override
+  protected List<AggregationColumn> getAggregationColumns() {
+    List<AggregationColumn> result = Lists.newArrayList();
+    for (QueryFilter subFilter : subFilters) {
+      result.addAll(subFilter.getAggregationColumns());
     }
     return result;
   }

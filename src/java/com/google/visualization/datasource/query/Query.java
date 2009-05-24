@@ -562,6 +562,37 @@ public class Query {
     checkForDuplicates(groupColumnIds, "GROUP BY");
     checkForDuplicates(pivotColumnIds, "PIVOT");
 
+    // Cannot have aggregations in either group by, pivot, or where.
+    if (hasGroup()) {
+      for (AbstractColumn column : group.getColumns()) {
+        if (!column.getAllAggregationColumns().isEmpty()) {
+          String messageToLogAndUser = "Column [" + column.toQueryString() + "] connot be in"
+              + " GROUP BY because it has an aggregation.";
+          log.error(messageToLogAndUser);
+          throw new InvalidQueryException(messageToLogAndUser);
+        }
+      }
+    }
+    if (hasPivot()) {
+      for (AbstractColumn column : pivot.getColumns()) {
+        if (!column.getAllAggregationColumns().isEmpty()) {
+          String messageToLogAndUser = "Column [" + column.toQueryString() + "] connot be in"
+              + " PIVOT because it has an aggregation.";
+          log.error(messageToLogAndUser);
+          throw new InvalidQueryException(messageToLogAndUser);
+        }
+      }
+    }
+    if (hasFilter()) {
+      List<AggregationColumn> filterAggregations = filter.getAggregationColumns();
+      if (!filterAggregations.isEmpty()) {
+        String messageToLogAndUser = "Column [" + filterAggregations.get(0).toQueryString() + "] "
+        + " cannot appear in WHERE because it has an aggregation.";
+        log.error(messageToLogAndUser);
+        throw new InvalidQueryException(messageToLogAndUser);
+      }
+    }
+    
     // A column cannot appear both as an aggregation column and as a regular
     // column in the selection.
     for (SimpleColumn column1 : selectionSimple) {
@@ -617,7 +648,7 @@ public class Query {
     // are defined.
     if (hasSort() && !selectionAggregated.isEmpty()) {
       for (AbstractColumn column : sort.getColumns()) {
-        String messageToLogAndUser = "Column [" + column + "] which "
+        String messageToLogAndUser = "Column [" + column.toQueryString() + "] which "
             + "appears in ORDER BY, must be in SELECT as well, because SELECT"
             + " contains aggregated columns.";
         checkColumnInList(selection.getColumns(), column,
@@ -663,7 +694,7 @@ public class Query {
     // Cannot order by aggregation columns that weren't defined in the
     // selection.
     for (AggregationColumn column : sortAggregated) {
-        String messageToLogAndUser = "Aggregation [" + column + "] "
+        String messageToLogAndUser = "Aggregation [" + column.toQueryString() + "] "
             + "found in ORDER BY but was not found in SELECT";
         checkColumnInList(selectionAggregated, column, messageToLogAndUser);
     }
@@ -676,7 +707,7 @@ public class Query {
     if (hasSelection()) {
       for (AbstractColumn col : labelColumns) {
         if (!selectionColumns.contains(col)) {
-          String messageToLogAndUser = "Column [" + col.toString() + "] which"
+          String messageToLogAndUser = "Column [" + col.toQueryString() + "] which"
               + " is referenced in LABEL, is not part of SELECT clause.";
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
@@ -684,7 +715,7 @@ public class Query {
       }
       for (AbstractColumn col : formatColumns) {
         if (!selectionColumns.contains(col)) {
-          String messageToLogAndUser = "Column [" + col.toString() + "] which"
+          String messageToLogAndUser = "Column [" + col.toQueryString() + "] which"
               + " is referenced in FORMAT, is not part of SELECT clause.";
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);

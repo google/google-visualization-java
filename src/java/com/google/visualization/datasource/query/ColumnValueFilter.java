@@ -115,8 +115,17 @@ public class ColumnValueFilter extends ComparisonFilter {
    *
    * @return A list of all scalarFunctionColumns this filter uses.
    */
+  @Override
   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
     return column.getAllScalarFunctionColumns();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected List<AggregationColumn> getAggregationColumns() {
+    return column.getAllAggregationColumns();
   }
 
   /**

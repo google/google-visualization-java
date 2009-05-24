@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @author Yonatan B.Y.
  */
-public interface QueryFilter {
+public abstract class QueryFilter {
 
   /**
    * Checks if this row should be part of the result set.
@@ -38,21 +38,30 @@ public interface QueryFilter {
    *
    * @return true if this row should be part of the result set, false otherwise.
    */
-  boolean isMatch(DataTable table, TableRow row);
+  public abstract boolean isMatch(DataTable table, TableRow row);
 
   /**
    * Returns all the columnIds this filter uses.
    *
    * @return All the columnIds this filter uses.
    */
-  Set<String> getAllColumnIds();
+  public abstract Set<String> getAllColumnIds();
 
   /**
    * Returns a list of all scalarFunctionColumns this filter uses.
    *
    * @return A list of all scalarFunctionColumns this filter uses.
    */
-  List<ScalarFunctionColumn> getScalarFunctionColumns();
+  public abstract List<ScalarFunctionColumn> getScalarFunctionColumns();
+  
+  /**
+   * Returns a list of all aggregation columns this filter uses. This is kept for future use, as
+   * currently filters are not allowed to have aggregation columns. This is still used currently
+   * for validation purposes.
+   * 
+   * @return A list of all aggregation columns this filter uses.
+   */
+  protected abstract List<AggregationColumn> getAggregationColumns();
 
   /**
    * Returns a string that, when parsed by the query parser, should return an
@@ -60,5 +69,5 @@ public interface QueryFilter {
    *
    * @return A string form of this filter.
    */
-  String toQueryString();
+  public abstract String toQueryString();
 }

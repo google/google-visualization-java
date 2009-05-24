@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author Yonatan B.Y.
  */
-public class NegationFilter implements QueryFilter {
+public class NegationFilter extends QueryFilter {
 
   /**
    * The sub-filter of this negation filter.
@@ -51,6 +51,7 @@ public class NegationFilter implements QueryFilter {
    *
    * @return true if this row should be part of the result set, false otherwise.
    */
+  @Override
   public boolean isMatch(DataTable table, TableRow row) {
     return !subFilter.isMatch(table, row);
   }
@@ -61,19 +62,29 @@ public class NegationFilter implements QueryFilter {
    *
    * @return All the columnIds this filter uses.
    */
+  @Override
   public Set<String> getAllColumnIds() {
     return subFilter.getAllColumnIds();
   }
 
-   /**
-    * Returns a list of all scalarFunctionColumns this filter uses, in this case
-    * the scalarFunctionColumns its sub-filter uses.
-    *
-    * @return A list of all scalarFunctionColumns this filter uses.
-    */
-   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
-     return subFilter.getScalarFunctionColumns();
-   }
+  /**
+   * Returns a list of all scalarFunctionColumns this filter uses, in this case
+   * the scalarFunctionColumns its sub-filter uses.
+   *
+   * @return A list of all scalarFunctionColumns this filter uses.
+   */
+  @Override
+  public List<ScalarFunctionColumn> getScalarFunctionColumns() {
+    return subFilter.getScalarFunctionColumns();
+  }
+
+  /**
+   * {@InheritDoc}
+   */
+  @Override
+  protected List<AggregationColumn> getAggregationColumns() {
+    return subFilter.getAggregationColumns();
+  }
 
   /**
    * Returns the sub-filter associated with this NegationFilter.

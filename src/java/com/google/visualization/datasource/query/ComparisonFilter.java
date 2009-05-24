@@ -27,7 +27,7 @@ import java.util.regex.PatternSyntaxException;
  *
  * @author Yonatan B.Y.
  */
-public abstract class ComparisonFilter implements QueryFilter {
+public abstract class ComparisonFilter extends QueryFilter {
 
   /**
    * The set of possible comparison operators for such filters.

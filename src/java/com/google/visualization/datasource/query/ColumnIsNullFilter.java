@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * @author Yonatan B.Y.
  */
-public class ColumnIsNullFilter implements QueryFilter {
+public class ColumnIsNullFilter extends QueryFilter {
 
   /**
    * The ID of the column that should be null.
@@ -52,6 +52,9 @@ public class ColumnIsNullFilter implements QueryFilter {
     return column;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Set<String> getAllColumnIds() {
     return Sets.newHashSet(column.getAllSimpleColumnIds());
@@ -64,10 +67,22 @@ public class ColumnIsNullFilter implements QueryFilter {
    *
    * @return A list of all scalarFunctionColumns this filter uses.
    */
+  @Override
   public List<ScalarFunctionColumn> getScalarFunctionColumns() {
     return column.getAllScalarFunctionColumns();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected List<AggregationColumn> getAggregationColumns() {
+    return column.getAllAggregationColumns();
+  }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isMatch(DataTable table, TableRow row) {
     DataTableColumnLookup lookup = new DataTableColumnLookup(table);
