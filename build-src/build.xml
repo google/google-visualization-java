@@ -92,6 +92,7 @@
         <pathelement location="${build.class.main}"/>
         <pathelement location="${google-collect.jar}"/>
         <pathelement location="${icu4j.jar}"/>
+        <pathelement location="${jakarta-commons-lang.jar}"/>
         <pathelement location="${servlet-api.jar}"/>
       </classpath>
     </javac>
