@@ -148,6 +148,7 @@ TOKEN[IGNORE_CASE]:
   | <KW_STARTS:       "starts">
   | <KW_ENDS:         "ends">
   | <KW_MATCHES:      "matches">
+  | <KW_LIKE:         "like">
   | <KW_NOW:          "now">
   | <KW_DATEDIFF:     "dateDiff">
   | <KW_QUARTER:      "quarter">
@@ -498,7 +499,8 @@ ComparisonFilter.Operator comparisonOperator() :
   | (<KW_CONTAINS> { op = ComparisonFilter.Operator.CONTAINS; })
   | (<KW_STARTS> <KW_WITH> { op = ComparisonFilter.Operator.STARTS_WITH; })
   | (<KW_ENDS> <KW_WITH> { op = ComparisonFilter.Operator.ENDS_WITH; })
-  | (<KW_MATCHES> { op = ComparisonFilter.Operator.MATCHES; }) )
+  | (<KW_MATCHES> { op = ComparisonFilter.Operator.MATCHES; })
+  | (<KW_LIKE> { op = ComparisonFilter.Operator.LIKE; }) )
   { return op; }
 }
 
@@ -727,6 +729,7 @@ String nonReservedKeyword() :
   | t = <KW_STARTS>
   | t = <KW_ENDS>
   | t = <KW_MATCHES>
+  | t = <KW_LIKE>
   | t = <KW_NOW>
   | t = <KW_DATEDIFF>
   | t = <KW_QUARTER>

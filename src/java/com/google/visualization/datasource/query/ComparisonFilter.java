@@ -172,8 +172,8 @@ public abstract class ComparisonFilter extends QueryFilter {
         } catch (PatternSyntaxException ex) {
           return false; // a match against an illegal expression is false
         }
-        case LIKE:
-         return isLike(v1.toString(), v2.toString());
+      case LIKE:
+        return isLike(v1.toString(), v2.toString());
     }
     return false; // should never get here
   }
