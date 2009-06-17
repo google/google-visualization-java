@@ -103,7 +103,7 @@
     <junit printsummary="yes" haltonfailure="yes">
       <batchtest>
         <fileset dir="${build.class.test}">
-          <include name="**/**Test*.class/"/>
+          <include name="**/**Test.class/"/>
         </fileset>
       </batchtest>
       <classpath>
