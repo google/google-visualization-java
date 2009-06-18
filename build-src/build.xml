@@ -5,12 +5,12 @@
   <property name="build.class.main" location="${build}/class/main"/>
   <property name="build.class.test" location="${build}/class/test"/>
   <property name="build.class.example" location="${build}/class/example"/>
-  <property name="build.genfiles" location="${build}/genfiles"/>
+  <property name="build.genfiles" location="${build}/generated-sources"/>
 
   <!-- Paths for sources -->
   <property name="src" location="../src"/>
   <property name="datasource" value="java/com/google/visualization/datasource"/>
-  <property name="src.datasource" location="${src}/${datasource}"/>
+  <property name="src.datasource" location="${src}/main/${datasource}"/>
   <property name="src.test.datasource" location="${src}/test/${datasource}"/>
   <property name="src.example" location="../examples/src/${datasource}/example"/>
 
