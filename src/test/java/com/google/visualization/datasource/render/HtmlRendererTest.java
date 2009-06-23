@@ -168,7 +168,7 @@ public class HtmlRendererTest extends TestCase {
 
     row = new TableRow();
     row.addCell(new TableCell(""));
-    row.addCell(new TableCell(111));
+    row.addCell(NumberValue.getNullValue());
     row.addCell(new TableCell(true));
     rows.add(row);
 
@@ -207,7 +207,7 @@ public class HtmlRendererTest extends TestCase {
         + "</tr>\n"
         + "<tr style=\"background-color: #ffffff\">\n"
         + "<td>&nbsp;</td>"
-        + "<td align=\"right\">111</td>"
+        + "<td>&nbsp;</td>"
         + "<td align=\"center\">\u2714</td>\n"
         + "</tr>\n"
         + "<tr style=\"background-color: #f0f0f0\">\n"

@@ -134,7 +134,7 @@ public class HtmlRenderer {
 
         Element tdElement = document.createElement("td");
         if (cell.isNull()) {
-          tdElement.setTextContent("&nbsp;");
+          tdElement.setTextContent("\u00a0");
         } else {
           switch (valueType) {
             case NUMBER:
