@@ -266,7 +266,7 @@ public final class QueryEngine {
         newColumnDescriptions.add(new ColumnDescription(col.getId(),
             col.getValueType(table),
             ScalarFunctionColumnTitle.getColumnDescriptionLabel(table, col)));
-        newColumnIndices.put(col, currIndex);
+        newColumnIndices.put(col, currIndex++);
       } else {
         for (int colIndex : colIndices) {
           newColumnDescriptions.add(oldColumnDescriptions.get(colIndex));

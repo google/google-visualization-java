@@ -1445,4 +1445,13 @@ public class QueryEngineTest extends TestCase {
       assertTrue(res.getValue(i,0).toString().startsWith("Co"));
     }
   }
+  
+  public void testScalarFunctions() throws InvalidQueryException {
+    
+    Query q = QueryBuilder.getInstance().parseQuery("SELECT upper(name),salary format salary '$0'");
+    DataTable data = MockDataSource.getData(3);
+    DataTable res = QueryEngine.executeQuery(q, data, ULocale.US);
+    assertEquals("JOHN", res.getValue(0,0).toString());
+    assertEquals("$1000", res.getCell(0, 1).getFormattedValue());
+  }
 }
