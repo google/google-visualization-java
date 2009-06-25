@@ -14,19 +14,19 @@
 
 package com.google.visualization.datasource.query.engine;
 
+import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.TextValue;
+import com.google.visualization.datasource.datatable.value.Value;
+import com.google.visualization.datasource.datatable.value.ValueType;
+import com.google.visualization.datasource.query.AggregationType;
+import com.google.visualization.datasource.query.mocks.MockDataSource;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.TextValue;
-import com.google.visualization.datasource.datatable.value.NumberValue;
-import com.google.visualization.datasource.datatable.value.Value;
-import com.google.visualization.datasource.query.AggregationType;
-import com.google.visualization.datasource.query.mocks.MockDataSource;
 
 /**
  * Tests for AggregationTree.java.
@@ -86,16 +86,16 @@ public class AggregationTreeTest extends TestCase {
     try {
       tree.getNode(createPath(new String[] {"B", "3"}));
       fail();
-    }
-    catch (NoSuchElementException e) {
+    } catch (NoSuchElementException e) {
+      // Expected behavior.
 
     }
 
     try {
       tree.getNode(createPath(new String[] {"Bla", "3", "5"}));
       fail();
-    }
-    catch (NoSuchElementException e) {
+    } catch (NoSuchElementException e) {
+      // Expected behavior.
     }
   }
 
@@ -140,13 +140,12 @@ public class AggregationTreeTest extends TestCase {
     for (AggregationPath path : paths) {
       List<Value> curPath = path.getValues();
       if (curPath.size() == 3) {
-        assertEquals("Bla", ((TextValue)curPath.get(0)).toString());
-        assertEquals(3.0, ((NumberValue)curPath.get(1)).getValue());
-        assertEquals(5.0, ((NumberValue)curPath.get(2)).getValue());
-      }
-      else {
+        assertEquals("Bla", ((TextValue) curPath.get(0)).toString());
+        assertEquals(3.0, ((NumberValue) curPath.get(1)).getValue());
+        assertEquals(5.0, ((NumberValue) curPath.get(2)).getValue());
+      } else {
         assertEquals(1, curPath.size());
-        assertEquals("4", ((TextValue)curPath.get(0)).toString());
+        assertEquals("4", ((TextValue) curPath.get(0)).toString());
       }
     }
   }

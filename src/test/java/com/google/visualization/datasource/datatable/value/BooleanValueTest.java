@@ -56,8 +56,6 @@ public class BooleanValueTest extends TestCase {
       fail("Shouldn't get here - should have thrown a null value exception");
     } catch (NullValueException nve) {
       // This is the expected behavior.
-    } catch (Throwable th) {
-      fail("Shouldn't get here - should have thrown a null value exception");
     }
   }
 
@@ -83,11 +81,13 @@ public class BooleanValueTest extends TestCase {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
     try {
       val.compareTo(new NumberValue(123));
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
 
     // Test NULL_VALUE cases.

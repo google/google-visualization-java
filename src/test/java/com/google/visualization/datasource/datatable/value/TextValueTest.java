@@ -36,12 +36,12 @@ public class TextValueTest extends TestCase {
     TextValue abc = new TextValue("abc");
     TextValue def = new TextValue("def");
     TextValue empty = new TextValue("");
-    TextValue abc_copy = new TextValue("abc");
+    TextValue abcCopy = new TextValue("abc");
 
     assertTrue(abc.compareTo(def) < 0);
     assertTrue(def.compareTo(abc) > 0);
     assertTrue(abc.compareTo(abc) == 0);
-    assertTrue(abc.compareTo(abc_copy) == 0);
+    assertTrue(abc.compareTo(abcCopy) == 0);
     assertTrue(abc.compareTo(empty) > 0);
   }
 
@@ -102,11 +102,13 @@ public class TextValueTest extends TestCase {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
     try {
       val.compareTo(new NumberValue(123));
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
     // Test same object.
     assertTrue(0 == val.compareTo(val));

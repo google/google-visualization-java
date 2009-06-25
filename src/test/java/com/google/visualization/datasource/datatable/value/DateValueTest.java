@@ -42,17 +42,20 @@ public class DateValueTest extends TestCase {
       new DateValue(1990, 11, -1);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       DateValue value = new DateValue(1990, 11, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateValue(1990, 11, 32);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -65,11 +68,13 @@ public class DateValueTest extends TestCase {
       new DateValue(1990, 13, 1);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateValue(1990, -2, 1);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -79,18 +84,21 @@ public class DateValueTest extends TestCase {
       new DateValue(1990, 1, 30);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       // February doesn't have 29 days in 2007.
       new DateValue(2007, 1, 29);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       // September doesn't have 31 days.
       new DateValue(2007, 8, 31);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -103,6 +111,7 @@ public class DateValueTest extends TestCase {
       new DateValue(1990, 12, 10);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -199,7 +208,7 @@ public class DateValueTest extends TestCase {
       val.getYear();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -209,7 +218,7 @@ public class DateValueTest extends TestCase {
       val.getMonth();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -219,7 +228,7 @@ public class DateValueTest extends TestCase {
       val.getDayOfMonth();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -258,15 +267,17 @@ public class DateValueTest extends TestCase {
   public void testCompareNullCases() {
     // Test null cases and classCast issues.
     DateValue val = new DateValue(1000, 10, 10);
-    try{
+    try {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
-    try{
+    try {
       val.compareTo(new NumberValue(123));
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
 
     // Test NULL_VALUE cases.
@@ -288,11 +299,11 @@ public class DateValueTest extends TestCase {
   }
 
   public void testGetValueToFormat() {
-    DateValue val = new DateValue(500,2,30);
+    DateValue val = new DateValue(500, 2, 30);
     DateValue valNull = DateValue.getNullValue();
 
     assertNull(valNull.getObjectToFormat());
-    GregorianCalendar g = new GregorianCalendar(500,2,30);
+    GregorianCalendar g = new GregorianCalendar(500, 2, 30);
     g.setTimeZone(TimeZone.getTimeZone("GMT"));
     assertEquals(g, val.getObjectToFormat());
 

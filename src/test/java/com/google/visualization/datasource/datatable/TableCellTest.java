@@ -14,12 +14,13 @@
 
 package com.google.visualization.datasource.datatable;
 
-import com.ibm.icu.util.ULocale;
-import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.BooleanValue;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.TextValue;
+import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.TextValue;
+import com.google.visualization.datasource.datatable.value.ValueType;
+
+import com.ibm.icu.util.ULocale;
 
 import junit.framework.TestCase;
 
@@ -130,6 +131,7 @@ public class TableCellTest extends TestCase {
       assertEquals(-1, rootComparator.compare(cell1, numberCell2));
       fail();
     } catch (RuntimeException e) {
+      // Expected behavior.
     }
   }
   

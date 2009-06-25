@@ -14,8 +14,6 @@
 
 package com.google.visualization.datasource.query;
 
-import junit.framework.TestCase;
-
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.TableCell;
@@ -24,6 +22,8 @@ import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.TextValue;
 import com.google.visualization.datasource.datatable.value.ValueType;
+
+import junit.framework.TestCase;
 
 
 /**

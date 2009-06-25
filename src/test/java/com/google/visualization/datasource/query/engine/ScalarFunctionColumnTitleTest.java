@@ -18,14 +18,14 @@ import com.google.common.collect.Lists;
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.value.BooleanValue;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.Value;
 import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.Value;
+import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.query.AbstractColumn;
-import com.google.visualization.datasource.query.SimpleColumn;
-import com.google.visualization.datasource.query.ScalarFunctionColumn;
 import com.google.visualization.datasource.query.AggregationColumn;
 import com.google.visualization.datasource.query.AggregationType;
+import com.google.visualization.datasource.query.ScalarFunctionColumn;
+import com.google.visualization.datasource.query.SimpleColumn;
 import com.google.visualization.datasource.query.scalarfunction.TimeComponentExtractor;
 
 import junit.framework.TestCase;

@@ -44,6 +44,7 @@ public class ValueTest extends TestCase {
       val2.compareTo(valTime1);
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
   }
 

@@ -30,7 +30,7 @@ public class TimeOfDayValueTest extends TestCase {
   public void testNullValue() {
     TimeOfDayValue value = TimeOfDayValue.getNullValue();
     assertTrue(value.isNull());
-    value = new TimeOfDayValue(1,2,31);
+    value = new TimeOfDayValue(1, 2, 31);
     assertFalse(value.isNull());
   }
 
@@ -41,84 +41,98 @@ public class TimeOfDayValueTest extends TestCase {
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(-1, 0, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 70, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, -1, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, 65);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, -10);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(24, 0, 2, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(-1, 12, 0, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 70, 0, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, -1, 0, 500);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, 1500, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, -10, 0);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, 0, 1500);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       TimeOfDayValue value = new TimeOfDayValue(0, 0, 0, -10);
       // Shouldn't be here.
       assertFalse(true);
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -216,7 +230,7 @@ public class TimeOfDayValueTest extends TestCase {
       val.getHours();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -226,7 +240,7 @@ public class TimeOfDayValueTest extends TestCase {
       val.getMinutes();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -236,7 +250,7 @@ public class TimeOfDayValueTest extends TestCase {
       val.getSeconds();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -246,7 +260,7 @@ public class TimeOfDayValueTest extends TestCase {
       val.getMilliseconds();
       assertFalse(true);
     } catch (NullValueException e) {
-
+      // Expected behavior.
     }
   }
 
@@ -302,16 +316,18 @@ public class TimeOfDayValueTest extends TestCase {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
 
     try {
       val.compareTo(BooleanValue.FALSE);
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
 
     // Test NULL_VALUE cases.
-    TimeOfDayValue val1 = new TimeOfDayValue(12,23,1,1);
+    TimeOfDayValue val1 = new TimeOfDayValue(12, 23, 1, 1);
     TimeOfDayValue valNull = TimeOfDayValue.getNullValue();
 
     assertTrue(0 < val1.compareTo(valNull));
@@ -347,7 +363,7 @@ public class TimeOfDayValueTest extends TestCase {
   }
 
   public void testGetValueToFormat() {
-    TimeOfDayValue val1 = new TimeOfDayValue(12,23,12,111);
+    TimeOfDayValue val1 = new TimeOfDayValue(12, 23, 12, 111);
     TimeOfDayValue nullVal = TimeOfDayValue.getNullValue();
 
     assertNull(nullVal.getObjectToFormat());

@@ -14,12 +14,12 @@
 
 package com.google.visualization.datasource.query.engine;
 
+import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.Value;
+
 import junit.framework.TestCase;
 
 import java.util.List;
-
-import com.google.visualization.datasource.datatable.value.Value;
-import com.google.visualization.datasource.datatable.value.NumberValue;
 
 /**
  * Tests for the AggregationPath class
@@ -34,8 +34,8 @@ public class AggregationPathTest extends TestCase {
     path.add(new NumberValue(3));
     path.add(new NumberValue(4));
     List<Value> values = path.getValues();
-    assertEquals(3.0, ((NumberValue)values.get(0)).getValue());
-    assertEquals(4.0, ((NumberValue)values.get(1)).getValue());
+    assertEquals(3.0, ((NumberValue) values.get(0)).getValue());
+    assertEquals(4.0, ((NumberValue) values.get(1)).getValue());
   }
 
   public void testReverse() {
@@ -44,8 +44,8 @@ public class AggregationPathTest extends TestCase {
     path.add(new NumberValue(4));
     path.reverse();
     List<Value> values = path.getValues();
-    assertEquals(4.0, ((NumberValue)values.get(0)).getValue());
-    assertEquals(3.0, ((NumberValue)values.get(1)).getValue());
+    assertEquals(4.0, ((NumberValue) values.get(0)).getValue());
+    assertEquals(3.0, ((NumberValue) values.get(1)).getValue());
   }
 
   public void testEmptyPath() {

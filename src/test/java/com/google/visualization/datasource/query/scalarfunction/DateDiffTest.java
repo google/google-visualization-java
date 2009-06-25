@@ -16,11 +16,11 @@ package com.google.visualization.datasource.query.scalarfunction;
 
 import com.google.common.collect.Lists;
 import com.google.visualization.datasource.base.InvalidQueryException;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.DateTimeValue;
-import com.google.visualization.datasource.datatable.value.Value;
 import com.google.visualization.datasource.datatable.value.DateValue;
+import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.Value;
+import com.google.visualization.datasource.datatable.value.ValueType;
 
 import junit.framework.TestCase;
 

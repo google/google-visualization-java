@@ -14,13 +14,13 @@
 
 package com.google.visualization.datasource.query;
 
-import junit.framework.TestCase;
-
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.TableCell;
 import com.google.visualization.datasource.datatable.TableRow;
 import com.google.visualization.datasource.datatable.value.ValueType;
+
+import junit.framework.TestCase;
 
 
 /**

@@ -52,14 +52,14 @@ public class NumberValueTest extends TestCase {
     NumberValue c0 = new NumberValue(0);
     NumberValue c1 = new NumberValue(1);
     NumberValue c2 = new NumberValue(2);
-    NumberValue c1_copy = new NumberValue(1);
+    NumberValue c1Copy = new NumberValue(1);
     NumberValue m1 = new NumberValue(-0.1);
     NumberValue m2 = new NumberValue(-0.2);
 
     assertTrue(c0.compareTo(c1) < 0);
     assertTrue(c2.compareTo(c1) > 0);
     assertTrue(c2.compareTo(c2) == 0);
-    assertTrue(c1.compareTo(c1_copy) == 0);
+    assertTrue(c1.compareTo(c1Copy) == 0);
     assertTrue(m1.compareTo(m2) > 0);
     assertTrue(m2.compareTo(m1) < 0);
 
@@ -74,11 +74,13 @@ public class NumberValueTest extends TestCase {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
     try {
       val.compareTo(new DateValue(123, 1, 21));
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
 
     // Test NULL_VALUE cases.
@@ -138,6 +140,7 @@ public class NumberValueTest extends TestCase {
       nullV.getValue();
       fail();
     } catch (NullValueException e) {
+      // Expected behavior.
     }
   }
 

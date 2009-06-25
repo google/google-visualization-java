@@ -40,11 +40,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 13, 11, 23, 34, 56, 609);      
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, -1, 11, 23, 34, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -54,11 +56,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 10, 32, 23, 34, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, 10, 0, 23, 34, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -68,11 +72,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 8, 20, 24, 34, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, 8, 20, -1, 34, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -82,11 +88,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 7, 11, 14, 62, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, 7, 11, 14, -1, 56, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -96,11 +104,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 8, 11, 23, 34, 63, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, 8, 11, 23, 34, -10, 609);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -110,11 +120,13 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(2007, 7, 11, 23, 34, 56, 1000);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       new DateTimeValue(2007, 7, 11, 23, 34, 56, -1);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -125,18 +137,21 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(1990, 1, 30, 23, 11, 11, 100);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       // February doesn't have 29 days in 2007.
       new DateTimeValue(2007, 1, 29, 23, 10, 10, 200);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
     try {
       // September doesn't have 31 days.
       new DateTimeValue(2007, 8, 31, 11, 5, 5, 5);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -149,6 +164,7 @@ public class DateTimeValueTest extends TestCase {
       new DateTimeValue(1990, 12, 10, 1, 1, 1, 1);
       fail();
     } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 
@@ -245,16 +261,18 @@ public class DateTimeValueTest extends TestCase {
 
    public void testCompareNullCases() {
    // Test null cases and classCast issues.
-    DateTimeValue val = new DateTimeValue(10, 10, 10, 10, 10, 10 ,10);
+    DateTimeValue val = new DateTimeValue(10, 10, 10, 10, 10, 10 , 10);
     try {
       val.compareTo(null);
       fail();
     } catch (NullPointerException e) {
+      // Expected behavior.
     }
     try {
       val.compareTo(new NumberValue(123));
       fail();
     } catch (ClassCastException e) {
+      // Expected behavior.
     }
 
     // Test NULL_VALUE cases.
@@ -269,7 +287,7 @@ public class DateTimeValueTest extends TestCase {
     assertTrue(0 == val.compareTo(val));
 
     // Test that compareTo can cast.
-    Value val2 = new DateTimeValue(10, 10, 10, 15, 10, 10 ,10);
+    Value val2 = new DateTimeValue(10, 10, 10, 15, 10, 10 , 10);
     assertTrue(0 > val.compareTo(val2));
     Value val3 = DateTimeValue.getNullValue();
     assertTrue(0 < val.compareTo(val3));
@@ -283,6 +301,7 @@ public class DateTimeValueTest extends TestCase {
       val2.getCalendar();
       assertFalse(true);
     } catch (NullValueException e) {
+      // Expected behavior.
     }
   }
 
@@ -305,10 +324,10 @@ public class DateTimeValueTest extends TestCase {
   }
 
   public void testGetValueToFormat() {
-    DateTimeValue val = new DateTimeValue(2020,3,12,2,31,12,111);
+    DateTimeValue val = new DateTimeValue(2020, 3, 12, 2, 31, 12, 111);
     DateTimeValue valNull = DateTimeValue.getNullValue();
 
-    GregorianCalendar g = new GregorianCalendar(2020,3,12,2,31,12);
+    GregorianCalendar g = new GregorianCalendar(2020, 3, 12, 2, 31, 12);
     g.set(GregorianCalendar.MILLISECOND, 111);
     g.setTimeZone(TimeZone.getTimeZone("GMT"));
 

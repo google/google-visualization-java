@@ -15,13 +15,14 @@
 package com.google.visualization.datasource.query;
 
 import com.google.common.collect.Lists;
+import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.TableCell;
-import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.TableRow;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.BooleanValue;
+import com.google.visualization.datasource.datatable.value.NumberValue;
+import com.google.visualization.datasource.datatable.value.ValueType;
+
 import junit.framework.TestCase;
 
 import java.util.List;

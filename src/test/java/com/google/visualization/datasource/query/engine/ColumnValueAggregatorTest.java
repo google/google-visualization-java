@@ -14,12 +14,13 @@
 
 package com.google.visualization.datasource.query.engine;
 
-import junit.framework.TestCase;
+import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.TextValue;
 import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.query.AggregationType;
+
+import junit.framework.TestCase;
 
 /**
  * Tests for ColumnValueAggregator.java.
@@ -55,14 +56,14 @@ public class ColumnValueAggregatorTest extends TestCase {
     try {
       aggregator.getValue(AggregationType.SUM);
       fail();
-    }
-    catch (UnsupportedOperationException e) {
+    } catch (UnsupportedOperationException e) {
+      // Expected behavior.
     }
     try {
       aggregator.getValue(AggregationType.AVG);
       fail();
-    }
-    catch (UnsupportedOperationException e) {
+    } catch (UnsupportedOperationException e) {
+      // Expected behavior.
     }
 
     assertEquals(new NumberValue(2), aggregator.getValue(AggregationType.COUNT));

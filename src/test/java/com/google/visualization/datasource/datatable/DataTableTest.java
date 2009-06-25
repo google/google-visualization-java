@@ -18,14 +18,14 @@ import com.google.common.collect.Lists;
 import com.google.visualization.datasource.base.ReasonType;
 import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.base.Warning;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.DateValue;
-import com.google.visualization.datasource.datatable.value.TimeOfDayValue;
-import com.google.visualization.datasource.datatable.value.DateTimeValue;
-import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.BooleanValue;
+import com.google.visualization.datasource.datatable.value.DateTimeValue;
+import com.google.visualization.datasource.datatable.value.DateValue;
+import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.TextValue;
+import com.google.visualization.datasource.datatable.value.TimeOfDayValue;
 import com.google.visualization.datasource.datatable.value.Value;
+import com.google.visualization.datasource.datatable.value.ValueType;
 
 import com.ibm.icu.util.GregorianCalendar;
 import com.ibm.icu.util.TimeZone;
@@ -88,7 +88,7 @@ public class DataTableTest extends TestCase {
     row.addCell(new TableCell(false));
     row.addCell(new TableCell(new DateValue(2001, 10, 14)));
     row.addCell(new TableCell(new TimeOfDayValue(12, 11, 13, 14)));
-    row.addCell(new TableCell(new DateTimeValue(2000, 10 ,1, 1, 10, 23, 432)));
+    row.addCell(new TableCell(new DateTimeValue(2000, 10 , 1, 1, 10, 23, 432)));
     rows.add(row);
 
     row = new TableRow();
@@ -106,7 +106,7 @@ public class DataTableTest extends TestCase {
     row.addCell(new TableCell(true));
     row.addCell(new TableCell(new DateValue(2012, 2, 14)));
     row.addCell(new TableCell(new TimeOfDayValue(12, 11, 3, 14)));
-    row.addCell(new TableCell(new DateTimeValue(2000, 1 ,1, 1, 10, 31, 4)));
+    row.addCell(new TableCell(new DateTimeValue(2000, 1 , 1, 1, 10, 31, 4)));
     rows.add(row);
 
     row = new TableRow();

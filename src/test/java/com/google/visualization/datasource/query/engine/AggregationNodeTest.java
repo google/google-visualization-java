@@ -16,12 +16,13 @@ package com.google.visualization.datasource.query.engine;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.datatable.value.Value;
 import com.google.visualization.datasource.datatable.value.NumberValue;
 import com.google.visualization.datasource.datatable.value.TextValue;
+import com.google.visualization.datasource.datatable.value.Value;
+import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.query.AggregationType;
 import com.google.visualization.datasource.query.mocks.MockDataSource;
+
 import junit.framework.TestCase;
 
 import java.util.Map;
@@ -116,9 +117,8 @@ public class AggregationNodeTest extends TestCase {
     try {
       node.getChild(new NumberValue(4));
       fail();
-    }
-    catch (NoSuchElementException e) {
-
+    } catch (NoSuchElementException e) {
+      // Expected behavior.
     }
   }
 
@@ -131,8 +131,8 @@ public class AggregationNodeTest extends TestCase {
     try {
       addChildToNode(node, new NumberValue(3));
       fail();
-    }
-    catch(IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
+      // Expected behavior.
     }
   }
 

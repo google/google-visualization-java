@@ -105,11 +105,11 @@ public class QueryBuilderTest extends TestCase {
     query = QueryBuilder.getInstance().parseQuery("SELECT * WHERE c='\u311e'");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter cvf = (ColumnValueFilter)filter;
+    ColumnValueFilter cvf = (ColumnValueFilter) filter;
     assertEquals("c", cvf.getColumn().getId());
     Value v = cvf.getValue();
     assertEquals(ValueType.TEXT, v.getType());
-    assertEquals("\u311e", ((TextValue)cvf.getValue()).getValue());
+    assertEquals("\u311e", ((TextValue) cvf.getValue()).getValue());
   }
 
   public void testOrderBy() throws Exception {
@@ -197,16 +197,18 @@ public class QueryBuilderTest extends TestCase {
     try {
       QueryBuilder.getInstance().parseQuery("order by c1 asc desc");
       fail("Should have thrown an exception.");
-    } catch (InvalidQueryException e)
-    {}
+    } catch (InvalidQueryException e) {
+      // Expected behavior.
+    }
   }
 
   public void testBadQuery2() throws Exception {
     try {
       QueryBuilder.getInstance().parseQuery("select c1,,c2");
       fail("Should have thrown an exception.");
-    } catch (InvalidQueryException e)
-    {}
+    } catch (InvalidQueryException e) {
+      // Expected behavior.
+    }
   }
 
   // LIMIT and OFFSET tests
@@ -221,6 +223,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" limit 100.5 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -229,6 +232,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" limit gaga ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -237,6 +241,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" limit ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -250,6 +255,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset 100.5 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -258,6 +264,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset gaga ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -266,6 +273,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -280,6 +288,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset 10 limit 10 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -288,6 +297,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset -10 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -296,6 +306,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery(" offset -1 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -326,6 +337,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 label c1 gaga ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -334,6 +346,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 label c1 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -342,6 +355,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 label c1 'gaga', c1 'gugu' ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -351,6 +365,7 @@ public class QueryBuilderTest extends TestCase {
           "select c1, c2 label c1,c2 'label 1' c2 'label 2' ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -381,6 +396,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 Format c1 gaga ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -389,6 +405,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 Format c1 ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -398,6 +415,7 @@ public class QueryBuilderTest extends TestCase {
           "select c1,c2 Format c1 'Format 1' c2 'Format 2' ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -406,6 +424,7 @@ public class QueryBuilderTest extends TestCase {
       Query query = QueryBuilder.getInstance().parseQuery("select c1 format c1 'gaga', c1 'gugu' ");
       fail("Should have thrown an exception.");
     } catch (InvalidQueryException e) {
+      // Expected behavior.
     }
   }
 
@@ -415,7 +434,7 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE C1 > `c 2`");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnColumnFilter);
-    ColumnColumnFilter f = (ColumnColumnFilter)filter;
+    ColumnColumnFilter f = (ColumnColumnFilter) filter;
     assertEquals("C1", f.getFirstColumn().getId());
     assertEquals("c 2", f.getSecondColumn().getId());
     assertEquals(ComparisonFilter.Operator.GT, f.getOperator());
@@ -425,11 +444,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE c1 <= 7.55");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("c1", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof NumberValue);
-    NumberValue v = (NumberValue)val;
+    NumberValue v = (NumberValue) val;
     assertEquals(7.55, v.getValue());
     assertEquals(ComparisonFilter.Operator.LE, f.getOperator());
   }
@@ -438,11 +457,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE `selEct` = 'baba'");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("selEct", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof TextValue);
-    TextValue v = (TextValue)val;
+    TextValue v = (TextValue) val;
     assertEquals("baba", v.toString());
     assertEquals(ComparisonFilter.Operator.EQ, f.getOperator());
   }
@@ -451,11 +470,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE MiN <> \"baba\"");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("MiN", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof TextValue);
-    TextValue v = (TextValue)val;
+    TextValue v = (TextValue) val;
     assertEquals("baba", v.toString());
     assertEquals(ComparisonFilter.Operator.NE, f.getOperator());
   }
@@ -464,11 +483,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE c1 != trUe");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("c1", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof BooleanValue);
-    BooleanValue v = (BooleanValue)val;
+    BooleanValue v = (BooleanValue) val;
     assertEquals(true, v.getValue());
     assertEquals(ComparisonFilter.Operator.NE, f.getOperator());
   }
@@ -477,11 +496,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE `min` >= FalSe");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("min", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof BooleanValue);
-    BooleanValue v = (BooleanValue)val;
+    BooleanValue v = (BooleanValue) val;
     assertEquals(false, v.getValue());
     assertEquals(ComparisonFilter.Operator.GE, f.getOperator());
     assertEquals(false, f.isComparisonOrderReversed());
@@ -491,11 +510,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE -.3 < `ba ba`");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("ba ba", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof NumberValue);
-    NumberValue v = (NumberValue)val;
+    NumberValue v = (NumberValue) val;
     assertEquals(-0.3, v.getValue());
     assertEquals(ComparisonFilter.Operator.LT, f.getOperator());
     assertEquals(true, f.isComparisonOrderReversed());
@@ -505,11 +524,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE 'select' > count  ");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("count", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof TextValue);
-    TextValue v = (TextValue)val;
+    TextValue v = (TextValue) val;
     assertEquals("select", v.toString());
     assertEquals(ComparisonFilter.Operator.GT, f.getOperator());
     assertEquals(true, f.isComparisonOrderReversed());
@@ -519,11 +538,11 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE false <> `false`  ");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof ColumnValueFilter);
-    ColumnValueFilter f = (ColumnValueFilter)filter;
+    ColumnValueFilter f = (ColumnValueFilter) filter;
     assertEquals("false", f.getColumn().getId());
     Value val = f.getValue();
     assertTrue(val instanceof BooleanValue);
-    BooleanValue v = (BooleanValue)val;
+    BooleanValue v = (BooleanValue) val;
     assertEquals(false, v.getValue());
     assertEquals(ComparisonFilter.Operator.NE, f.getOperator());
     assertEquals(true, f.isComparisonOrderReversed());
@@ -533,10 +552,10 @@ public class QueryBuilderTest extends TestCase {
     Query query = QueryBuilder.getInstance().parseQuery(" WHERE not (c1 < c2) ");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof NegationFilter);
-    NegationFilter f = (NegationFilter)filter;
+    NegationFilter f = (NegationFilter) filter;
     QueryFilter subFilter = f.getSubFilter();
     assertTrue(subFilter instanceof ColumnColumnFilter);
-    ColumnColumnFilter ccf = (ColumnColumnFilter)subFilter;
+    ColumnColumnFilter ccf = (ColumnColumnFilter) subFilter;
     assertEquals("c1", ccf.getFirstColumn().getId());
     assertEquals("c2", ccf.getSecondColumn().getId());
     assertEquals(ComparisonFilter.Operator.LT, ccf.getOperator());
@@ -547,7 +566,7 @@ public class QueryBuilderTest extends TestCase {
         " WHERE c1 < c2 AND 4 >= `WHERE` aNd (`c1` < `c 3`)");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof CompoundFilter);
-    CompoundFilter f = (CompoundFilter)filter;
+    CompoundFilter f = (CompoundFilter) filter;
     assertEquals(CompoundFilter.LogicalOperator.AND, f.getOperator());
     List<QueryFilter> subFilters = f.getSubFilters();
     assertEquals(3, subFilters.size());
@@ -567,13 +586,13 @@ public class QueryBuilderTest extends TestCase {
             + "`RoleId` != 6 and `RoleId` != 8 and `RoleId` != 2");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof CompoundFilter);
-    CompoundFilter f = (CompoundFilter)filter;
+    CompoundFilter f = (CompoundFilter) filter;
     assertEquals(CompoundFilter.LogicalOperator.AND, f.getOperator());
     List<QueryFilter> subFilters = f.getSubFilters();
     ColumnValueFilter[] filters = new ColumnValueFilter[5];
     assertEquals(5, subFilters.size());
     for (int i = 0; i < 5; i++) {
-      filters[i] = (ColumnValueFilter)subFilters.get(i);
+      filters[i] = (ColumnValueFilter) subFilters.get(i);
     }
     assertEquals("Date", filters[0].getColumn().getId());
     assertEquals("RoleId", filters[1].getColumn().getId());
@@ -600,7 +619,7 @@ public class QueryBuilderTest extends TestCase {
         " WHERE (((c1 < c2)) OR 4 >= `WHERE` OR (`c1` < `c 3`))");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof CompoundFilter);
-    CompoundFilter f = (CompoundFilter)filter;
+    CompoundFilter f = (CompoundFilter) filter;
     assertEquals(CompoundFilter.LogicalOperator.OR, f.getOperator());
     List<QueryFilter> subFilters = f.getSubFilters();
     assertEquals(3, subFilters.size());
@@ -621,7 +640,7 @@ public class QueryBuilderTest extends TestCase {
             "((c9 < c10) AND ((c11 < c12) OR ((c13 < c14) AND (c15 < c16)))))");
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof CompoundFilter);
-    CompoundFilter f = (CompoundFilter)filter;
+    CompoundFilter f = (CompoundFilter) filter;
     assertEquals(CompoundFilter.LogicalOperator.AND, f.getOperator());
     List<QueryFilter> subFilters = f.getSubFilters();
     assertEquals(3, subFilters.size());
@@ -631,10 +650,10 @@ public class QueryBuilderTest extends TestCase {
 
     // f1: (!((c1 < c2) || (!(c3 < c4)))
     assertTrue(f1 instanceof NegationFilter);
-    NegationFilter nf = (NegationFilter)f1;
+    NegationFilter nf = (NegationFilter) f1;
     QueryFilter subFilter = nf.getSubFilter();
     assertTrue(subFilter instanceof CompoundFilter);
-    CompoundFilter cf = (CompoundFilter)subFilter;
+    CompoundFilter cf = (CompoundFilter) subFilter;
     assertEquals(CompoundFilter.LogicalOperator.OR, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
@@ -642,16 +661,16 @@ public class QueryBuilderTest extends TestCase {
     assertEquals(Sets.newHashSet("c1", "c2"),
         subFilters.get(0).getAllColumnIds());
     assertTrue(subFilters.get(1) instanceof NegationFilter);
-    nf = (NegationFilter)subFilters.get(1);
+    nf = (NegationFilter) subFilters.get(1);
     assertTrue(nf.getSubFilter() instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c3", "c4"),
         nf.getSubFilter().getAllColumnIds());
 
     //f2: (!((!(!(c5 < c6))) || (c7 < c8)))
     assertTrue(f2 instanceof NegationFilter);
-    nf = (NegationFilter)f2;
+    nf = (NegationFilter) f2;
     assertTrue(nf.getSubFilter() instanceof CompoundFilter);
-    cf = (CompoundFilter)nf.getSubFilter();
+    cf = (CompoundFilter) nf.getSubFilter();
     assertEquals(CompoundFilter.LogicalOperator.OR, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
@@ -659,16 +678,16 @@ public class QueryBuilderTest extends TestCase {
     assertTrue(subFilters.get(1) instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c7", "c8"),
         subFilters.get(1).getAllColumnIds());
-    nf = (NegationFilter)subFilters.get(0);
+    nf = (NegationFilter) subFilters.get(0);
     assertTrue(nf.getSubFilter() instanceof NegationFilter);
-    nf = (NegationFilter)nf.getSubFilter();
+    nf = (NegationFilter) nf.getSubFilter();
     assertTrue(nf.getSubFilter() instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c5", "c6"),
         nf.getSubFilter().getAllColumnIds());
 
     //f3: ((c9 < c10) && ((c11 < c12)||((c13 < c14)&&(c15 < c16))))
     assertTrue(f3 instanceof CompoundFilter);
-    cf = (CompoundFilter)f3;
+    cf = (CompoundFilter) f3;
     assertEquals(CompoundFilter.LogicalOperator.AND, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
@@ -676,7 +695,7 @@ public class QueryBuilderTest extends TestCase {
     assertEquals(Sets.newHashSet("c9", "c10"),
         subFilters.get(0).getAllColumnIds());
     assertTrue(subFilters.get(1) instanceof CompoundFilter);
-    cf = (CompoundFilter)subFilters.get(1);
+    cf = (CompoundFilter) subFilters.get(1);
     assertEquals(CompoundFilter.LogicalOperator.OR, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
@@ -684,7 +703,7 @@ public class QueryBuilderTest extends TestCase {
     assertEquals(Sets.newHashSet("c11", "c12"),
         subFilters.get(0).getAllColumnIds());
     assertTrue(subFilters.get(1) instanceof CompoundFilter);
-    cf = (CompoundFilter)subFilters.get(1);
+    cf = (CompoundFilter) subFilters.get(1);
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
     assertTrue(subFilters.get(0) instanceof ColumnColumnFilter);
@@ -707,7 +726,7 @@ public class QueryBuilderTest extends TestCase {
         //                 ((c13 < c14) and (c15 < c16))
     QueryFilter filter = query.getFilter();
     assertTrue(filter instanceof CompoundFilter);
-    CompoundFilter f = (CompoundFilter)filter;
+    CompoundFilter f = (CompoundFilter) filter;
     assertEquals(CompoundFilter.LogicalOperator.OR, f.getOperator());
     List<QueryFilter> subFilters = f.getSubFilters();
     assertEquals(4, subFilters.size());
@@ -718,29 +737,29 @@ public class QueryBuilderTest extends TestCase {
 
     // f1: (!(c1 < c2))
     assertTrue(f1 instanceof NegationFilter);
-    NegationFilter nf = (NegationFilter)f1;
+    NegationFilter nf = (NegationFilter) f1;
     QueryFilter subFilter = nf.getSubFilter();
     assertTrue(subFilter instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c1", "c2"), subFilter.getAllColumnIds());
 
     // f2: ((!(c3<c4)) && (!(c5<c6)))))
     assertTrue(f2 instanceof CompoundFilter);
-    CompoundFilter cf = (CompoundFilter)f2;
+    CompoundFilter cf = (CompoundFilter) f2;
     assertEquals(CompoundFilter.LogicalOperator.AND, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
     assertTrue(subFilters.get(0) instanceof NegationFilter);
     assertTrue(subFilters.get(1) instanceof NegationFilter);
-    QueryFilter tmp = ((NegationFilter)subFilters.get(0)).getSubFilter();
+    QueryFilter tmp = ((NegationFilter) subFilters.get(0)).getSubFilter();
     assertTrue(tmp instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c3", "c4"), tmp.getAllColumnIds());
-    tmp = ((NegationFilter)subFilters.get(1)).getSubFilter();
+    tmp = ((NegationFilter) subFilters.get(1)).getSubFilter();
     assertTrue(tmp instanceof ColumnColumnFilter);
     assertEquals(Sets.newHashSet("c5", "c6"), tmp.getAllColumnIds());
 
     //f3: ((c7 < c8) && (c9 < c10) && (c11 < c12))
     assertTrue(f3 instanceof CompoundFilter);
-    cf = (CompoundFilter)f3;
+    cf = (CompoundFilter) f3;
     assertEquals(CompoundFilter.LogicalOperator.AND, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(3, subFilters.size());
@@ -756,7 +775,7 @@ public class QueryBuilderTest extends TestCase {
 
     // f4: ((c13 < c14) and (c15 < c16))
     assertTrue(f4 instanceof CompoundFilter);
-    cf = (CompoundFilter)f4;
+    cf = (CompoundFilter) f4;
     assertEquals(CompoundFilter.LogicalOperator.AND, cf.getOperator());
     subFilters = cf.getSubFilters();
     assertEquals(2, subFilters.size());
@@ -1032,7 +1051,7 @@ public class QueryBuilderTest extends TestCase {
     QuerySelection selection = query.getSelection();
     assertEquals(selection.getColumns().size(), 1);
     assertEquals(
-        ((ScalarFunctionColumn)selection.getColumns().get(0)).getFunction(),
+        ((ScalarFunctionColumn) selection.getColumns().get(0)).getFunction(),
         Lower.getInstance());
 
     // Test upper function.
@@ -1040,7 +1059,7 @@ public class QueryBuilderTest extends TestCase {
     selection = query.getSelection();
     assertEquals(selection.getColumns().size(), 1);
     assertEquals(
-        ((ScalarFunctionColumn)selection.getColumns().get(0)).getFunction(),
+        ((ScalarFunctionColumn) selection.getColumns().get(0)).getFunction(),
         Upper.getInstance());
   }
 
