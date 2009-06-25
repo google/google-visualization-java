@@ -29,9 +29,11 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.query.AggregationColumn;
 import com.google.visualization.datasource.query.AggregationType;
 import com.google.visualization.datasource.query.ColumnColumnFilter;
+import com.google.visualization.datasource.query.ColumnIsNullFilter;
 import com.google.visualization.datasource.query.ColumnValueFilter;
 import com.google.visualization.datasource.query.ComparisonFilter;
 import com.google.visualization.datasource.query.CompoundFilter;
+import com.google.visualization.datasource.query.NegationFilter;
 import com.google.visualization.datasource.query.Query;
 import com.google.visualization.datasource.query.QueryFilter;
 import com.google.visualization.datasource.query.QueryGroup;
@@ -208,6 +210,22 @@ public class SqlDataSourceHelperTest extends TestCase {
     SqlDataSourceHelper.appendWhereClause(query, queryStringBuilder);
     assertEquals(queryStringBuilder.toString(), "WHERE ((ID=Salary)) ",
         queryStringBuilder.toString());
+    
+    // Check "is null".
+    ColumnIsNullFilter isNullFilter = new ColumnIsNullFilter(new SimpleColumn("ID"));
+    query.setFilter(isNullFilter);
+    queryStringBuilder = new StrBuilder();
+    SqlDataSourceHelper.appendWhereClause(query, queryStringBuilder);
+    assertEquals("WHERE (ID IS NULL) ", queryStringBuilder.toString());
+
+    // Check negation.
+    NegationFilter negationFilter =
+        new NegationFilter(new ColumnColumnFilter(new SimpleColumn("ID"),
+        new SimpleColumn("Salary"), ComparisonFilter.Operator.EQ));
+    query.setFilter(negationFilter);
+    queryStringBuilder = new StrBuilder();
+    SqlDataSourceHelper.appendWhereClause(query, queryStringBuilder);
+    assertEquals("WHERE (NOT (ID=Salary)) ", queryStringBuilder.toString());
   }
 
   /**

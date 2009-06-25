@@ -34,10 +34,12 @@ import com.google.visualization.datasource.query.AbstractColumn;
 import com.google.visualization.datasource.query.AggregationColumn;
 import com.google.visualization.datasource.query.AggregationType;
 import com.google.visualization.datasource.query.ColumnColumnFilter;
+import com.google.visualization.datasource.query.ColumnIsNullFilter;
 import com.google.visualization.datasource.query.ColumnSort;
 import com.google.visualization.datasource.query.ColumnValueFilter;
 import com.google.visualization.datasource.query.ComparisonFilter;
 import com.google.visualization.datasource.query.CompoundFilter;
+import com.google.visualization.datasource.query.NegationFilter;
 import com.google.visualization.datasource.query.Query;
 import com.google.visualization.datasource.query.QueryFilter;
 import com.google.visualization.datasource.query.QueryGroup;
@@ -284,11 +286,18 @@ public class SqlDataSourceHelper {
   private static StrBuilder buildWhereClauseRecursively(QueryFilter queryFilter) {
     StrBuilder whereClause = new StrBuilder();
 
-    // Base case of the recursion: the filter is a comparison filter.
-    if (queryFilter instanceof ComparisonFilter) {
+    // Base case of the recursion: the filter is not a compound filter.
+    if (queryFilter instanceof ColumnIsNullFilter) {
+      buildWhereClauseForIsNullFilter(whereClause, queryFilter);
+    } else if (queryFilter instanceof ComparisonFilter) {
       buildWhereCluaseForComparisonFilter(whereClause, queryFilter);
+    } else if (queryFilter instanceof NegationFilter) {
+      whereClause.append("(NOT ");
+      whereClause.append(buildWhereClauseRecursively(
+          ((NegationFilter) queryFilter).getSubFilter()));
+      whereClause.append(")");
     } else {
-      // The Recursion step: queryFilter is a CompoundFilter.
+      // queryFilter is a CompoundFilter.
       CompoundFilter compoundFilter = (CompoundFilter) queryFilter;
 
       int numberOfSubFilters = compoundFilter.getSubFilters().size();
@@ -313,6 +322,19 @@ public class SqlDataSourceHelper {
       }
     }
     return whereClause;
+  }
+
+  /**
+   * Builds a WHERE clause for is-null filter.
+   * 
+   * @param whereClause A string builder representing the WHERE clause of the SQL query.
+   * @param queryFilter The query filter.
+   */
+  private static void buildWhereClauseForIsNullFilter(StrBuilder whereClause,
+      QueryFilter queryFilter) {
+    ColumnIsNullFilter filter = (ColumnIsNullFilter) queryFilter;
+ 
+    whereClause.append("(").append(filter.getColumn().getId()).append(" IS NULL)");
   }
 
   /**
