@@ -102,6 +102,14 @@ public class CsvDataSourceHelper {
     String[] line;
     boolean firstLine = true;
     while ((line = csvReader.readNext()) != null) {
+      // Being lenient about newlines.
+      // The reader reads them as lines with
+      // one element ("").
+      if ((line.length == 1) && (line[0].equals(""))) {
+        // This is a new line.
+        continue;
+      }
+
       if ((columnDescriptions != null) && (line.length != columnDescriptions.size())) {
         throw new CsvDataSourceException(
             ReasonType.INTERNAL_ERROR,

@@ -67,7 +67,7 @@ public class CsvDataSourceHelperTest extends TestCase {
     assertEquals(0, dataTable.getNumberOfRows());
 
     // Null TableDescription.
-    reader = new StringReader("1,2,3\n4,5,6");
+    reader = new StringReader("\n\n\n1,2,3\n\n4,5,6\n\n\n\n\n");
     dataTable = CsvDataSourceHelper.read(reader, null, false);
     assertEquals(2, dataTable.getNumberOfRows());
     assertEquals(3, dataTable.getNumberOfColumns());
