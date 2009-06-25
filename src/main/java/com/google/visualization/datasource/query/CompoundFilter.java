@@ -188,16 +188,30 @@ public class CompoundFilter extends QueryFilter {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     CompoundFilter other = (CompoundFilter) obj;
     if (operator == null) {
-      if (other.operator != null) return false;
-    } else if (!operator.equals(other.operator)) return false;
+      if (other.operator != null) {
+        return false;
+      }
+    } else if (!operator.equals(other.operator)) {
+      return false;
+    }
     if (subFilters == null) {
-      if (other.subFilters != null) return false;
-    } else if (!subFilters.equals(other.subFilters)) return false;
+      if (other.subFilters != null) {
+        return false;
+      }
+    } else if (!subFilters.equals(other.subFilters)) {
+      return false;
+    }
     return true;
   }
 }

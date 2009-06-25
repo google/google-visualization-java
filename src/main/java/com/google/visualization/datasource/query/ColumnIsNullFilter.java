@@ -107,13 +107,23 @@ public class ColumnIsNullFilter extends QueryFilter {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     ColumnIsNullFilter other = (ColumnIsNullFilter) obj;
     if (column == null) {
-      if (other.column != null) return false;
-    } else if (!column.equals(other.column)) return false;
+      if (other.column != null) {
+        return false;
+      }
+    } else if (!column.equals(other.column)) {
+      return false;
+    }
     return true;
   }
 }

@@ -144,13 +144,23 @@ public class QueryFormat {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     QueryFormat other = (QueryFormat) obj;
     if (columnPatterns == null) {
-      if (other.columnPatterns != null) return false;
-    } else if (!columnPatterns.equals(other.columnPatterns)) return false;
+      if (other.columnPatterns != null) {
+        return false;
+      }
+    } else if (!columnPatterns.equals(other.columnPatterns)) {
+      return false;
+    }
     return true;
   }
   

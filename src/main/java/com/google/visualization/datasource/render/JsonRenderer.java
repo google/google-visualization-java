@@ -63,7 +63,7 @@ public class JsonRenderer {
   public static String getSignature(DataTable data) {
     String tableAsString = renderDataTable(data, true, false).toString();
     // Casting to long to avoid bug with abs(Integer.MIN_VALUE) being negative.
-    long longHashCode = (long) tableAsString.hashCode();
+    long longHashCode = tableAsString.hashCode();
     return String.valueOf(Math.abs(longHashCode));
   }
 

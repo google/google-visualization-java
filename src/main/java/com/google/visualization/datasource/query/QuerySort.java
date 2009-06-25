@@ -144,13 +144,23 @@ public class QuerySort {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     QuerySort other = (QuerySort) obj;
     if (sortColumns == null) {
-      if (other.sortColumns != null) return false;
-    } else if (!sortColumns.equals(other.sortColumns)) return false;
+      if (other.sortColumns != null) {
+        return false;
+      }
+    } else if (!sortColumns.equals(other.sortColumns)) {
+      return false;
+    }
     return true;
   }
   

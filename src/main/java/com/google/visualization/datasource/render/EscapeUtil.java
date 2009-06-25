@@ -41,7 +41,7 @@ public class EscapeUtil {
 
   /**
    * This method is used to escape strings embedded in the json response. The method is based on
-   * {@link http://svn.apache.org/viewvc/incubator/shindig/trunk/java/common/src/main/java/org/apache/shindig/common/JsonSerializer.java?view=markup appendString}.
+   * org.apache.shindig.common.JsonSerializer.appendString().
    * The method escapes the following in order to enable safe parsing of the json string:
    * 1) single and double quotes - ' and "
    * 2) backslash - /

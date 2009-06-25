@@ -138,13 +138,23 @@ public class QueryLabels {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     QueryLabels other = (QueryLabels) obj;
     if (columnLabels == null) {
-      if (other.columnLabels != null) return false;
-    } else if (!columnLabels.equals(other.columnLabels)) return false;
+      if (other.columnLabels != null) {
+        return false;
+      }
+    } else if (!columnLabels.equals(other.columnLabels)) {
+      return false;
+    }
     return true;
   }
   

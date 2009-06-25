@@ -98,12 +98,22 @@ public class QueryOptions {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     QueryOptions other = (QueryOptions) obj;
-    if (noFormat != other.noFormat) return false;
-    if (noValues != other.noValues) return false;
+    if (noFormat != other.noFormat) {
+      return false;
+    }
+    if (noValues != other.noValues) {
+      return false;
+    }
     return true;
   }
   

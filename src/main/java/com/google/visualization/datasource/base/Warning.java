@@ -35,7 +35,7 @@ public class Warning {
    * Constructs a new exception with a reason type and a message for the user.
    *
    * @param reasonType The reason type of the exception.
-   * @param message The message the user.
+   * @param messageToUser The message to the user.
    */
   public Warning(ReasonType reasonType, String messageToUser) {
     this.messageToUser = messageToUser;

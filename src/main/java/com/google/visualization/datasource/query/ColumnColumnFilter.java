@@ -153,16 +153,30 @@ public class ColumnColumnFilter extends ComparisonFilter {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     ColumnColumnFilter other = (ColumnColumnFilter) obj;
     if (firstColumn == null) {
-      if (other.firstColumn != null) return false;
-    } else if (!firstColumn.equals(other.firstColumn)) return false;
+      if (other.firstColumn != null) {
+        return false;
+      }
+    } else if (!firstColumn.equals(other.firstColumn)) {
+      return false;
+    }
     if (secondColumn == null) {
-      if (other.secondColumn != null) return false;
-    } else if (!secondColumn.equals(other.secondColumn)) return false;
+      if (other.secondColumn != null) {
+        return false;
+      }
+    } else if (!secondColumn.equals(other.secondColumn)) {
+      return false;
+    }
     return true;
   }
 }
