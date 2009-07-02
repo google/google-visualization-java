@@ -58,7 +58,7 @@
         <pathelement location="${servlet-api.jar}"/>
       </classpath>
     </javac>
-    <jar destfile="${build}/datasource.jar"
+    <jar destfile="${build}/visualization-datasource-1.0.1.jar"
          basedir="${build.class.main}"/>
   </target>
 
@@ -120,6 +120,12 @@
       </classpath>
       <formatter type="plain" usefile="false"/>
     </junit>
+  </target>
+
+  <!-- Jar the sources. -->
+  <target name="source-jar">
+    <jar destfile="${build}/visualization-datasource-1.0.1-src.jar"
+         basedir="${src}/main/java" />
   </target>
 
   <target name="build" depends="datasource"/>
