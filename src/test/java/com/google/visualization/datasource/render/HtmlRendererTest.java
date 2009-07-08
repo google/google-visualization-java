@@ -49,6 +49,9 @@ public class HtmlRendererTest extends TestCase {
   List<TableRow> rows;
 
   List<String> colIds;
+  
+  // Use platform dependent new-line to validate the results.
+  String nl = System.getProperty("line.separator");
 
   @Override
   public void setUp() throws Exception {
@@ -129,18 +132,18 @@ public class HtmlRendererTest extends TestCase {
   public void testEmptyDataTableToHtml() {
     DataTable dataTable = new DataTable();
     String expected =
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">\n"
-        + "<tr style=\"font-weight: bold; background-color: #aaa;\"></tr>\n"
-        + "</table>\n"
-        + "</body>\n"
-        + "</html>\n";
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">" + nl
+        + "<tr style=\"font-weight: bold; background-color: #aaa;\"></tr>" + nl
+        + "</table>" + nl
+        + "</body>" + nl
+        + "</html>" + nl;
 
     String actual = HtmlRenderer.renderDataTable(dataTable, ULocale.US).toString();
     assertEquals(expected, actual);
@@ -187,42 +190,42 @@ public class HtmlRendererTest extends TestCase {
     testData.addRows(rows);
 
     String expected =
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">\n"
-        + "<tr style=\"font-weight: bold; background-color: #aaa;\">\n"
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">" + nl
+        + "<tr style=\"font-weight: bold; background-color: #aaa;\">" + nl
         + "<td>col0</td>"
         + "<td>col1</td>"
-        + "<td>col2</td>\n"
-        + "</tr>\n"
-        + "<tr style=\"background-color: #f0f0f0\">\n"
+        + "<td>col2</td>" + nl
+        + "</tr>" + nl
+        + "<tr style=\"background-color: #f0f0f0\">" + nl
         + "<td>aaa</td>"
         + "<td align=\"right\">222</td>"
-        + "<td align=\"center\">\u2717</td>\n"
-        + "</tr>\n"
-        + "<tr style=\"background-color: #ffffff\">\n"
+        + "<td align=\"center\">\u2717</td>" + nl
+        + "</tr>" + nl
+        + "<tr style=\"background-color: #ffffff\">" + nl
         + "<td>&nbsp;</td>"
         + "<td>&nbsp;</td>"
-        + "<td align=\"center\">\u2714</td>\n"
-        + "</tr>\n"
-        + "<tr style=\"background-color: #f0f0f0\">\n"
+        + "<td align=\"center\">\u2714</td>" + nl
+        + "</tr>" + nl
+        + "<tr style=\"background-color: #f0f0f0\">" + nl
         + "<td>bb@@b</td>"
         + "<td align=\"right\">333</td>"
-        + "<td align=\"center\">\u2714</td>\n"
-        + "</tr>\n"
-        + "<tr style=\"background-color: #ffffff\">\n"
+        + "<td align=\"center\">\u2714</td>" + nl
+        + "</tr>" + nl
+        + "<tr style=\"background-color: #ffffff\">" + nl
         + "<td>ddd</td>"
         + "<td align=\"right\">222</td>"
-        + "<td align=\"center\">\u2717</td>\n"
-        + "</tr>\n"
-        + "</table>\n"
-        + "</body>\n"
-        + "</html>\n";
+        + "<td align=\"center\">\u2717</td>" + nl
+        + "</tr>" + nl
+        + "</table>" + nl
+        + "</body>" + nl
+        + "</html>" + nl;
 
     String actual = HtmlRenderer.renderDataTable(testData, ULocale.US).toString();
 
@@ -255,31 +258,35 @@ public class HtmlRendererTest extends TestCase {
     testData.addWarning(new Warning(ReasonType.NOT_SUPPORTED, "foobar"));
 
     String expected =
-      "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-      + "<html>\n"
-      + "<head>\n"
-      + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-      + "<title>Google Visualization</title>\n"
-      + "</head>\n"
-      + "<body>\n"
-      + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">\n"
-      + "<tr style=\"font-weight: bold; background-color: #aaa;\">\n"
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+      + "<html>" + nl
+      + "<head>" + nl
+      + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+      + "<title>Google Visualization</title>" + nl
+      + "</head>" + nl
+      + "<body>" + nl
+      + "<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\">" + nl
+      + "<tr style=\"font-weight: bold; background-color: #aaa;\">" + nl
       + "<td>col0</td>"
-      + "<td>col1</td>\n"
-      + "</tr>\n"
-      + "<tr style=\"background-color: #f0f0f0\">\n"
+      + "<td>col1</td>" + nl
+      + "</tr>" + nl
+      + "<tr style=\"background-color: #f0f0f0\">" + nl
       + "<td>aaa</td>"
-      + "<td align=\"right\">$222</td>\n"
-      + "</tr>\n"
-      + "<tr style=\"background-color: #ffffff\">\n"
+      + "<td align=\"right\">$222</td>" + nl
+      + "</tr>" + nl
+      + "<tr style=\"background-color: #ffffff\">" + nl
       + "<td>bbb</td>"
-      + "<td align=\"right\">333</td>\n"
-      + "</tr>\n"
-      + "</table>\n"
-      + "<br>\n<br>\n<div>Retrieved data was truncated. Sorry, data truncated</div>\n"
-      + "<br>\n<br>\n<div>Operation not supported. foobar</div>\n"
-      + "</body>\n"
-      + "</html>\n";
+      + "<td align=\"right\">333</td>" + nl
+      + "</tr>" + nl
+      + "</table>" + nl
+      + "<br>" + nl
+      + "<br>" + nl
+      + "<div>Retrieved data was truncated. Sorry, data truncated</div>" + nl
+      + "<br>" + nl
+      + "<br>" + nl
+      + "<div>Operation not supported. foobar</div>" + nl
+      + "</body>" + nl
+      + "</html>" + nl;
 
     String actual = HtmlRenderer.renderDataTable(testData, ULocale.US).toString();
 
@@ -290,37 +297,37 @@ public class HtmlRendererTest extends TestCase {
     ResponseStatus responseStatus = new ResponseStatus(
         StatusType.ERROR, ReasonType.INVALID_REQUEST, "but why? why? why?");
     assertEquals(
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<h3>Oops, an error occured.</h3>\n"
-        + "<div>Status: error</div>\n"
-        + "<div>Reason: Invalid request</div>\n"
-        + "<div>Description: but why? why? why?</div>\n"
-        + "</body>\n"
-        + "</html>\n",
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<h3>Oops, an error occured.</h3>" + nl
+        + "<div>Status: error</div>" + nl
+        + "<div>Reason: Invalid request</div>" + nl
+        + "<div>Description: but why? why? why?</div>" + nl
+        + "</body>" + nl
+        + "</html>" + nl,
         HtmlRenderer.renderHtmlError(responseStatus).toString());
 
     responseStatus = new ResponseStatus(
         StatusType.ERROR, ReasonType.NOT_SUPPORTED, "Cannot do dat!");
     assertEquals(
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<h3>Oops, an error occured.</h3>\n"
-        + "<div>Status: error</div>\n"
-        + "<div>Reason: Operation not supported</div>\n"
-        + "<div>Description: Cannot do dat!</div>\n"
-        + "</body>\n"
-        + "</html>\n",
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<h3>Oops, an error occured.</h3>" + nl
+        + "<div>Status: error</div>" + nl
+        + "<div>Reason: Operation not supported</div>" + nl
+        + "<div>Description: Cannot do dat!</div>" + nl
+        + "</body>" + nl
+        + "</html>" + nl,
         HtmlRenderer.renderHtmlError(responseStatus).toString());
   }
 
@@ -328,37 +335,37 @@ public class HtmlRendererTest extends TestCase {
     ResponseStatus responseStatus = new ResponseStatus(
         StatusType.ERROR, ReasonType.INVALID_REQUEST, "but why? why?");
     assertEquals(
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<h3>Oops, an error occured.</h3>\n"
-        + "<div>Status: error</div>\n"
-        + "<div>Reason: Invalid request</div>\n"
-        + "<div>Description: but why? why?</div>\n"
-        + "</body>\n"
-        + "</html>\n",
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<h3>Oops, an error occured.</h3>" + nl
+        + "<div>Status: error</div>" + nl
+        + "<div>Reason: Invalid request</div>" + nl
+        + "<div>Description: but why? why?</div>" + nl
+        + "</body>" + nl
+        + "</html>" + nl,
         HtmlRenderer.renderHtmlError(responseStatus).toString());
 
     responseStatus = new ResponseStatus(
         StatusType.ERROR, ReasonType.NOT_SUPPORTED, "Cannot do dat!");
     assertEquals(
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
-        + "<html>\n"
-        + "<head>\n"
-        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
-        + "<title>Google Visualization</title>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "<h3>Oops, an error occured.</h3>\n"
-        + "<div>Status: error</div>\n"
-        + "<div>Reason: Operation not supported</div>\n"
-        + "<div>Description: Cannot do dat!</div>\n"
-        + "</body>\n"
-        + "</html>\n",
+        "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">" + nl
+        + "<html>" + nl
+        + "<head>" + nl
+        + "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + nl
+        + "<title>Google Visualization</title>" + nl
+        + "</head>" + nl
+        + "<body>" + nl
+        + "<h3>Oops, an error occured.</h3>" + nl
+        + "<div>Status: error</div>" + nl
+        + "<div>Reason: Operation not supported</div>" + nl
+        + "<div>Description: Cannot do dat!</div>" + nl
+        + "</body>" + nl
+        + "</html>" + nl,
         HtmlRenderer.renderHtmlError(responseStatus).toString());
   }
 }
