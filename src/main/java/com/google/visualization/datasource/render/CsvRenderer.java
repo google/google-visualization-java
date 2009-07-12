@@ -89,17 +89,12 @@ public class CsvRenderer {
         if (cell.isNull()) {
           sb.append("null");
         } else {
-          switch (cell.getType()) {
-            case TEXT:
-              sb.append(escapeString(formattedValue));
-              break;
-            case NUMBER:
-            case BOOLEAN:
-            case TIMEOFDAY:
-            case DATE:
-            case DATETIME:
-              sb.append(formattedValue);
-              break;
+          ValueType type = cell.getType();
+          // Escape the string with quotes if its a text value or if it contains a comma.
+          if (formattedValue.indexOf(',') > -1 || type.equals(ValueType.TEXT)) {
+            sb.append(escapeString(formattedValue));
+          } else {
+            sb.append(formattedValue);
           }
         }
         sb.append(separator);

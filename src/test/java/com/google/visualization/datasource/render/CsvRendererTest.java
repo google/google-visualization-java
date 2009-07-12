@@ -23,6 +23,7 @@ import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.TableCell;
 import com.google.visualization.datasource.datatable.TableRow;
+import com.google.visualization.datasource.datatable.value.BooleanValue;
 import com.google.visualization.datasource.datatable.value.DateTimeValue;
 import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.NumberValue;
@@ -262,4 +263,50 @@ public class CsvRendererTest extends TestCase {
         "\"Error: Operation not supported. Cannot \"\"do\"\" that, too late!\"",
         CsvRenderer.renderCsvError(responseStatus));
   }
+  
+  public void testRenderDataTableWithCommas() throws DataSourceException {
+    testData = new DataTable();
+    ColumnDescription c0 = new ColumnDescription("A", ValueType.TEXT, "col0");
+    ColumnDescription c1 = new ColumnDescription("B", ValueType.NUMBER, "col1");
+    ColumnDescription c2 = new ColumnDescription("C", ValueType.BOOLEAN, "col2");
+    ColumnDescription c3 = new ColumnDescription("D", ValueType.DATE, "col3");
+    ColumnDescription c4 = new ColumnDescription("E", ValueType.DATETIME, "col4");
+    ColumnDescription c5 = new ColumnDescription("F", ValueType.TIMEOFDAY, "col5");
+
+    testData.addColumn(c0);
+    testData.addColumn(c1);
+    testData.addColumn(c2);
+    testData.addColumn(c3);
+    testData.addColumn(c4);
+    testData.addColumn(c5);
+
+    rows = Lists.newArrayList();
+
+    TableRow row = new TableRow();
+    row.addCell(new TableCell(new TextValue("aaa"), "aaa"));
+    row.addCell(new TableCell(new NumberValue(222), "222"));
+    row.addCell(new TableCell(BooleanValue.TRUE, "true"));
+    row.addCell(new TableCell(new DateValue(2009, 1, 1), "2009-02-01"));
+    row.addCell(new TableCell(new DateTimeValue(2009, 1, 1, 12, 14, 1, 0), "2009-02-01 12:14:01"));
+    row.addCell(new TableCell(new TimeOfDayValue(12, 14, 1), "12:14:01"));
+    rows.add(row);
+    
+    row = new TableRow();
+    row.addCell(new TableCell(new TextValue("aaa"), "a,aa"));
+    row.addCell(new TableCell(new NumberValue(222), "2,22"));
+    row.addCell(new TableCell(BooleanValue.TRUE, "true,"));
+    row.addCell(new TableCell(new DateValue(2009, 1, 1), "2009-02-01"));
+    row.addCell(new TableCell(new DateTimeValue(2009, 1, 1, 12, 14, 1, 0), "2009-02-01 12,14,01"));
+    row.addCell(new TableCell(new TimeOfDayValue(12, 14, 1), "12:14:01"));
+    rows.add(row);
+    
+    testData.addRows(rows);
+    
+    String expected = "\"col0\",\"col1\",\"col2\",\"col3\",\"col4\",\"col5\"\n";
+    expected += "\"aaa\",222,true,2009-02-01,2009-02-01 12:14:01,12:14:01\n";
+    expected += "\"a,aa\",\"2,22\",\"true,\",2009-02-01,\"2009-02-01 12,14,01\",12:14:01\n";
+    assertEquals(expected, CsvRenderer.renderDataTable(testData, null, null));
+ 
+  }
 }
+
