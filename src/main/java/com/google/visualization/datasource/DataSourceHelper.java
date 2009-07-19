@@ -227,6 +227,21 @@ public class DataSourceHelper {
   /**
    * Sets the HTTP servlet response in case of an error.
    *
+   * @param responseStatus The response status.
+   * @param dataSourceRequest The data source request.
+   * @param res The http servlet response.
+   *
+   * @throws IOException In case an error happened trying to write the response to the servlet.
+   */
+  public static void setServletErrorResponse(ResponseStatus responseStatus,
+      DataSourceRequest dataSourceRequest, HttpServletResponse res) throws IOException {
+    String responseMessage = generateErrorResponse(responseStatus, dataSourceRequest);
+    setServletResponse(responseMessage, dataSourceRequest, res);
+  }
+
+  /**
+   * Sets the HTTP servlet response in case of an error.
+   *
    * Gets an <code>HttpRequest</code> parameter instead of a <code>DataSourceRequest</code>.
    * Use this when <code>DataSourceRequest</code> is not available, for example, if
    * <code>DataSourceRequest</code> constructor failed.
