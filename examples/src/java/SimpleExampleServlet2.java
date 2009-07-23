@@ -11,12 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.visualization.datasource.example;
 
 import com.google.visualization.datasource.DataSourceHelper;
 import com.google.visualization.datasource.DataSourceRequest;
 import com.google.visualization.datasource.base.DataSourceException;
 import com.google.visualization.datasource.base.ReasonType;
+import com.google.visualization.datasource.base.ResponseStatus;
+import com.google.visualization.datasource.base.StatusType;
 import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
@@ -74,13 +75,12 @@ public class SimpleExampleServlet2 extends HttpServlet {
       DataSourceHelper.setServletResponse(newData, dsRequest, resp);
     } catch (RuntimeException rte) {
       log.error("A runtime exception has occured", rte);
-      DataSourceException dataSourceException = new DataSourceException(
-          ReasonType.INTERNAL_ERROR, rte.getMessage());
-      if (dsRequest != null) {
-        DataSourceHelper.setServletErrorResponse(dataSourceException, dsRequest, resp);
-      } else {
-        DataSourceHelper.setServletErrorResponse(dataSourceException, req, resp);
+      ResponseStatus status = new ResponseStatus(StatusType.ERROR, ReasonType.INTERNAL_ERROR,
+          rte.getMessage());
+      if (dsRequest == null) {
+        dsRequest = DataSourceRequest.getDefaultDataSourceRequest(req);
       }
+      DataSourceHelper.setServletErrorResponse(status, dsRequest, resp);
     } catch (DataSourceException e) {
       if (dsRequest != null) {
         DataSourceHelper.setServletErrorResponse(e, dsRequest, resp);

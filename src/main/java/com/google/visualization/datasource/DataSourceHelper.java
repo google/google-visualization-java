@@ -146,13 +146,12 @@ public class DataSourceHelper {
       }
     } catch (RuntimeException e) {
       log.error("A runtime exception has occured", e);
-      DataSourceException dsException =
-          new DataSourceException(ReasonType.INTERNAL_ERROR, e.getMessage());
-      if (dsRequest != null) {
-        DataSourceHelper.setServletErrorResponse(dsException, dsRequest, resp);
-      } else {
-        DataSourceHelper.setServletErrorResponse(dsException, req, resp);
+      ResponseStatus status = new ResponseStatus(StatusType.ERROR, ReasonType.INTERNAL_ERROR,
+          e.getMessage());
+      if (dsRequest == null) {
+        dsRequest = DataSourceRequest.getDefaultDataSourceRequest(req);
       }
+      DataSourceHelper.setServletErrorResponse(status, dsRequest, resp);
     }
   }
 

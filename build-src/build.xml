@@ -12,7 +12,7 @@
   <property name="datasource" value="java/com/google/visualization/datasource"/>
   <property name="src.datasource" location="${src}/main/${datasource}"/>
   <property name="src.test.datasource" location="${src}/test/${datasource}"/>
-  <property name="src.example" location="../examples/src/${datasource}/example"/>
+  <property name="src.example" location="../examples/src/java"/>
 
   <!-- User properties -->
   <property file="build.properties"/>

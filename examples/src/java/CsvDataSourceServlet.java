@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.google.visualization.datasource.example;
 
 import com.google.visualization.datasource.DataSourceHelper;
 import com.google.visualization.datasource.DataSourceServlet;
@@ -84,6 +83,10 @@ public class CsvDataSourceServlet extends DataSourceServlet {
     DataTable dataTable = null;
     ULocale requestLocale = DataSourceHelper.getLocaleFromRequest(request);
     try {
+      // Note: We assumes that all the columns in the CSV file are TEXT columns. In cases where the
+      // column types are known in advance, this behavior can be overridden by passing a list of
+      // ColumnDescription objects specifying the column types. See CsvDataSourceHelper.read() for
+      // more details.
       dataTable = CsvDataSourceHelper.read(reader, null, true, requestLocale);
     } catch (IOException e) {
       log.error("Couldn't read from url: " + url, e);
