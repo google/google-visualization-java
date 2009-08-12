@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  * empty implementation of method getCapabilities(). This servlet therefore ignores the
  * user query (as passed in the 'tq' url parameter), leaving the
  * query engine to apply it to the data table created here.
- * 
+ *
  * @author Nimrod T.
  */
 public class CsvDataSourceServlet extends DataSourceServlet {
@@ -52,10 +52,10 @@ public class CsvDataSourceServlet extends DataSourceServlet {
   private static final Log log = LogFactory.getLog(CsvDataSourceServlet.class.getName());
 
   /**
-   * The name of the parameter that contains the url of the csv to load.
+   * The name of the parameter that contains the url of the CSV to load.
    */
   private static final String URL_PARAM_NAME = "url";
-  
+
   /**
    * Generates the data table.
    * This servlet assumes a special parameter that contains the CSV URL from which to load
@@ -69,7 +69,7 @@ public class CsvDataSourceServlet extends DataSourceServlet {
       log.error("url parameter not provided.");
       throw new DataSourceException(ReasonType.INVALID_REQUEST, "url parameter not provided");
     }
-    
+
     Reader reader;
     try {
       reader = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
@@ -83,7 +83,7 @@ public class CsvDataSourceServlet extends DataSourceServlet {
     DataTable dataTable = null;
     ULocale requestLocale = DataSourceHelper.getLocaleFromRequest(request);
     try {
-      // Note: We assumes that all the columns in the CSV file are TEXT columns. In cases where the
+      // Note: We assume that all the columns in the CSV file are text columns. In cases where the
       // column types are known in advance, this behavior can be overridden by passing a list of
       // ColumnDescription objects specifying the column types. See CsvDataSourceHelper.read() for
       // more details.

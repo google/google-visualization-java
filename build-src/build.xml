@@ -16,7 +16,7 @@
 
   <!-- User properties -->
   <property file="build.properties"/>
-  
+
   <!-- Clean build output -->
   <target name="clean">
     <delete dir="${build}"/>
@@ -58,7 +58,7 @@
         <pathelement location="${servlet-api.jar}"/>
       </classpath>
     </javac>
-    <jar destfile="${build}/visualization-datasource-1.0.1.jar"
+    <jar destfile="${build}/visualization-datasource-1.0.2.jar"
          basedir="${build.class.main}"/>
   </target>
 
@@ -79,7 +79,7 @@
         <pathelement location="${servlet-api.jar}"/>
       </classpath>
     </javac>
-    <jar destfile="${build}/datasource-examples.jar"
+    <jar destfile="${build}/visualization-datasource-examples.jar"
          basedir="${build.class.example}"/>
   </target>
 
@@ -124,12 +124,12 @@
 
   <!-- Jar the sources. -->
   <target name="source-jar">
-    <jar destfile="${build}/visualization-datasource-1.0.1-src.jar"
+    <jar destfile="${build}/visualization-datasource-1.0.2-src.jar"
          basedir="${src}/main/java" />
   </target>
 
   <target name="build" depends="datasource"/>
 
   <target name="all" depends="clean,build,example,test"/>
-  
+
 </project>

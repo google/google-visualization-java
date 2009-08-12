@@ -110,19 +110,19 @@
     <servlet>
       <servlet-name>My Servlet</servlet-name>
       <description>My servlet description.</description>
-      <servlet-class>com.google.visualization.datasource.example.SimpleExampleServlet</servlet-class>
+      <servlet-class>SimpleExampleServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>CSV Example</servlet-name>
       <description>CsvDataSourceServlet</description>
-      <servlet-class>com.google.visualization.datasource.example.CsvDataSourceServlet</servlet-class>
+      <servlet-class>CsvDataSourceServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>AdvancedExampleServlet2</servlet-name>
       <description>AdvancedExampleServlet2</description>
-      <servlet-class>com.google.visualization.datasource.example.AdvancedExampleServlet2</servlet-class>
+      <servlet-class>AdvancedExampleServlet2</servlet-class>
     </servlet>
 
     <!-- Define mappings that are used by the servlet container to

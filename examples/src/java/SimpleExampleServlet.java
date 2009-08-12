@@ -33,7 +33,7 @@ public class SimpleExampleServlet extends DataSourceServlet {
 
   @Override
   public DataTable generateDataTable(Query query, HttpServletRequest request) {
-    // Create a data-table,
+    // Create a data table.
     DataTable data = new DataTable();
     ArrayList<ColumnDescription> cd = new ArrayList<ColumnDescription>();
     cd.add(new ColumnDescription("name", ValueType.TEXT, "Animal name"));
@@ -43,7 +43,7 @@ public class SimpleExampleServlet extends DataSourceServlet {
 
     data.addColumns(cd);
 
-    // Fill the data-table.
+    // Fill the data table.
     try {
       data.addRowFromValues("Aye-aye", "http://en.wikipedia.org/wiki/Aye-aye", 100, true);
       data.addRowFromValues("Sloth", "http://en.wikipedia.org/wiki/Sloth", 300, true);

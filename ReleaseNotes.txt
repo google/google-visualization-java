@@ -1,0 +1,12 @@
+Version 1.0.2
+-----------------------------------------
+- Added maven build (pom.xml).
+- Starting with this version this library is available in a maven web repository.
+- Added tests.
+- Added support for LIKE operator in the query language.
+- Fixed bug: Export to HTML double escapes &nbsp (Issue 2).
+- Fixed bug: Format and label clauses do not work for queries that contain
+  scalar functions (Issue 3).
+- Fixed bug: "is null" in the where clause of a query does not work for SQL
+  datasources (Issue 4).
+- Fixed bug: CSV output does not escape non text values with commas (Issue 5).
