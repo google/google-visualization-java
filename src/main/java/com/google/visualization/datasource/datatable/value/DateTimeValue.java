@@ -123,7 +123,8 @@ public class DateTimeValue extends Value {
    */
   public DateTimeValue(GregorianCalendar calendar) {
     if (!calendar.getTimeZone().equals(TimeZone.getTimeZone("GMT"))) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(
+          "Can't create DateTimeValue from GregorianCalendar that is not GMT.");
     }
     this.calendar = (GregorianCalendar) calendar.clone();
   }

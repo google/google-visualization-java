@@ -124,7 +124,8 @@ public class DateValue extends Value {
    */
   public DateValue(GregorianCalendar calendar) {
     if (!calendar.getTimeZone().equals(TimeZone.getTimeZone("GMT"))) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(
+           "Can't create DateValue from GregorianCalendar that is not GMT.");
     }
     this.year = calendar.get(GregorianCalendar.YEAR);
     this.month = calendar.get(GregorianCalendar.MONTH);

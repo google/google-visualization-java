@@ -143,7 +143,8 @@ public class TimeOfDayValue extends Value {
    */
   public TimeOfDayValue(GregorianCalendar calendar) {
     if (!calendar.getTimeZone().equals(TimeZone.getTimeZone("GMT"))) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(
+          "Can't create TimeOfDayValue from GregorianCalendar that is not GMT.");
     }
     this.hours = calendar.get(GregorianCalendar.HOUR_OF_DAY);
     this.minutes = calendar.get(GregorianCalendar.MINUTE);
