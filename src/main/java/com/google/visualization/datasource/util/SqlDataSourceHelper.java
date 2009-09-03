@@ -706,7 +706,7 @@ public class SqlDataSourceHelper {
           // Use the 'set' method with those parameters, and not the 'setTime'
           // method with the date parameter, since the Date object contains the
           // current time zone and it's impossible to change it to 'GMT'.
-          gc.setTime(date);
+          gc.set(date.getYear() + 1900, date.getMonth(), date.getDate());
           value = new DateValue(gc);
         }
         break;
@@ -716,7 +716,14 @@ public class SqlDataSourceHelper {
         if (timestamp != null) {
           GregorianCalendar gc =
               new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-          gc.setTime(timestamp);
+          // Set the year, month, date, hours, minutes and seconds in the
+          // gregorian calendar. Use the 'set' method with those parameters,
+          // and not the 'setTime' method with the timestamp parameter, since
+          // the Timestamp object contains the current time zone and it's
+          // impossible to change it to 'GMT'.
+          gc.set(timestamp.getYear() + 1900, timestamp.getMonth(),
+                 timestamp.getDate(), timestamp.getHours(), timestamp.getMinutes(),
+                 timestamp.getSeconds());
           // Set the milliseconds explicitly, as they are not saved in the
           // underlying date.
           gc.set(Calendar.MILLISECOND, timestamp.getNanos() / 1000000);
@@ -729,7 +736,18 @@ public class SqlDataSourceHelper {
         if (time != null) {
           GregorianCalendar gc =
               new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-          gc.setTime(time);
+          // Set the hours, minutes and seconds of the time in the gregorian
+          // calendar. Set the year, month and date to be January 1 1970 like
+          // in the Time object.
+          // Use the 'set' method with those parameters,
+          // and not the 'setTime' method with the time parameter, since
+          // the Time object contains the current time zone and it's
+          // impossible to change it to 'GMT'.
+          gc.set(1970, Calendar.JANUARY, 1, time.getHours(), time.getMinutes(),
+                 time.getSeconds());
+          // Set the milliseconds explicitly, otherwise the milliseconds from
+          // the time the gc was initialized are used.
+          gc.set(GregorianCalendar.MILLISECOND, 0);
           value = new TimeOfDayValue(gc);
         }
         break;
