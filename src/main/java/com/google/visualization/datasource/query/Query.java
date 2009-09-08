@@ -17,6 +17,9 @@ package com.google.visualization.datasource.query;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.visualization.datasource.base.InvalidQueryException;
+import com.google.visualization.datasource.base.MessagesEnum;
+
+import com.ibm.icu.util.ULocale;
 
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
@@ -61,17 +64,19 @@ public class Query {
    *
    * @param selectionColumns The list to check for duplicates.
    * @param clauseName The clause name to report in the exception message.
+   * @param userLocale The user locale.
    *
    * @throws InvalidQueryException Thrown if a duplicate was found.
    */
   private static<T> void checkForDuplicates(List<T>
-      selectionColumns, String clauseName) throws InvalidQueryException {
+      selectionColumns, String clauseName, ULocale userLocale) throws InvalidQueryException {
     for (int i = 0; i < selectionColumns.size(); i++) {
       T col = selectionColumns.get(i);
       for (int j = i + 1; j < selectionColumns.size(); j++) {
         if (col.equals(selectionColumns.get(j))) {
-          String messageToLogAndUser = "Column [" + col.toString() + "] "
-              + "cannot appear more than once in " + clauseName + ".";
+          String[] args = {col.toString(), clauseName};
+          String messageToLogAndUser = MessagesEnum.COLUMN_ONLY_ONCE.getMessageWithArgs(userLocale, 
+              args);
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -140,6 +145,11 @@ public class Query {
    * Column formatting patterns as specified in the query.
    */
   private QueryFormat userFormatOptions = null;
+  
+  /**
+   * The user locale, Used to create localized messages.
+   */
+  private ULocale localeForUserMessages = null;
 
   /**
    * Constructs a new, empty, query.
@@ -372,7 +382,8 @@ public class Query {
    */
   public void setRowOffset(int rowOffset) throws InvalidQueryException {
     if (rowOffset < 0) {
-      String messageToLogAndUser = "Invalid value for row offset: " + rowOffset;
+      String messageToLogAndUser = MessagesEnum.INVALID_OFFSET.getMessageWithArgs(
+          localeForUserMessages, Integer.toString(rowOffset));
       log.error(messageToLogAndUser);
       throw new InvalidQueryException(messageToLogAndUser);
     }
@@ -490,6 +501,15 @@ public class Query {
         && !hasRowLimit() && !hasRowOffset() && !hasUserFormatOptions()  && !hasLabels()
         && !hasOptions());
   }
+  
+  
+  /**
+   * Sets the user locale for creating localized messages.
+   * @param userLocale the user locale.
+   */
+  public void setLocaleForUserMessages(ULocale localeForUserMessges) {
+    this.localeForUserMessages = localeForUserMessges;
+  }
 
   /**
    * Copies all information from the given query to this query.
@@ -557,17 +577,17 @@ public class Query {
         : Lists.<AggregationColumn>newArrayList();
 
     // Check for duplicates.
-    checkForDuplicates(selectionColumns, "SELECT");
-    checkForDuplicates(sortColumns, "ORDER BY");
-    checkForDuplicates(groupColumnIds, "GROUP BY");
-    checkForDuplicates(pivotColumnIds, "PIVOT");
+    checkForDuplicates(selectionColumns, "SELECT", localeForUserMessages);
+    checkForDuplicates(sortColumns, "ORDER BY", localeForUserMessages);
+    checkForDuplicates(groupColumnIds, "GROUP BY", localeForUserMessages);
+    checkForDuplicates(pivotColumnIds, "PIVOT", localeForUserMessages);
 
     // Cannot have aggregations in either group by, pivot, or where.
     if (hasGroup()) {
       for (AbstractColumn column : group.getColumns()) {
         if (!column.getAllAggregationColumns().isEmpty()) {
-          String messageToLogAndUser = "Column [" + column.toQueryString() + "] connot be in"
-              + " GROUP BY because it has an aggregation.";
+          String messageToLogAndUser = MessagesEnum.CANNOT_BE_IN_GROUP_BY.getMessageWithArgs(
+              localeForUserMessages, column.toQueryString());
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -576,8 +596,8 @@ public class Query {
     if (hasPivot()) {
       for (AbstractColumn column : pivot.getColumns()) {
         if (!column.getAllAggregationColumns().isEmpty()) {
-          String messageToLogAndUser = "Column [" + column.toQueryString() + "] connot be in"
-              + " PIVOT because it has an aggregation.";
+          String messageToLogAndUser = MessagesEnum.CANNOT_BE_IN_PIVOT.getMessageWithArgs(
+              localeForUserMessages, column.toQueryString());
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -586,8 +606,8 @@ public class Query {
     if (hasFilter()) {
       List<AggregationColumn> filterAggregations = filter.getAggregationColumns();
       if (!filterAggregations.isEmpty()) {
-        String messageToLogAndUser = "Column [" + filterAggregations.get(0).toQueryString() + "] "
-        + " cannot appear in WHERE because it has an aggregation.";
+        String messageToLogAndUser = MessagesEnum.CANNOT_BE_IN_WHERE.getMessageWithArgs(
+            localeForUserMessages, filterAggregations.get(0).toQueryString());;
         log.error(messageToLogAndUser);
         throw new InvalidQueryException(messageToLogAndUser);
       }
@@ -599,8 +619,8 @@ public class Query {
       String id = column1.getColumnId();
       for (AggregationColumn column2 : selectionAggregated) {
         if (id.equals(column2.getAggregatedColumn().getId())) {
-          String messageToLogAndUser = "Column [" + id + "] cannot be "
-              + "selected both with and without aggregation in SELECT.";
+          String messageToLogAndUser = MessagesEnum.SELECT_WITH_AND_WITHOUT_AGG.getMessageWithArgs(
+              localeForUserMessages, id);
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -621,8 +641,8 @@ public class Query {
       for (AggregationColumn column : selectionAggregated) {
         String id = column.getAggregatedColumn().getId();
         if (groupColumnIds.contains(id)) {
-          String messageToLogAndUser = "Column [" + id + "] which is "
-              + "aggregated in SELECT, cannot appear in GROUP BY.";
+          String messageToLogAndUser = MessagesEnum.COL_AGG_NOT_IN_SELECT.getMessageWithArgs(
+              localeForUserMessages, id);
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -632,14 +652,14 @@ public class Query {
     // Cannot use grouping or pivoting when no aggregations are defined in the
     // selection.
     if (hasGroup() && selectionAggregated.isEmpty()) {
-      String messageToLogAndUser = "Cannot use GROUP BY when no "
-          + "aggregations are defined in SELECT.";
+      String messageToLogAndUser = MessagesEnum.CANNOT_GROUP_WITNOUT_AGG.getMessage(
+          localeForUserMessages);
       log.error(messageToLogAndUser);
       throw new InvalidQueryException(messageToLogAndUser);
     }
     if (hasPivot() && selectionAggregated.isEmpty()) {
-      String messageToLogAndUser = "Cannot use PIVOT when no "
-          + "aggregations are defined in SELECT.";
+      String messageToLogAndUser = MessagesEnum.CANNOT_PIVOT_WITNOUT_AGG.getMessage(
+          localeForUserMessages);
       log.error(messageToLogAndUser);
       throw new InvalidQueryException(messageToLogAndUser);
     }
@@ -648,9 +668,8 @@ public class Query {
     // are defined.
     if (hasSort() && !selectionAggregated.isEmpty()) {
       for (AbstractColumn column : sort.getColumns()) {
-        String messageToLogAndUser = "Column [" + column.toQueryString() + "] which "
-            + "appears in ORDER BY, must be in SELECT as well, because SELECT"
-            + " contains aggregated columns.";
+        String messageToLogAndUser = MessagesEnum.COL_IN_ORDER_MUST_BE_IN_SELECT.getMessageWithArgs(
+            localeForUserMessages, column.toQueryString());
         checkColumnInList(selection.getColumns(), column,
             messageToLogAndUser);
       }
@@ -661,8 +680,8 @@ public class Query {
       for (AggregationColumn column : selectionAggregated) {
         String id = column.getAggregatedColumn().getId();
         if (pivotColumnIds.contains(id)) {
-          String messageToLogAndUser = "Column [" + id + "] which is "
-              + "aggregated in SELECT, cannot appear in PIVOT.";
+          String messageToLogAndUser = MessagesEnum.AGG_IN_SELECT_NO_PIVOT.getMessageWithArgs(
+              localeForUserMessages, id);
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -673,8 +692,8 @@ public class Query {
     if (hasGroup() && hasPivot()) {
       for (String id : groupColumnIds) {
         if (pivotColumnIds.contains(id)) {
-          String messageToLogAndUser = "Column [" + id + "] cannot appear" +
-              " both in GROUP BY and in PIVOT.";
+          String messageToLogAndUser = MessagesEnum.NO_COL_IN_GROUP_AND_PIVOT.getMessageWithArgs(
+              localeForUserMessages, id);
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -684,9 +703,8 @@ public class Query {
     // Cannot order by aggregation column when pivoting is used.
     if (hasPivot() && !sortAggregated.isEmpty()) {
       AggregationColumn column = sortAggregated.get(0);
-      String messageToLogAndUser = "Column [" +
-          column.getAggregatedColumn().getId() + "] " + "cannot be aggregated "
-          + "in ORDER BY when PIVOT is used.";
+      String messageToLogAndUser = MessagesEnum.NO_AGG_IN_ORDER_WHEN_PIVOT.getMessageWithArgs(
+          localeForUserMessages, column.getAggregatedColumn().getId());
       log.error(messageToLogAndUser);
       throw new InvalidQueryException(messageToLogAndUser);
     }
@@ -694,8 +712,8 @@ public class Query {
     // Cannot order by aggregation columns that weren't defined in the
     // selection.
     for (AggregationColumn column : sortAggregated) {
-        String messageToLogAndUser = "Aggregation [" + column.toQueryString() + "] "
-            + "found in ORDER BY but was not found in SELECT";
+        String messageToLogAndUser = MessagesEnum.AGG_IN_ORDER_NOT_IN_SELECT.getMessageWithArgs(
+            localeForUserMessages, column.toQueryString());
         checkColumnInList(selectionAggregated, column, messageToLogAndUser);
     }
 
@@ -707,16 +725,16 @@ public class Query {
     if (hasSelection()) {
       for (AbstractColumn col : labelColumns) {
         if (!selectionColumns.contains(col)) {
-          String messageToLogAndUser = "Column [" + col.toQueryString() + "] which"
-              + " is referenced in LABEL, is not part of SELECT clause.";
+          String messageToLogAndUser = MessagesEnum.LABEL_COL_NOT_IN_SELECT.getMessageWithArgs(
+              localeForUserMessages, col.toQueryString());
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
       }
       for (AbstractColumn col : formatColumns) {
         if (!selectionColumns.contains(col)) {
-          String messageToLogAndUser = "Column [" + col.toQueryString() + "] which"
-              + " is referenced in FORMAT, is not part of SELECT clause.";
+          String messageToLogAndUser = MessagesEnum.FORMAT_COL_NOT_IN_SELECT.getMessageWithArgs(
+              localeForUserMessages, col.toQueryString());
           log.error(messageToLogAndUser);
           throw new InvalidQueryException(messageToLogAndUser);
         }
@@ -878,9 +896,8 @@ public class Query {
       throws InvalidQueryException {
     if (col instanceof SimpleColumn) {
       if (!groupColumns.contains(col)) {
-        String messageToLogAndUser = "Column [" + col.getId()
-            + "] should be added to GROUP BY, removed from SELECT, or "
-            + "aggregated in SELECT.";
+        String messageToLogAndUser = MessagesEnum.ADD_COL_TO_GROUP_BY_OR_AGG.getMessageWithArgs(
+            localeForUserMessages, col.getId());
         log.error(messageToLogAndUser);
         throw new InvalidQueryException(messageToLogAndUser);
       }
