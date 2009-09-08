@@ -16,8 +16,11 @@ package com.google.visualization.datasource.query;
 
 import com.google.common.collect.Lists;
 import com.google.visualization.datasource.base.InvalidQueryException;
+import com.google.visualization.datasource.base.MessagesEnum;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.value.ValueType;
+
+import com.ibm.icu.util.ULocale;
 
 import java.util.List;
 
@@ -128,7 +131,7 @@ public class AggregationColumn extends AbstractColumn {
   /**
    * Checks whether it makes sense to have the aggregation type on
    * the aggregated column. The type of the column is taken from the given
-   * table description. Throws a column exception if the column is invald.
+   * table description. Throws a column exception if the column is invalid.
    *
    * @param dataTable The data table.
    *
@@ -137,16 +140,16 @@ public class AggregationColumn extends AbstractColumn {
   @Override
   public void validateColumn(DataTable dataTable) throws InvalidQueryException {
     ValueType valueType = dataTable.getColumnDescription(aggregatedColumn.getId()).getType();
+    ULocale userLocale = dataTable.getLocaleForUserMessages();
     switch (aggregationType) {
       case COUNT: case MAX: case MIN: break;
       case AVG: case SUM:
       if (valueType != ValueType.NUMBER) {
-        throw new InvalidQueryException("'Average' and 'sum' aggreagation "
-            + "functions can be applied only on numeric values.");
+        throw new InvalidQueryException(MessagesEnum.AVG_SUM_ONLY_NUMERIC.getMessage(userLocale));
       }
       break;
-      default: throw new RuntimeException("Invalid aggregation type: "
-          + aggregationType);
+      default: throw new RuntimeException(MessagesEnum.INVALID_AGG_TYPE.getMessageWithArgs(
+          userLocale, aggregationType.toString()));
     }
   }
 
@@ -170,8 +173,8 @@ public class AggregationColumn extends AbstractColumn {
       case AVG: case SUM: case MAX: case MIN:
       valueType = originalValueType;
       break;
-      default: throw new RuntimeException("Invalid aggregation type: "
-          + aggregationType);
+      default: throw new RuntimeException(MessagesEnum.INVALID_AGG_TYPE.getMessageWithArgs(
+          dataTable.getLocaleForUserMessages(), aggregationType.toString()));
     }
     return valueType;
   }

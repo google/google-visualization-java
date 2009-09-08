@@ -297,6 +297,80 @@ public class DataSourceHelperTest extends TestCase {
     verify(req);
   }
   
+  public void testParseQueryErrors() {
+    DataTable dataTable = new DataTable();
+    dataTable.addColumn(new ColumnDescription("A", ValueType.TEXT, "column1"));
+    dataTable.addColumn(new ColumnDescription("B", ValueType.BOOLEAN, "column2"));
+    dataTable.addColumn(new ColumnDescription("C", ValueType.NUMBER, "column3"));
+    // Wrong column id
+    checkQueryError("select D", dataTable, "Column [D] does not exist in table.");
+    checkQueryError("where F > 1", dataTable, "Column [F] does not exist in table.");
+    // aggregation sum and average only on numeric columns
+    checkQueryError("select avg(A) group by B", dataTable,
+        "'Average' and 'sum' aggreagation functions can be applied only on numeric values.");
+    checkQueryError("select sum(A) group by B", dataTable,
+        "'Average' and 'sum' aggreagation functions can be applied only on numeric values.");
+    checkQueryError("select sum(B) group by A", dataTable,
+        "'Average' and 'sum' aggreagation functions can be applied only on numeric values.");
+    // parse errors
+    checkQueryError("select (", dataTable, "Query parse error: ", true);
+    checkQueryError("group by avg(A)", dataTable,
+        "Column [AVG(`A`)] cannot be in GROUP BY because it has an aggregation.");
+    checkQueryError("pivot avg(A)", dataTable,
+        "Column [AVG(`A`)] cannot be in PIVOT because it has an aggregation.");
+    checkQueryError("where avg(A) > 1", dataTable,
+        "Column [AVG(`A`)] cannot appear in WHERE because it has an aggregation.");
+    checkQueryError("select A, sum(A)", dataTable,
+        "Column [A] cannot be selected both with and without aggregation in SELECT.");
+    checkQueryError("select sum(C) group by C", dataTable,
+        "Column [C] which is aggregated in SELECT, cannot appear in GROUP BY.");
+    checkQueryError("select A group by C", dataTable,
+        "Cannot use GROUP BY when no aggregations are defined in SELECT.");
+    checkQueryError("select A pivot C", dataTable,
+        "Cannot use PIVOT when no aggregations are defined in SELECT.");
+    checkQueryError("select min(B) pivot B", dataTable,
+        "Column [B] which is aggregated in SELECT, cannot appear in PIVOT.");
+    checkQueryError("select A format B 'yes:no'", dataTable,
+        "Column [`B`] which is referenced in FORMAT, is not part of SELECT clause.");
+    checkQueryError("select A label B 'COL'", dataTable,
+        "Column [`B`] which is referenced in LABEL, is not part of SELECT clause.");
+    checkQueryError("select A,count(B)", dataTable,
+        "Column [A] should be added to GROUP BY, removed from SELECT, or aggregated in SELECT.");
+    checkQueryError("select B order by min(A)", dataTable,
+        "Aggregation [MIN(`A`)] found in ORDER BY but was not found in SELECT");
+    checkQueryError("select min(A) pivot B order by min(A)", dataTable,
+        "Column [A] cannot be aggregated in ORDER BY when PIVOT is used.");
+    checkQueryError("select min(A) order by B", dataTable,
+        "Column [`B`] which appears in ORDER BY, must be in SELECT as well, " +
+        "because SELECT contains aggregated columns.");
+    checkQueryError("select min(A) group by B pivot B", dataTable,
+        "Column [B] cannot appear both in GROUP BY and in PIVOT.");
+    checkQueryError("offset -1", dataTable,
+        "Invalid value for row offset: -1");
+    checkQueryError("select avg(C),avg(C)", dataTable,
+        "Column [avg(C)] cannot appear more than once in SELECT.");
+  }
+  
+  private void checkQueryError(String query, DataTable dataTable, String expectedMessage) {
+    checkQueryError(query, dataTable, expectedMessage, false);
+  }
+  
+  private void checkQueryError(String query, DataTable dataTable, String expectedMessage,
+      boolean startsWith) {
+    try {
+      DataSourceHelper.applyQuery(
+          DataSourceHelper.parseQuery(query), dataTable, null);
+      fail("Exception should be thrown for query " + query);
+    } catch (DataSourceException dse) {
+      if (startsWith) {
+        assertNotNull(dse.getMessageToUser());
+        assertTrue(dse.getMessageToUser().startsWith(expectedMessage));
+      } else {
+        assertEquals(expectedMessage, dse.getMessageToUser());
+      }
+    }
+  }
+  
   private void setupHttpRequestMock(HttpServletRequest req, boolean hasHeader, String tqx) {
     reset(req);
     expect(req.getHeader(DataSourceRequest.SAME_ORIGIN_HEADER)).andReturn(hasHeader ? "a" : null);

@@ -14,6 +14,7 @@
 
 package com.google.visualization.datasource.base;
 
+import com.ibm.icu.text.MessageFormat;
 import com.ibm.icu.util.ULocale;
 
 import java.util.Locale;
@@ -113,5 +114,28 @@ public class LocaleUtil {
       return ResourceBundle.getBundle(bundleName).getString(key);
     }
     return ResourceBundle.getBundle(bundleName, locale).getString(key);
+  }
+  
+  /**
+   * Returns a localized message from the specified <code>ResourceBundle</code> for the given key
+   * with the given arguments inserted to the message in the specified locations.
+   * In case the locale is null, uses the default locale.
+   * If locale is null, the default <code>ResourceBundle</code> is used.
+   * 
+   *
+   * @param bundleName The name of the resource bundle.
+   * @param key The key of the requested string.
+   * @param args Arguments to place in the error message.
+   * @param locale The locale.
+   *
+   * @return A localized message from the bundle based on the given locale.
+   */
+  public static String getLocalizedMessageFromBundleWithArguments(String bundleName, String key,
+      String[] args, Locale locale) {
+    String rawMesage = getLocalizedMessageFromBundle(bundleName, key, locale);
+    if (args != null && args.length > 0) {
+      return MessageFormat.format(rawMesage, args);
+    }
+    return rawMesage;
   }
 }

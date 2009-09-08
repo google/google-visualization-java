@@ -18,6 +18,7 @@ import com.google.visualization.datasource.base.DataSourceException;
 import com.google.visualization.datasource.base.DataSourceParameters;
 import com.google.visualization.datasource.base.InvalidQueryException;
 import com.google.visualization.datasource.base.LocaleUtil;
+import com.google.visualization.datasource.base.MessagesEnum;
 import com.google.visualization.datasource.base.OutputType;
 import com.google.visualization.datasource.base.ReasonType;
 import com.google.visualization.datasource.base.ResponseStatus;
@@ -361,19 +362,26 @@ public class DataSourceHelper {
 
   // -------------------------- Query helper methods ----------------------------------------------
 
+  /** @see #parseQuery(String, ULocale)*/
+  public static Query parseQuery(String queryString) throws InvalidQueryException {
+    return parseQuery(queryString, null);
+  }
+  
   /**
    * Parses a query string (e.g., 'select A,B pivot B') and creates a Query object.
    * Throws an exception if the query is invalid.
    *
    * @param queryString The query string.
+   * @param locale The user locale.
    *
    * @return The parsed query object.
    *
    * @throws InvalidQueryException If the query is invalid.
    */
-  public static Query parseQuery(String queryString) throws InvalidQueryException {
+  public static Query parseQuery(String queryString, ULocale userLocale) 
+      throws InvalidQueryException {
     QueryBuilder queryBuilder = QueryBuilder.getInstance();
-    Query query = queryBuilder.parseQuery(queryString);
+    Query query = queryBuilder.parseQuery(queryString, userLocale);
 
     return query;
   }
@@ -381,6 +389,8 @@ public class DataSourceHelper {
   /**
    * Applies the given <code>Query</code> on the given <code>DataTable</code> and returns the
    * resulting <code>DataTable</code>. This method may change the given DataTable.
+   * Error messages produced by this method will be localized according to the passed locale 
+   * unless the specified {@code DataTable} has a non null locale. 
    *
    * @param query The query object.
    * @param dataTable The data table on which to apply the query.
@@ -393,8 +403,10 @@ public class DataSourceHelper {
    */
   public static DataTable applyQuery(Query query, DataTable dataTable, ULocale locale)
       throws InvalidQueryException, DataSourceException {
+    dataTable.setLocaleForUserMessages(locale);
     validateQueryAgainstColumnStructure(query, dataTable);
     dataTable = QueryEngine.executeQuery(query, dataTable, locale);
+    dataTable.setLocaleForUserMessages(locale);
     return dataTable;
   }
 
@@ -443,8 +455,8 @@ public class DataSourceHelper {
     Set<String> mentionedColumnIds = query.getAllColumnIds();
     for (String columnId : mentionedColumnIds) {
       if (!dataTable.containsColumn(columnId)) {
-        String messageToLogAndUser = "Column [" + columnId + "] does not"
-            + " exist in table.";
+        String messageToLogAndUser = MessagesEnum.NO_COLUMN.getMessageWithArgs(
+            dataTable.getLocaleForUserMessages(), columnId);
         log.error(messageToLogAndUser);
         throw new InvalidQueryException(messageToLogAndUser);
       }

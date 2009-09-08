@@ -15,7 +15,10 @@
 package com.google.visualization.datasource.query.parser;
 
 import com.google.visualization.datasource.base.InvalidQueryException;
+import com.google.visualization.datasource.base.MessagesEnum;
 import com.google.visualization.datasource.query.Query;
+
+import com.ibm.icu.util.ULocale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -66,6 +69,20 @@ public class QueryBuilder {
    * @throws InvalidQueryException Thrown if the query is invalid.
    */
   public Query parseQuery(String tqValue) throws InvalidQueryException {
+    return parseQuery(tqValue, null);
+  }
+  
+  /**
+   * Parses a user query into a Query object.
+   *
+   * @param tqValue The user query string.
+   * @param ulocale The user locale.
+   *
+   * @return The parsed Query object.
+   *
+   * @throws InvalidQueryException Thrown if the query is invalid.
+   */
+  public Query parseQuery(String tqValue, ULocale ulocale) throws InvalidQueryException {
     Query query;
     if (StringUtils.isEmpty(tqValue)) {
       query = new Query();
@@ -75,8 +92,10 @@ public class QueryBuilder {
       } catch (ParseException ex) {
         String messageToUserAndLog = ex.getMessage();
         log.error("Parsing error: " + messageToUserAndLog);
-        throw new InvalidQueryException("Query error: " + messageToUserAndLog);
+        throw new InvalidQueryException(MessagesEnum.PARSE_ERROR.getMessageWithArgs(ulocale, 
+            messageToUserAndLog));
       }
+      query.setLocaleForUserMessages(ulocale);
       query.validate();
     }
     return query;

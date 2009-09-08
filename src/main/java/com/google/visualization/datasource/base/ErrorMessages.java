@@ -41,7 +41,43 @@ public class ErrorMessages extends ListResourceBundle {
     {"TIMEOUT", "Request timeout"},
     {"ILLEGAL_FORMATTING_PATTERNS", "Illegal formatting patterns"},
     {"OTHER", "Could not complete request"},
-    {"SIGN_IN", "Sign in"}  
+    {"SIGN_IN", "Sign in"},  
+    // QUERY Errors
+    {"NO_COLUMN", "Column [{0}] does not exist in table."},
+    {"AVG_SUM_ONLY_NUMERIC",
+        "'Average' and 'sum' aggreagation functions can be applied only on numeric values."},
+    {"INVALID_AGG_TYPE", "Invalid aggregation type: {0}"},
+    // Parse
+    {"PARSE_ERROR", "Query parse error: {0}"},
+    {"CANNOT_BE_IN_GROUP_BY", "Column [{0}] cannot be in GROUP BY because it has an aggregation."},
+    {"CANNOT_BE_IN_PIVOT", "Column [{0}] cannot be in PIVOT because it has an aggregation."},
+    {"CANNOT_BE_IN_WHERE", "Column [{0}] cannot appear in WHERE because it has an aggregation."},
+    {"SELECT_WITH_AND_WITHOUT_AGG", 
+        "Column [{0}] cannot be selected both with and without aggregation in SELECT."},
+    {"COL_AGG_NOT_IN_SELECT", 
+        "Column [{0}] which is aggregated in SELECT, cannot appear in GROUP BY."},
+    {"CANNOT_GROUP_WITNOUT_AGG", "Cannot use GROUP BY when no aggregations are defined in SELECT."},
+    {"CANNOT_PIVOT_WITNOUT_AGG", "Cannot use PIVOT when no aggregations are defined in SELECT."},
+    {"AGG_IN_SELECT_NO_PIVOT",
+        "Column [{0}] which is aggregated in SELECT, cannot appear in PIVOT."},
+    {"FORMAT_COL_NOT_IN_SELECT",
+        "Column [{0}] which is referenced in FORMAT, is not part of SELECT clause."},
+    {"LABEL_COL_NOT_IN_SELECT",
+        "Column [{0}] which is referenced in LABEL, is not part of SELECT clause."},
+    {"ADD_COL_TO_GROUP_BY_OR_AGG",
+        "Column [{0}] should be added to GROUP BY, removed from SELECT, or aggregated in SELECT."},
+    {"AGG_IN_ORDER_NOT_IN_SELECT",
+        "Aggregation [{0}] found in ORDER BY but was not found in SELECT"},
+    {"NO_AGG_IN_ORDER_WHEN_PIVOT",
+        "Column [{0}] cannot be aggregated in ORDER BY when PIVOT is used."},
+    {"COL_IN_ORDER_MUST_BE_IN_SELECT",
+        "Column [{0}] which appears in ORDER BY, must be in SELECT as well, " +
+        "because SELECT contains aggregated columns."},
+    {"NO_COL_IN_GROUP_AND_PIVOT", "Column [{0}] cannot appear both in GROUP BY and in PIVOT."},
+    {"INVALID_OFFSET", "Invalid value for row offset: {0}"},
+    {"COLUMN_ONLY_ONCE", "Column [{0}] cannot appear more than once in {1}."}
+    
+    
   };
 
   /**

@@ -253,7 +253,7 @@ public class DataTableTest extends TestCase {
     ColumnDescription c0 = new ColumnDescription("A", ValueType.TEXT, "col0");
     ColumnDescription c1 = new ColumnDescription("B", ValueType.NUMBER, "col1");
     ColumnDescription c2 = new ColumnDescription("C", ValueType.BOOLEAN, "col2");
-
+    testData.setLocaleForUserMessages(ULocale.JAPAN);
     testData.addColumn(c0);
     testData.addColumn(c1);
     testData.addColumn(c2);
@@ -292,6 +292,7 @@ public class DataTableTest extends TestCase {
     assertEquals("col0", cloned.getColumnDescription("A").getLabel());
     assertEquals("aaa", cloned.getRow(0).getCell(0).getValue().toString());
     assertEquals("222", cloned.getRow(0).getCell(1).getFormattedValue());
+    assertEquals(testData.getLocaleForUserMessages(), cloned.getLocaleForUserMessages());
 
     // Test that some pointers are not the same:
     assertTrue(cloned != testData);
