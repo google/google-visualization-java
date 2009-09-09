@@ -314,8 +314,12 @@ public class SqlDataSourceHelperTest extends TestCase {
     gc.set(GregorianCalendar.MILLISECOND, 0);
 
     Date date = new Date(gc.getTimeInMillis());
-    Time time = new Time(gc.getTimeInMillis());
-    Timestamp timestamp = new Timestamp(gc.getTimeInMillis());
+    Time time = new Time(gc.get(GregorianCalendar.HOUR), gc.get(GregorianCalendar.MINUTE),
+        gc.get(GregorianCalendar.SECOND));
+    Timestamp timestamp = new Timestamp(
+        gc.get(GregorianCalendar.YEAR) - 1900, gc.get(GregorianCalendar.MONTH),
+        gc.get(GregorianCalendar.DAY_OF_MONTH), gc.get(GregorianCalendar.HOUR),
+        gc.get(GregorianCalendar.MINUTE), gc.get(GregorianCalendar.SECOND), 0);
 
     // Create the table rows.
     List<Object> row1 =
