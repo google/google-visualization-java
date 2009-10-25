@@ -334,7 +334,7 @@ public class SqlDataSourceHelper {
       QueryFilter queryFilter) {
     ColumnIsNullFilter filter = (ColumnIsNullFilter) queryFilter;
  
-    whereClause.append("(").append(filter.getColumn().getId()).append(" IS NULL)");
+    whereClause.append("(").append(getColumnId(filter.getColumn())).append(" IS NULL)");
   }
 
   /**
@@ -352,11 +352,11 @@ public class SqlDataSourceHelper {
     // Build the left part and the right part of the clause according to the filter's type.
     if (queryFilter instanceof ColumnColumnFilter) {
       ColumnColumnFilter filter = (ColumnColumnFilter) queryFilter;
-      first.append(filter.getFirstColumn().getId());
-      second.append(filter.getSecondColumn().getId());
+      first.append(getColumnId(filter.getFirstColumn()));
+      second.append(getColumnId(filter.getSecondColumn()));
     } else { // The filter is a ColumnValueFilter
       ColumnValueFilter filter = (ColumnValueFilter) queryFilter;
-      first.append(filter.getColumn().getId());
+      first.append(getColumnId(filter.getColumn()));
       second.append(filter.getValue().toString());
       if ((filter.getValue().getType() == ValueType.TEXT)
           || (filter.getValue().getType() == ValueType.DATE)
