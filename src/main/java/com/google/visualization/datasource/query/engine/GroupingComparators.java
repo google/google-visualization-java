@@ -125,7 +125,7 @@ import java.util.List;
      * @param aggregations The list that gives order to the ColumnAggregations.
      */
     public ColumnTitleDynamicComparator(List<AggregationColumn> aggregations) {
-      aggregationsComparator = Ordering.givenOrder(aggregations);
+      aggregationsComparator = Ordering.explicit(aggregations);
     }
 
     /**
