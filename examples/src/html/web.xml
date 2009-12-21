@@ -99,15 +99,6 @@
     </servlet>
 
     <servlet>
-      <servlet-name>graph</servlet-name>
-      <description>
-        This servlet produces GIF images that are dynamically generated
-        graphs, based on the input parameters included on the request.
-        It is generally mapped to a specific request URI like "/graph".
-      </description>
-    </servlet>
-
-    <servlet>
       <servlet-name>My Servlet</servlet-name>
       <description>My servlet description.</description>
       <servlet-class>SimpleExampleServlet</servlet-class>
