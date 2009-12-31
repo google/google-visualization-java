@@ -184,12 +184,11 @@ public class DataSourceHelperTest extends TestCase {
         new DataSourceParameters(null),
         ULocale.UK);
     assertEquals(
-        "{\"version\":\"0.6\",\"status\":\"ok\",\"sig\":\"1548939605\","
-        + "\"table\":{\"cols\":[{\"id\":\"col1\",\"label\":\"column1\",\"type\":\"number\","
-        + "\"pattern\":\"\"},"
-        + "{\"id\":\"col2\",\"label\":\"column2\",\"type\":\"boolean\",\"pattern\":\"\"},"
-        + "{\"id\":\"col3\",\"label\":\"column3\",\"type\":\"string\",\"pattern\":\"\"}],"
-        + "\"rows\":[{\"c\":[{\"v\":7.0},{\"v\":false},{\"v\":\"Why?\"}]}]}}",
+        "{version:'0.6',status:'ok',sig:'730893465',"
+        + "table:{cols:[{id:'col1',label:'column1',type:'number',pattern:''},"
+        + "{id:'col2',label:'column2',type:'boolean',pattern:''},"
+        + "{id:'col3',label:'column3',type:'string',pattern:''}],"
+        + "rows:[{c:[{v:7.0},{v:false},{v:'Why?'}]}]}}",
         DataSourceHelper.generateResponse(dataTable, dataSourceRequest));
 
     // With reqId:666;
@@ -198,12 +197,11 @@ public class DataSourceHelperTest extends TestCase {
         new DataSourceParameters("reqId:666"),
         ULocale.UK);
     assertEquals(
-        "{\"version\":\"0.6\",\"reqId\":\"666\",\"status\":\"ok\",\"sig\":\"1548939605\","
-        + "\"table\":{\"cols\":[{\"id\":\"col1\",\"label\":\"column1\",\"type\":\"number\","
-        + "\"pattern\":\"\"},"
-        + "{\"id\":\"col2\",\"label\":\"column2\",\"type\":\"boolean\",\"pattern\":\"\"},"
-        + "{\"id\":\"col3\",\"label\":\"column3\",\"type\":\"string\",\"pattern\":\"\"}],"
-        + "\"rows\":[{\"c\":[{\"v\":7.0},{\"v\":false},{\"v\":\"Why?\"}]}]}}",
+        "{version:'0.6',reqId:'666',status:'ok',sig:'730893465',"
+        + "table:{cols:[{id:'col1',label:'column1',type:'number',pattern:''},"
+        + "{id:'col2',label:'column2',type:'boolean',pattern:''},"
+        + "{id:'col3',label:'column3',type:'string',pattern:''}],"
+        + "rows:[{c:[{v:7.0},{v:false},{v:'Why?'}]}]}}",
         DataSourceHelper.generateResponse(dataTable, dataSourceRequest));
 
     // With out:json;
@@ -212,12 +210,11 @@ public class DataSourceHelperTest extends TestCase {
         new DataSourceParameters("out:json"),
         ULocale.UK);
     assertEquals(
-        "{\"version\":\"0.6\",\"status\":\"ok\",\"sig\":\"1548939605\","
-        + "\"table\":{\"cols\":[{\"id\":\"col1\",\"label\":\"column1\",\"type\":\"number\","
-        + "\"pattern\":\"\"},"
-        + "{\"id\":\"col2\",\"label\":\"column2\",\"type\":\"boolean\",\"pattern\":\"\"},"
-        + "{\"id\":\"col3\",\"label\":\"column3\",\"type\":\"string\",\"pattern\":\"\"}],"
-        + "\"rows\":[{\"c\":[{\"v\":7.0},{\"v\":false},{\"v\":\"Why?\"}]}]}}",
+        "{version:'0.6',status:'ok',sig:'730893465',"
+        + "table:{cols:[{id:'col1',label:'column1',type:'number',pattern:''},"
+        + "{id:'col2',label:'column2',type:'boolean',pattern:''},"
+        + "{id:'col3',label:'column3',type:'string',pattern:''}],"
+        + "rows:[{c:[{v:7.0},{v:false},{v:'Why?'}]}]}}",
         DataSourceHelper.generateResponse(dataTable, dataSourceRequest));
 
     // With out:jsonp;
@@ -226,12 +223,11 @@ public class DataSourceHelperTest extends TestCase {
         new DataSourceParameters("out:jsonp"),
         ULocale.UK);
     assertEquals(
-        "google.visualization.Query.setResponse({\"version\":\"0.6\",\"status\":\"ok\","
-        + "\"sig\":\"1548939605\",\"table\":{\"cols\":[{\"id\":\"col1\",\"label\":\"column1\","
-        + "\"type\":\"number\",\"pattern\":\"\"},"
-        + "{\"id\":\"col2\",\"label\":\"column2\",\"type\":\"boolean\",\"pattern\":\"\"},"
-        + "{\"id\":\"col3\",\"label\":\"column3\",\"type\":\"string\",\"pattern\":\"\"}],"
-        + "\"rows\":[{\"c\":[{\"v\":7.0},{\"v\":false},{\"v\":\"Why?\"}]}]}});",
+        "google.visualization.Query.setResponse({version:'0.6',status:'ok',"
+        + "sig:'730893465',table:{cols:[{id:'col1',label:'column1',type:'number',pattern:''},"
+        + "{id:'col2',label:'column2',type:'boolean',pattern:''},"
+        + "{id:'col3',label:'column3',type:'string',pattern:''}],"
+        + "rows:[{c:[{v:7.0},{v:false},{v:'Why?'}]}]}});",
         DataSourceHelper.generateResponse(dataTable, dataSourceRequest));
 
     // Now with out:csv;
