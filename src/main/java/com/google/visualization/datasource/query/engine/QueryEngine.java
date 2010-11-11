@@ -120,7 +120,7 @@ public final class QueryEngine {
     // A map of column lookups by their list of pivot values. This is utilized in
     // the grouping and pivoting queries.
     TreeMap<List<Value>, ColumnLookup> columnLookups =
-        Maps.newTreeMap(GroupingComparators.VALUE_LIST_COMPARATOR);
+        new TreeMap<List<Value>, ColumnLookup>(GroupingComparators.VALUE_LIST_COMPARATOR);
     try {
       table = performFilter(table, query);
       table = performGroupingAndPivoting(table, query, columnIndices, columnLookups);
