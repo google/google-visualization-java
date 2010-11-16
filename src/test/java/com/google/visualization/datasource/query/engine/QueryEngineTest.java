@@ -46,6 +46,7 @@ import com.google.visualization.datasource.query.parser.QueryBuilder;
 import com.google.visualization.datasource.query.scalarfunction.Constant;
 import com.google.visualization.datasource.query.scalarfunction.DateDiff;
 import com.google.visualization.datasource.query.scalarfunction.Difference;
+import com.google.visualization.datasource.query.scalarfunction.Modulo;
 import com.google.visualization.datasource.query.scalarfunction.Product;
 import com.google.visualization.datasource.query.scalarfunction.Quotient;
 import com.google.visualization.datasource.query.scalarfunction.Sum;
@@ -1337,6 +1338,103 @@ public class QueryEngineTest extends TestCase {
         resultStrings[0]);
     assertStringArraysEqual(new String[]{"10.0", "14.0"},
         resultStrings[1]);
+  }
+
+  public void testModuloInSelection() throws Exception {
+    DataTable res = MockDataSource.getData(0);
+
+    // selection with modulo ('weight' is a column id): "select weight, weight % 10"
+    Query q = new Query();
+
+    AbstractColumn col1 = new ScalarFunctionColumn(
+        Lists.<AbstractColumn>newArrayList(), new Constant(new NumberValue(10)));
+    AbstractColumn col2 = new ScalarFunctionColumn(
+        Lists.<AbstractColumn>newArrayList(new SimpleColumn("weight"), col1),
+        Modulo.getInstance());
+
+    // Add selection
+    QuerySelection selection = new QuerySelection();
+    selection.addColumn(new SimpleColumn("weight"));
+    selection.addColumn(col2);
+    q.setSelection(selection);
+    
+    q.validate();
+
+    DataTable result = QueryEngine.executeQuery(q, res, ULocale.US);
+
+    // Test column description
+    List<ColumnDescription> cols =  result.getColumnDescriptions();
+
+    assertEquals(2, cols.size());
+    assertEquals("weight", cols.get(0).getId());
+    assertEquals("modulo_weight,10.0_", cols.get(1).getId());
+
+    String[][] resultStrings = MockDataSource.queryResultToStringMatrix(result);
+    assertEquals(7, resultStrings.length);
+
+    assertStringArraysEqual(new String[]{"222.0", "2.0"},
+        resultStrings[0]);
+    assertStringArraysEqual(new String[]{"111.0", "1.0"},
+        resultStrings[1]);
+    assertStringArraysEqual(new String[]{"333.0", "3.0"},
+        resultStrings[2]);
+    assertStringArraysEqual(new String[]{"222.0", "2.0"},
+        resultStrings[3]);
+    assertStringArraysEqual(new String[]{"1234.0", "4.0"},
+        resultStrings[4]);
+    assertStringArraysEqual(new String[]{"1234.0", "4.0"},
+        resultStrings[5]);
+    assertStringArraysEqual(new String[]{"222.0", "2.0"},
+        resultStrings[6]);   
+  }
+  
+  public void testModuloInFilter() throws Exception {
+    DataTable res = MockDataSource.getData(0);
+
+    // Create a query with filter clause using module:
+    // select name, weight where weight%2=0.0
+    Query q = new Query();
+
+    // Add selection
+    QuerySelection selection = new QuerySelection();
+    selection.addColumn(new SimpleColumn("name"));
+    selection.addColumn(new SimpleColumn("weight"));
+    q.setSelection(selection);
+
+    AbstractColumn col1 = new ScalarFunctionColumn(
+      Lists.<AbstractColumn>newArrayList(), new Constant(new NumberValue(2)));
+    AbstractColumn col2 = new ScalarFunctionColumn(
+      Lists.<AbstractColumn>newArrayList(new SimpleColumn("weight"), col1),
+      Modulo.getInstance());
+
+    QueryFilter filter = new ColumnValueFilter(col2,
+      new NumberValue(0), ComparisonFilter.Operator.EQ);
+    q.setFilter(filter);
+  
+    q.validate();
+
+    DataTable result = QueryEngine.executeQuery(q, res, ULocale.US);
+
+    // Test column description
+    List<ColumnDescription> cols =  result.getColumnDescriptions();
+
+    assertEquals(2, cols.size());
+    assertEquals("name", cols.get(0).getId());
+    assertEquals("weight", cols.get(1).getId());
+
+    String[][] resultStrings = MockDataSource.queryResultToStringMatrix(result);
+    assertEquals(5, resultStrings.length);
+
+    assertStringArraysEqual(new String[]{"aaa", "222.0"},
+        resultStrings[0]);
+    assertStringArraysEqual(new String[]{"ddd", "222.0"},
+        resultStrings[1]);
+    assertStringArraysEqual(new String[]{"eee", "1234.0"},
+        resultStrings[2]);
+    assertStringArraysEqual(new String[]{"eee", "1234.0"},
+        resultStrings[3]);
+    assertStringArraysEqual(new String[]{"bbb", "222.0"},
+        resultStrings[4]);
   }
 
   public void testLabels() throws Exception {

@@ -58,6 +58,7 @@ import com.google.visualization.datasource.query.scalarfunction.CurrentDateTime;
 import com.google.visualization.datasource.query.scalarfunction.DateDiff;
 import com.google.visualization.datasource.query.scalarfunction.Difference;
 import com.google.visualization.datasource.query.scalarfunction.Lower;
+import com.google.visualization.datasource.query.scalarfunction.Modulo;
 import com.google.visualization.datasource.query.scalarfunction.Product;
 import com.google.visualization.datasource.query.scalarfunction.Quotient;
 import com.google.visualization.datasource.query.scalarfunction.ScalarFunction;
@@ -192,6 +193,7 @@ TOKEN:
   | <OP_PLUS:              "+">
   | <OP_MINUS:             "-">
   | <OP_SLASH:             "/">
+  | <OP_MODULO:            "%">
 }
 
 // The entire query
@@ -592,27 +594,27 @@ AbstractColumn arithmeticExpression() throws InvalidQueryException :
   AbstractColumn column;
 }
 {
-  column = possibleSummationOrSubtraction()
+  column = possibleSecondOrderArithmeticExpression()
   { return column; }
 }
 
 // A possible sum or subtraction expression of possible multiplication or division expressions.
 // It is "possible" because it can also match a single expression without any
 // multiplications and divisions, and then it is just returned as is.
-AbstractColumn possibleSummationOrSubtraction() throws
+AbstractColumn possibleSecondOrderArithmeticExpression() throws
     InvalidQueryException :
 {
   AbstractColumn column;
   AbstractColumn column1;
 }
 {
-  column = possibleMultiplicationOrDivision()
+  column = possibleFirstOrderArithmeticExpression()
   (
-  ( (<OP_PLUS> column1 = possibleMultiplicationOrDivision() {
+  ( (<OP_PLUS> column1 = possibleFirstOrderArithmeticExpression() {
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[] {column, column1}), Sum.getInstance() );} )
-  | (<OP_MINUS> column1 = possibleMultiplicationOrDivision() {
+  | (<OP_MINUS> column1 = possibleFirstOrderArithmeticExpression() {
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[]{column, column1}),
@@ -620,8 +622,8 @@ AbstractColumn possibleSummationOrSubtraction() throws
   { return column; }
 }
 
-// A possible multiplication or division expression of atomic abstract column descriptors.
-AbstractColumn possibleMultiplicationOrDivision() throws
+// A possible multiplication division or modulo expression of atomic abstract column descriptors.
+AbstractColumn possibleFirstOrderArithmeticExpression() throws
     InvalidQueryException :
 {
   AbstractColumn column;
@@ -638,7 +640,12 @@ AbstractColumn possibleMultiplicationOrDivision() throws
     column =
       new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
           new AbstractColumn[]{column, column1}),
-          Quotient.getInstance()); } ) ) )*
+          Quotient.getInstance()); } )
+  | (<OP_MODULO> column1 = atomicAbstractColumnDescriptor() {
+    column =
+      new ScalarFunctionColumn(GenericsHelper.makeAbstractColumnList(
+          new AbstractColumn[]{column, column1}),
+          Modulo.getInstance()); } ) ) )*
   { return column; }
 }
 
