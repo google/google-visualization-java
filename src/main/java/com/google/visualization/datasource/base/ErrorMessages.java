@@ -75,6 +75,7 @@ public class ErrorMessages extends ListResourceBundle {
         "because SELECT contains aggregated columns."},
     {"NO_COL_IN_GROUP_AND_PIVOT", "Column [{0}] cannot appear both in GROUP BY and in PIVOT."},
     {"INVALID_OFFSET", "Invalid value for row offset: {0}"},
+    {"INVALID_SKIPPING", "Invalid value for row skipping: {0}"},
     {"COLUMN_ONLY_ONCE", "Column [{0}] cannot appear more than once in {1}."}
     
     

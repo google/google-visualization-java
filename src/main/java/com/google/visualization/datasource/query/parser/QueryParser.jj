@@ -107,6 +107,7 @@ TOKEN[IGNORE_CASE]:
   | <KW_PIVOT:        "pivot">
   | <KW_ORDER:        "order">
   | <KW_BY:           "by">
+  | <KW_SKIPPING:     "skipping">
   | <KW_LIMIT:        "limit">
   | <KW_OFFSET:       "offset">
   | <KW_LABEL:        "label">
@@ -208,6 +209,7 @@ Query queryStatement() throws InvalidQueryException :
       [ groupByClause(query) ]
       [ pivotClause(query) ]
       [ orderByClause(query) ]
+      [ skippingClause(query) ]
       [ limitClause(query) ]
       [ offsetClause(query) ]
       [ labelClause(query) ]
@@ -292,6 +294,17 @@ void orderByClause(Query query) throws InvalidQueryException :
   (<OP_COMMA> column = abstractColumnDescriptor() order = sortOrder()
     { sort.addSort(column, order); } )*
   { query.setSort(sort); }
+}
+
+// The skipping clause (e.g., SKIPPING 10)
+void skippingClause(Query query) throws InvalidQueryException :
+{
+  int skipping;
+}
+{
+  <KW_SKIPPING>
+  skipping = integerLiteral()
+  { query.setRowSkipping(skipping); }
 }
 
 // The limit clause (e.g., LIMIT 100)

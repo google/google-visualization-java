@@ -108,6 +108,7 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasSort());
     ColumnValueFilter filter = (ColumnValueFilter) dataSourceQuery.getFilter();
     assertEquals("A", ((SimpleColumn) filter.getColumn()).getId());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -227,6 +228,7 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasSelection());
     assertFalse(dataSourceQuery.hasFilter());
     assertFalse(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -297,6 +299,7 @@ public class QuerySplitterTest extends TestCase {
     assertEquals("C", ((SimpleColumn) columns.get(2)).getId());
     assertFalse(dataSourceQuery.hasFilter());
     assertFalse(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -357,6 +360,7 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasSelection());
     assertFalse(dataSourceQuery.hasFilter());
     assertFalse(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -371,6 +375,7 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasSelection());
     assertFalse(dataSourceQuery.hasFilter());
     assertFalse(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -390,6 +395,7 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasSelection());
     assertFalse(dataSourceQuery.hasFilter());
     assertFalse(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
     assertFalse(dataSourceQuery.hasRowLimit());
     assertFalse(dataSourceQuery.hasRowOffset());
     assertFalse(dataSourceQuery.hasOptions());
@@ -397,5 +403,36 @@ public class QuerySplitterTest extends TestCase {
     assertFalse(dataSourceQuery.hasUserFormatOptions());
     assertFalse(dataSourceQuery.hasGroup());
     assertFalse(dataSourceQuery.hasPivot());
+  }
+
+  public void testSortAndPaginationWithSkipping() throws Exception {
+    Query testQuery = new Query();
+    testQuery.copyFrom(q);
+    testQuery.setGroup(null);
+    testQuery.setFilter(null);
+    testQuery.setPivot(null);
+    testQuery.setRowSkipping(5);
+    
+    QueryPair split = QuerySplitter.splitQuery(testQuery, Capabilities.SORT_AND_PAGINATION);
+    Query dataSourceQuery = split.getDataSourceQuery();
+    Query completionQuery = split.getCompletionQuery();
+
+    // The original query contains sort, skipping, limit, offset. We split it
+    // for sort and pagination capabilities. Data source query should have sort,
+    // and the completion query should have both skipping and pagination.
+    assertFalse(dataSourceQuery.hasSelection());
+    assertFalse(dataSourceQuery.hasFilter());
+    assertTrue(dataSourceQuery.hasSort());
+    assertFalse(dataSourceQuery.hasRowSkipping());
+    assertFalse(dataSourceQuery.hasRowLimit());
+    assertFalse(dataSourceQuery.hasRowOffset());
+    assertFalse(dataSourceQuery.hasOptions());
+    assertFalse(dataSourceQuery.hasLabels());
+    assertFalse(dataSourceQuery.hasUserFormatOptions());
+    assertFalse(dataSourceQuery.hasGroup());
+    assertFalse(dataSourceQuery.hasPivot());
+
+    testQuery.setSort(null);
+    assertEquals(testQuery, completionQuery);
   }
 }

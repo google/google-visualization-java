@@ -162,6 +162,7 @@ public final class QuerySplitter {
       dataSourceQuery.setUserFormatOptions(null);
 
       try {
+        dataSourceQuery.setRowSkipping(0);
         dataSourceQuery.setRowLimit(-1);
         dataSourceQuery.setRowOffset(0);
       } catch (InvalidQueryException e) {
@@ -224,11 +225,21 @@ public final class QuerySplitter {
 
       completionQuery.setSelection(completionSelection);
     } else {
-      // When there is no pivoting, sql does everything (except options, labels, format).
+      // When there is no pivoting, sql does everything (except skipping, options, labels, format).
       dataSourceQuery.copyFrom(query);
       dataSourceQuery.setOptions(null);
       completionQuery.setOptions(query.getOptions());
       try {
+        // If there is skipping pagination should be done in the completion query
+        if (query.hasRowSkipping()) {
+          dataSourceQuery.setRowSkipping(0);
+          dataSourceQuery.setRowLimit(-1);
+          dataSourceQuery.setRowOffset(0);
+          
+          completionQuery.copyRowSkipping(query);
+          completionQuery.copyRowLimit(query);
+          completionQuery.copyRowOffset(query); 
+        }
         if (query.hasLabels()) {
           dataSourceQuery.setLabels(null);
           QueryLabels labels = query.getLabels();
@@ -256,9 +267,9 @@ public final class QuerySplitter {
 
   /**
    * Splits the query for a data source with capabilities SORT_AND_PAGINATION.
-   * Algorithm: if the query has filter, grouping, or pivoting requirements the query is
+   * Algorithm: if the query has filter, grouping, pivoting or skipping requirements the query is
    * split as in the NONE case.
-   * If the query does not have filter, grouping, or pivoting the data source query
+   * If the query does not have filter, grouping, pivoting or skipping the data source query
    * receives any sorting or pagination requirements and the completion query receives
    * any selection requirements.
    *
@@ -279,9 +290,21 @@ public final class QuerySplitter {
       // The query is copied to the completion query.
       completionQuery.copyFrom(query);
     } else {
-      dataSourceQuery.setSort(query.getSort());
-      dataSourceQuery.copyRowLimit(query);
-      dataSourceQuery.copyRowOffset(query);
+      // The execution order of the 3 relevant operators is:
+      // sort -> skip -> paginate (limit and offset).
+      // Skipping is not a possible data source capability, Therefore:
+      // 1. Sorting can be performed in the data source query.
+      // 2. Pagination should be performed in the data source query IFF skipping
+      //    isn't stated in the original query.
+      dataSourceQuery.setSort(query.getSort());     
+      if (query.hasRowSkipping()) {
+        completionQuery.copyRowSkipping(query);
+        completionQuery.copyRowLimit(query);
+        completionQuery.copyRowOffset(query);
+      } else {
+        dataSourceQuery.copyRowLimit(query);
+        dataSourceQuery.copyRowOffset(query);
+      }
 
       completionQuery.setSelection(query.getSelection());
       completionQuery.setOptions(query.getOptions());

@@ -147,7 +147,13 @@ public enum MessagesEnum {
    * @param value
    */
    INVALID_OFFSET,
-   
+
+   /**
+    * Invalid value for row skipping.
+    * @param value
+    */
+    INVALID_SKIPPING,
+
    /**
     * Column cannot appear more than once.
     * @param column id
@@ -202,6 +208,8 @@ public enum MessagesEnum {
         "NO_COL_IN_GROUP_AND_PIVOT");
     QUERY_ERROR_TO_MESSAGE.put(MessagesEnum.INVALID_OFFSET,
         "INVALID_OFFSET");
+    QUERY_ERROR_TO_MESSAGE.put(MessagesEnum.INVALID_SKIPPING,
+        "INVALID_SKIPPING");
     QUERY_ERROR_TO_MESSAGE.put(MessagesEnum.COLUMN_ONLY_ONCE,
         "COLUMN_ONLY_ONCE");
   }

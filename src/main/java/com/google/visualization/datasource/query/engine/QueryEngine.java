@@ -44,6 +44,7 @@ import com.google.visualization.datasource.query.SimpleColumn;
 
 import com.ibm.icu.util.ULocale;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A collection of static methods that perform the operations involved in executing a query,
- * i.e., selection, sorting, paging (limit and offset), grouping and pivoting, filtering, 
+ * i.e., selection, sorting, paging (limit and offset), grouping and pivoting, filtering, skipping,
  * applying labels, and custom formatting. This also takes care of calculated columns.
  * This also takes care of scalar function columns.
  *
@@ -125,6 +126,7 @@ public final class QueryEngine {
       table = performFilter(table, query);
       table = performGroupingAndPivoting(table, query, columnIndices, columnLookups);
       table = performSort(table, query, locale);
+      table = performSkipping(table, query);
       table = performPagination(table, query);
 
       AtomicReference<ColumnIndices> columnIndicesReference =
@@ -138,6 +140,41 @@ public final class QueryEngine {
       // Should not happen.
     }
     return table;
+  }
+
+  /**
+   * Returns a table consisted of a subset of rows of the input table. 
+   * We select the first out of every k rows in the table according to the 
+   * skipping value in the query.
+   * If there is no need to do anything, returns the original table.
+   * 
+   * @param table The original table.
+   * @param query The query.
+   *
+   * @return The skipped table, or the original if no skipping is needed. 
+   */
+  private static DataTable performSkipping(DataTable table, Query query)
+      throws TypeMismatchException {
+    int rowSkipping = query.getRowSkipping();
+    
+    // Return the original table if no skipping is needed
+    if (rowSkipping <= 1) {
+      return table;
+    }
+
+    // Add the first out of every k rows of the original table to TableRow
+    int numRows = table.getNumberOfRows();
+    List<TableRow> relevantRows = new ArrayList<TableRow>();
+    for (int rowIndex = 0; rowIndex < numRows; rowIndex += rowSkipping) {
+        relevantRows.add(table.getRows().get(rowIndex));
+    }
+    
+    // Create a table out of the TableRow array
+    DataTable newTable = new DataTable();
+    newTable.addColumns(table.getColumnDescriptions());
+    newTable.addRows(relevantRows);
+    
+    return newTable;
   }
 
   /**

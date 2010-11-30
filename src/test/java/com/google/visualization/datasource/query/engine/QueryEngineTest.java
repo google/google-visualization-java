@@ -1551,4 +1551,120 @@ public class QueryEngineTest extends TestCase {
     assertEquals("JOHN", res.getValue(0, 0).toString());
     assertEquals("$1000", res.getCell(0, 1).getFormattedValue());
   }
+
+  public void testSkipping() throws Exception {
+    DataTable res = MockDataSource.getData(1);
+    
+    // The returned mock data table should consist of 45 rows
+    assertEquals(45, res.getNumberOfRows());
+    
+    Query q = QueryBuilder.getInstance().parseQuery("SELECT Year, Band, Songs SKIPPING 10");
+    
+    q.validate();
+
+    DataTable result = QueryEngine.executeQuery(q, res, ULocale.US);
+
+    // Test column description
+    List<ColumnDescription> cols =  result.getColumnDescriptions();
+
+    assertEquals(3, cols.size());
+    assertEquals("Year", cols.get(0).getId());
+    assertEquals("Band", cols.get(1).getId());
+    assertEquals("Songs", cols.get(2).getId());
+
+    String[][] resultStrings = MockDataSource.queryResultToStringMatrix(result);
+    
+    // Querying a table of 45 rows with skipping value set to 10 should 
+    // result in a 5 rows data table
+    assertEquals(5, resultStrings.length);
+    
+    // The selected rows should be 0, 10, 20...
+    assertStringArraysEqual(new String[]{"1994", "Contraband", "2.0"},
+      resultStrings[0]);
+    assertStringArraysEqual(new String[]{"1994", "Youthanasia", "2.0"},
+      resultStrings[1]);
+    assertStringArraysEqual(new String[]{"1996", "Contraband", "2.0"},
+      resultStrings[2]);
+    assertStringArraysEqual(new String[]{"2003", "Collection", "2.0"},
+      resultStrings[3]);
+    assertStringArraysEqual(new String[]{"2003", "Collection", "2.0"},
+      resultStrings[4]); 
+  }
+  
+  public void testSkippingWithPagination() throws Exception {
+    DataTable res = MockDataSource.getData(1);
+
+    // The returned mock data table should consist of 45 rows
+    assertEquals(45, res.getNumberOfRows());
+    
+    Query q = QueryBuilder.getInstance().parseQuery("SELECT Year, Band, Songs " + 
+        "SKIPPING 4 LIMIT 4 OFFSET 4");
+    
+    q.validate();
+
+    DataTable result = QueryEngine.executeQuery(q, res, ULocale.US);
+
+    // Test column description
+    List<ColumnDescription> cols =  result.getColumnDescriptions();
+
+    assertEquals(3, cols.size());
+    assertEquals("Year", cols.get(0).getId());
+    assertEquals("Band", cols.get(1).getId());
+    assertEquals("Songs", cols.get(2).getId());
+
+    String[][] resultStrings = MockDataSource.queryResultToStringMatrix(result);
+    
+    // Querying a table of 45 rows with skipping value set to 4 should 
+    // result in a 13 rows data table. Limit value set to 4 should result in
+    // 4 rows subset of the 13 rows. Offset value set to 4 dictates that the
+    // subset will be rows 4-7 of the 13 rows.
+    assertEquals(4, resultStrings.length);
+    
+    assertStringArraysEqual(new String[]{"1996", "Contraband", "2.0"},
+      resultStrings[0]);
+    assertStringArraysEqual(new String[]{"1996", "Contraband", "2.0"},
+      resultStrings[1]);
+    assertStringArraysEqual(new String[]{"1996", "Youthanasia", "2.0"},
+      resultStrings[2]);
+    assertStringArraysEqual(new String[]{"1996", "Youthanasia", "2.0"},
+      resultStrings[3]);  
+  }
+  
+  public void testSkippingWithFiltering() throws Exception {
+    DataTable res = MockDataSource.getData(1);
+    
+    // The returned mock data table should consist of 45 rows
+    assertEquals(45, res.getNumberOfRows());
+
+    Query q = QueryBuilder.getInstance().parseQuery("SELECT Year, Band, Songs " + 
+        "WHERE Fans <= 3000 SKIPPING 10");
+    
+    q.validate();
+
+    DataTable result = QueryEngine.executeQuery(q, res, ULocale.US);
+
+    // Test column description
+    List<ColumnDescription> cols =  result.getColumnDescriptions();
+
+    assertEquals(3, cols.size());
+    assertEquals("Year", cols.get(0).getId());
+    assertEquals("Band", cols.get(1).getId());
+    assertEquals("Songs", cols.get(2).getId());
+
+    String[][] resultStrings = MockDataSource.queryResultToStringMatrix(result);
+    
+    // The WHERE clause reduce the result number of rows to 31. 
+    // Skipping value is set to 10, so the resulting table should
+    // consist of 4 rows.
+    assertEquals(4, resultStrings.length);
+    
+    assertStringArraysEqual(new String[]{"1994", "Contraband", "2.0"},
+      resultStrings[0]);
+    assertStringArraysEqual(new String[]{"1996", "Contraband", "2.0"},
+      resultStrings[1]);
+    assertStringArraysEqual(new String[]{"2003", "Collection", "2.0"},
+      resultStrings[2]);
+    assertStringArraysEqual(new String[]{"2003", "Collection", "2.0"},
+      resultStrings[3]);  
+  }
 }

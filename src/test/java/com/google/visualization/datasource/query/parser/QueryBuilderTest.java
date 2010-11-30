@@ -310,6 +310,45 @@ public class QueryBuilderTest extends TestCase {
     }
   }
 
+  // SKIPPING tests
+
+  public void testSkipping() throws Exception {
+    Query query = QueryBuilder.getInstance().parseQuery(" skipping 10 ");
+    assertEquals(10, query.getRowSkipping());
+  }
+  
+  public void testNegativeSkipping() throws Exception {
+    try {
+      Query query = QueryBuilder.getInstance().parseQuery(" skipping -1 ");
+      fail("Should have thrown an exception.");
+    } catch (InvalidQueryException e) {
+      // Expected behavior.
+    }
+  }
+  
+  public void testZeroSkipping() throws Exception {
+    // Zero value is OK, it means no skipping
+    Query query = QueryBuilder.getInstance().parseQuery(" skipping 0 ");
+    assertEquals(0, query.getRowSkipping());
+  }
+  
+  public void testSkippingLimitAndOffset() throws Exception {
+    Query query = QueryBuilder.getInstance().parseQuery(" skipping 10 limit 100 offset 10  ");
+    assertEquals(10, query.getRowSkipping());
+    assertEquals(100, query.getRowLimit());
+    assertEquals(10, query.getRowOffset());
+  }
+  
+  public void testUnorderedLimitSkippingAndOffset() throws Exception {
+    try {
+      Query query = QueryBuilder.getInstance().parseQuery(" limit 100 skipping 10 offset 10 ");
+      fail("Should have thrown an exception.");
+    }
+    catch (InvalidQueryException e) {
+      // Expected behavior.
+    }
+  }
+
   // LABEL clause tests
 
   public void testOneValidLabelWithDoubleQuotes() throws Exception {

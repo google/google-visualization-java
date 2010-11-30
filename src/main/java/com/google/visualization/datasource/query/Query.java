@@ -32,7 +32,7 @@ import java.util.Set;
  * Holds the query data and clauses. This class is the result of parsing the query
  * string that comes from the user.
  * The clauses that can be included in a query are: select, filter, sort, group by, pivot, options,
- * labels, format, limit, and offset.
+ * labels, format, limit, offset and skipping.
  * For more details see the
  * <a href="http://code.google.com/apis/visualization/documentation/querylanguage.html">
  * query language reference
@@ -112,6 +112,17 @@ public class Query {
    */
   private QueryPivot pivot = null;
 
+  /**
+   * The number of rows to skip when selecting only a subset of the rows using
+   * skipping clause, e.g., skipping 4.
+   * If a skipping clause, "skip k",  is added to the query, the resulting table
+   * will be consisted of the first row of every k rows of the table returned by
+   * the earlier part of the query, when k corresponds to rowSkipping value.
+   * For example, if rowSkipping = 10 the returned table will consist of rows 0, 10...
+   * The default value is 0, meaning no skipping should be performed.
+   */
+  private int rowSkipping = 0;
+  
   /**
    * Max number of rows to return to caller.
    * If the caller specified this parameter, and the data table returned from
@@ -293,6 +304,59 @@ public class Query {
     return pivot != null && !pivot.getColumnIds().isEmpty();
   }
 
+  /**
+   * Returns the number of rows to skip when selecting only a subset of
+   * the rows using skipping clause, e.g., skipping 4.
+   * The default value is 0, meaning no skipping should be performed.
+   *
+   * @return The number of rows to skip between each row selection.
+   */
+  public int getRowSkipping() {
+    return rowSkipping;
+  }
+
+  /**
+   * Sets the number of rows to skip when selecting only a subset of
+   * the rows using skipping clause, e.g., skipping 4.
+   * The default value is 0, meaning no skipping should be performed.
+   *
+   * If there is is an attempt to set the skipping value to non positive value,
+   * then an InvalidQueryException is thrown.
+   *
+   * @param rowSkipping The number of rows to skip between each row selection.
+   *        0 value means no skipping.
+   *
+   * @throws InvalidQueryException Thrown if an invalid value is specified.
+   */
+  public void setRowSkipping(int rowSkipping) throws InvalidQueryException {
+    if (rowSkipping < 0) {
+      String messageToLogAndUser = MessagesEnum.INVALID_SKIPPING.getMessageWithArgs(
+          localeForUserMessages, Integer.toString(rowSkipping));
+      log.error(messageToLogAndUser);
+      throw new InvalidQueryException(messageToLogAndUser);
+    }
+    this.rowSkipping = rowSkipping;
+  }
+
+  /**
+   * Sets the number of rows to skip when selecting only a subset of
+   * the row, based on another query.
+   * 
+   * @param originalQuery The query from which the row skipping should be taken.
+   */
+  public void copyRowSkipping(Query originalQuery) {
+    rowSkipping = originalQuery.getRowSkipping();
+  }
+
+  /**
+   * Returns true if this query has a row skipping set. A value of 0 means no
+   * skipping.
+   *
+   * @return True if this query has a row skipping set.
+   */
+  public boolean hasRowSkipping() {
+    return rowSkipping > 0;
+  }
 
   /**
    * Returns the maximum number of rows to return to the caller.
@@ -498,8 +562,8 @@ public class Query {
    */
   public boolean isEmpty() {
     return (!hasSort() && !hasSelection() && !hasFilter() && !hasGroup() && !hasPivot()
-        && !hasRowLimit() && !hasRowOffset() && !hasUserFormatOptions()  && !hasLabels()
-        && !hasOptions());
+            && !hasRowSkipping() && !hasRowLimit() && !hasRowOffset()
+            && !hasUserFormatOptions()  && !hasLabels() && !hasOptions());
   }
   
   
@@ -522,6 +586,7 @@ public class Query {
     setFilter(query.getFilter());
     setGroup(query.getGroup());
     setPivot(query.getPivot());
+    copyRowSkipping(query);
     copyRowLimit(query);
     copyRowOffset(query);
     setUserFormatOptions(query.getUserFormatOptions());
@@ -925,6 +990,7 @@ public class Query {
     result = prime * result + ((labels == null) ? 0 : labels.hashCode());
     result = prime * result + ((options == null) ? 0 : options.hashCode());
     result = prime * result + ((pivot == null) ? 0 : pivot.hashCode());
+    result = prime * result + rowSkipping;
     result = prime * result + rowLimit;
     result = prime * result + rowOffset;
     result = prime * result + ((selection == null) ? 0 : selection.hashCode());
@@ -978,6 +1044,9 @@ public class Query {
         return false;
       }
     } else if (!pivot.equals(other.pivot)) {
+      return false;
+    }
+    if (rowSkipping != other.rowSkipping) {
       return false;
     }
     if (rowLimit != other.rowLimit) {
@@ -1072,6 +1141,9 @@ public class Query {
     }
     if (hasSort()) {
       clauses.add("ORDER BY " + sort.toQueryString());
+    }
+    if (hasRowSkipping()) {
+      clauses.add("SKIPPING " + rowSkipping);
     }
     if (hasRowLimit()) {
       clauses.add("LIMIT " + rowLimit);
