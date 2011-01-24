@@ -84,62 +84,71 @@ public class ResponseWriterTest extends TestCase {
   public void testSetServletResponseJson() throws DataSourceException {
     // Basic test 1.
     DataTable data = getTestDataTable();
-    DataSourceParameters dsParams = new DataSourceParameters("responseHandler:babylon;out:json");
+    DataSourceParameters dsParamsJson = 
+        new DataSourceParameters("responseHandler:babylon;out:json");
     ResponseStatus responseStatus = new ResponseStatus(StatusType.OK, null, null);
 
-    String expected = "{version:'0.6',status:'ok',"
-        + "sig:'314016083',table:"
-        + "{cols:[{id:'A',label:'col0',type:'string',pattern:''},"
-        + "{id:'B',label:'col1',type:'number',pattern:''},"
-        + "{id:'C',label:'col2',type:'boolean',pattern:''}],"
-        + "rows:[{c:[{v:'aaa'},{v:222.0,f:'222'},{v:false}]},"
-        + "{c:[{v:''},{v:111.0},{v:true}]},"
-        + "{c:[{v:'bbb'},{v:333.0},{v:true}]},"
-        + "{c:[{v:'ddd'},{v:222.0},{v:false}]}]}}";
+    String expected = "{\"version\":\"0.6\",\"status\":\"ok\","
+        + "\"sig\":\"2087475733\",\"table\":"
+        + "{\"cols\":[{\"id\":\"A\",\"label\":\"col0\",\"type\":\"string\",\"pattern\":\"\"},"
+        + "{\"id\":\"B\",\"label\":\"col1\",\"type\":\"number\",\"pattern\":\"\"},"
+        + "{\"id\":\"C\",\"label\":\"col2\",\"type\":\"boolean\",\"pattern\":\"\"}],"
+        + "\"rows\":[{\"c\":[{\"v\":\"aaa\"},{\"v\":222.0,\"f\":\"222\"},{\"v\":false}]},"
+        + "{\"c\":[{\"v\":\"\"},{\"v\":111.0},{\"v\":true}]},"
+        + "{\"c\":[{\"v\":\"bbb\"},{\"v\":333.0},{\"v\":true}]},"
+        + "{\"c\":[{\"v\":\"ddd\"},{\"v\":222.0},{\"v\":false}]}]}}";
 
     assertEquals(expected, JsonRenderer.renderJsonResponse(
-        dsParams, responseStatus, data, false).toString());
+        dsParamsJson, responseStatus, data).toString());
+    
+    DataSourceParameters dsParamsJsonP = 
+        new DataSourceParameters("responseHandler:babylon;out:jsonp");
     assertEquals("babylon(" + expected + ");", JsonRenderer.renderJsonResponse(
-        dsParams, responseStatus, data, true).toString());
+        dsParamsJsonP, responseStatus, data).toString());
 
     // Basic test 2.
     data = getTestDataTable();
-    dsParams = new DataSourceParameters("reqId:90210;responseHandler:babylon;");
+    dsParamsJson = new DataSourceParameters("reqId:90210;responseHandler:babylon;");
     responseStatus = new ResponseStatus(StatusType.OK, null, null);
 
-    expected = "{version:'0.6',reqId:'90210',status:'ok',"
-        + "sig:'314016083',table:"
-        + "{cols:[{id:'A',label:'col0',type:'string',pattern:''},"
-        + "{id:'B',label:'col1',type:'number',pattern:''},"
-        + "{id:'C',label:'col2',type:'boolean',pattern:''}],"
-        + "rows:[{c:[{v:'aaa'},{v:222.0,f:'222'},{v:false}]},"
-        + "{c:[{v:''},{v:111.0},{v:true}]},"
-        + "{c:[{v:'bbb'},{v:333.0},{v:true}]},"
-        + "{c:[{v:'ddd'},{v:222.0},{v:false}]}]}}";
+    expected = "{\"version\":\"0.6\",\"reqId\":\"90210\",\"status\":\"ok\","
+        + "\"sig\":\"2087475733\",\"table\":"
+        + "{\"cols\":[{\"id\":\"A\",\"label\":\"col0\",\"type\":\"string\",\"pattern\":\"\"},"
+        + "{\"id\":\"B\",\"label\":\"col1\",\"type\":\"number\",\"pattern\":\"\"},"
+        + "{\"id\":\"C\",\"label\":\"col2\",\"type\":\"boolean\",\"pattern\":\"\"}],"
+        + "\"rows\":[{\"c\":[{\"v\":\"aaa\"},{\"v\":222.0,\"f\":\"222\"},{\"v\":false}]},"
+        + "{\"c\":[{\"v\":\"\"},{\"v\":111.0},{\"v\":true}]},"
+        + "{\"c\":[{\"v\":\"bbb\"},{\"v\":333.0},{\"v\":true}]},"
+        + "{\"c\":[{\"v\":\"ddd\"},{\"v\":222.0},{\"v\":false}]}]}}";
 
     assertEquals(expected, JsonRenderer.renderJsonResponse(
-        dsParams, responseStatus, data, false).toString());
+        dsParamsJson, responseStatus, data).toString());
+    
+    dsParamsJsonP = new DataSourceParameters("reqId:90210;responseHandler:babylon;out:jsonp");
     assertEquals("babylon(" + expected + ");", JsonRenderer.renderJsonResponse(
-        dsParams, responseStatus, data, true).toString());
+        dsParamsJsonP, responseStatus, data).toString());
   }
 
   public void testGenerateJsonResponseError() throws DataSourceException {
     DataTable data = getTestDataTable();
-    DataSourceParameters dsParams =
+    DataSourceParameters dsParamsJson =
         new DataSourceParameters("reqId:90210;responseHandler:babylon;");
     ResponseStatus responseStatus = new ResponseStatus(
         StatusType.ERROR,
         ReasonType.INTERNAL_ERROR,
         "this is me not you why it is that not knowing me cave man");
 
-    String expected = "{version:'0.6',reqId:'90210',status:'error',errors:"
-        + "[{reason:'internal_error',message:'Internal error',detailed_message:'this is me not "
-        + "you why it is that not knowing me cave man'}]}";
+    String expected = "{\"version\":\"0.6\",\"reqId\":\"90210\",\"status\":\"error\",\"errors\":"
+        + "[{\"reason\":\"internal_error\",\"message\":\"Internal error\",\"detailed_message\":"
+        + "\"this is me not you why it is that not knowing me cave man\"}]}";
     assertEquals(
         expected,
-        JsonRenderer.renderJsonResponse(dsParams, responseStatus, data, false).toString());
+        JsonRenderer.renderJsonResponse(dsParamsJson, responseStatus, data).toString());
+    
+    DataSourceParameters dsParamsJsonP =
+        new DataSourceParameters("reqId:90210;responseHandler:babylon;out:jsonp");
     assertEquals(
         "babylon(" + expected + ");",
-        JsonRenderer.renderJsonResponse(dsParams, responseStatus, data, true).toString());
+        JsonRenderer.renderJsonResponse(dsParamsJsonP, responseStatus, data).toString());
   }
 }

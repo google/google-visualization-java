@@ -16,6 +16,7 @@ package com.google.visualization.datasource.render;
 
 import com.google.common.collect.Lists;
 import com.google.visualization.datasource.base.DataSourceParameters;
+import com.google.visualization.datasource.base.OutputType;
 import com.google.visualization.datasource.base.ReasonType;
 import com.google.visualization.datasource.base.ResponseStatus;
 import com.google.visualization.datasource.base.StatusType;
@@ -61,7 +62,7 @@ public class JsonRenderer {
    * @return a String-form 64-bit hash of this table.
    */
   public static String getSignature(DataTable data) {
-    String tableAsString = renderDataTable(data, true, false).toString();
+    String tableAsString = renderDataTable(data, true, false, true).toString();
     // Casting to long to avoid bug with abs(Integer.MIN_VALUE) being negative.
     long longHashCode = tableAsString.hashCode();
     return String.valueOf(Math.abs(longHashCode));
@@ -78,14 +79,14 @@ public class JsonRenderer {
   private static String getFaultString(ReasonType reasonType, String description) {
     List<String> objectParts = Lists.newArrayList();
     if (reasonType != null) {
-      objectParts.add("reason:'" + reasonType.lowerCaseString() + "'");
-      objectParts.add("message:'" + EscapeUtil.jsonEscape(
-              reasonType.getMessageForReasonType(null)) + "'");
+      objectParts.add("\"reason\":\"" + reasonType.lowerCaseString() + "\"");
+      objectParts.add("\"message\":\"" + EscapeUtil.jsonEscape(
+              reasonType.getMessageForReasonType(null)) + "\"");
     }
 
     if (description != null) {
-      objectParts.add("detailed_message:'" + EscapeUtil.jsonEscape(description)
-          + "'");
+      objectParts.add("\"detailed_message\":\"" + EscapeUtil.jsonEscape(description)
+          + "\"");
     }
     return new StrBuilder("{").appendWithSeparators(objectParts, ",").append("}").toString();
   }
@@ -102,18 +103,18 @@ public class JsonRenderer {
   public static CharSequence renderJsonResponse(
       DataSourceParameters dsParams,
       ResponseStatus responseStatus,
-      DataTable data,
-      boolean isJsonp) {
+      DataTable data) {
     StrBuilder sb = new StrBuilder();
+    boolean isJsonp = dsParams.getOutputType() == OutputType.JSONP;
     if (isJsonp) {
       sb.append(dsParams.getResponseHandler()).append("(");
     }
-    sb.append("{version:'0.6'");
+    sb.append("{\"version\":\"0.6\"");
 
     // If no reqId found in the request, do not return reqId in the response.
     String requestId = dsParams.getRequestId();
     if (requestId != null) {
-      sb.append(",reqId:'").append(EscapeUtil.jsonEscape(requestId)).append("'");
+      sb.append(",\"reqId\":\"").append(EscapeUtil.jsonEscape(requestId)).append("\"");
     }
 
     // Check signature.
@@ -128,7 +129,7 @@ public class JsonRenderer {
     }
 
     StatusType statusType = responseStatus.getStatusType();
-    sb.append(",status:'").append(statusType.lowerCaseString()).append("'");
+    sb.append(",\"status\":\"").append(statusType.lowerCaseString()).append("\"");
 
     // There are reason and messages if the status is WARNING/ERROR.
     if (statusType != StatusType.OK) {
@@ -141,10 +142,10 @@ public class JsonRenderer {
             warningJsonStrings.add(getFaultString(warning.getReasonType(), warning.getMessage()));
           }
         }
-        sb.append(",warnings:[").appendWithSeparators(warningJsonStrings, ",").append("]");
+        sb.append(",\"warnings\":[").appendWithSeparators(warningJsonStrings, ",").append("]");
 
       } else { // Status is error.
-        sb.append(",errors:[");
+        sb.append(",\"errors\":[");
         sb.append(getFaultString(responseStatus.getReasonType(), responseStatus.getDescription()));
         sb.append("]");
       }
@@ -153,8 +154,8 @@ public class JsonRenderer {
     if ((statusType != StatusType.ERROR) && (data != null)) {
       // MessageType OK or WARNING,
       // so need to attach a data table (and a signature).
-      sb.append(",sig:'").append(JsonRenderer.getSignature(data)).append("'");
-      sb.append(",table:").append(JsonRenderer.renderDataTable(data, true, true));
+      sb.append(",\"sig\":\"").append(JsonRenderer.getSignature(data)).append("\"");
+      sb.append(",\"table\":").append(JsonRenderer.renderDataTable(data, true, true, isJsonp));
     }
     
     sb.append("}");
@@ -172,11 +173,18 @@ public class JsonRenderer {
    *     but without the data rows.
    * @param includeFormatting False if formatting information should be omitted from the
    *     generated json.
-   *
+   * @param renderDateAsDateConstructor True -> date constructor, False -> date string.
+   *     True if date values should be rendered into the json string as a call to
+   *     Date object constructor (usually used when rendering jsonp string). 
+   *     False if it should should be rendered as string.
+   *     For example, when rendering the date 1/1/2011 as Date object constructor its value
+   *     in the json string will be new Date(2011,1,1), and when rendered as string
+   *     will be "Date(2011,1,1)"
+   *       
    * @return The char sequence with the Json string.
    */
   public static CharSequence renderDataTable(DataTable dataTable, boolean includeValues, 
-      boolean includeFormatting) {
+      boolean includeFormatting, boolean renderDateAsDateConstructor) {
     if (dataTable.getColumnDescriptions().isEmpty()) {
       return "";
     }
@@ -185,7 +193,7 @@ public class JsonRenderer {
 
     StringBuilder sb = new StringBuilder();
     sb.append("{");
-    sb.append("cols:["); // column descriptions.
+    sb.append("\"cols\":["); // column descriptions.
 
     ColumnDescription col;
     for (int colId = 0; colId < columnDescriptions.size(); colId++) {
@@ -198,7 +206,7 @@ public class JsonRenderer {
     sb.append("]"); // columns.
 
     if (includeValues) {
-      sb.append(",rows:[");
+      sb.append(",\"rows\":[");
       List<TableCell> cells;
       TableCell cell;
       ColumnDescription columnDescription;
@@ -207,15 +215,15 @@ public class JsonRenderer {
       for (int rowId = 0; rowId < rows.size(); rowId++) {
         TableRow tableRow = rows.get(rowId);
         cells = tableRow.getCells();
-        sb.append("{c:[");
+        sb.append("{\"c\":[");
         for (int cellId = 0; cellId < cells.size(); cellId++) {
           cell = cells.get(cellId);
           if (cellId < (cells.size() - 1)) {
-            appendCellJson(cell, sb, includeFormatting, false);
+            appendCellJson(cell, sb, includeFormatting, false, renderDateAsDateConstructor);
             sb.append(",");
           } else {
             // Last column in the row.
-            appendCellJson(cell, sb, includeFormatting, true);
+            appendCellJson(cell, sb, includeFormatting, true, renderDateAsDateConstructor);
           }
         }
         sb.append("]");
@@ -223,7 +231,7 @@ public class JsonRenderer {
         // Row properties.
         String customPropertiesString = getPropertiesMapString(tableRow.getCustomProperties());
         if (customPropertiesString != null) {
-          sb.append(",p:").append(customPropertiesString);
+          sb.append(",\"p\":").append(customPropertiesString);
         }
 
         sb.append("}"); // cells.
@@ -238,7 +246,7 @@ public class JsonRenderer {
     // Table properties.
     String customPropertiesString = getPropertiesMapString(dataTable.getCustomProperties());
     if (customPropertiesString != null) {
-      sb.append(",p:").append(customPropertiesString);
+      sb.append(",\"p\":").append(customPropertiesString);
     }
 
     sb.append("}"); // table.
@@ -252,11 +260,19 @@ public class JsonRenderer {
    * @param sb The string buffer to append to.
    * @param includeFormatting Flase if formatting information should be omitted from the json.
    * @param isLastColumn Is this the last column in the row.
+   * @param renderDateAsDateConstructor True -> date constructor, False -> date string.
+   *     True if date values should be rendered into the json string as a call to
+   *     Date object constructor (usually used when rendering jsonp string). 
+   *     False if it should should be rendered as string.
+   *     For example, when rendering the date 1/1/2011 as Date object constructor its value
+   *     in the json string will be new Date(2011,1,1), and when rendered as string
+   *     will be "Date(2011,1,1)"
    *
    * @return The input string builder.
    */
   public static StringBuilder appendCellJson(TableCell cell, 
-      StringBuilder sb, boolean includeFormatting, boolean isLastColumn) {
+      StringBuilder sb, boolean includeFormatting, boolean isLastColumn,
+      boolean renderDateAsDateConstructor) {
     Value value = cell.getValue();
     ValueType type = cell.getType();
     StringBuilder valueJson = new StringBuilder();
@@ -276,20 +292,28 @@ public class JsonRenderer {
           valueJson.append(((BooleanValue) value).getValue());
           break;
         case DATE:
-          valueJson.append("new Date(");
+          valueJson.append("Date(");
           dateValue = (DateValue) value;
           valueJson.append(dateValue.getYear()).append(",");
           valueJson.append(dateValue.getMonth()).append(",");
           valueJson.append(dateValue.getDayOfMonth());
           valueJson.append(")");
+          if (renderDateAsDateConstructor) {
+            // Rendering date as a call to Date constructor, e.g new Date(2011,1,1)
+            valueJson.insert(0, "new ");
+          } else {
+            // Rendering date in string format, e.g "Date(2011,1,1)"
+            valueJson.insert(0, "\"");
+            valueJson.append("\"");           
+          }
           break;
         case NUMBER:
           valueJson.append(((NumberValue) value).getValue());
           break;
         case TEXT:
-          valueJson.append("'");
+          valueJson.append("\"");
           valueJson.append(EscapeUtil.jsonEscape(value.toString()));
-          valueJson.append("'");
+          valueJson.append("\"");
           break;
         case TIMEOFDAY:
           valueJson.append("[");
@@ -302,7 +326,7 @@ public class JsonRenderer {
           break;
         case DATETIME:
           calendar = ((DateTimeValue) value).getCalendar();
-          valueJson.append("new Date(");
+          valueJson.append("Date(");
           valueJson.append(calendar.get(GregorianCalendar.YEAR)).append(",");
           valueJson.append(calendar.get(GregorianCalendar.MONTH)).append(",");
           valueJson.append(calendar.get(GregorianCalendar.DAY_OF_MONTH));
@@ -312,6 +336,14 @@ public class JsonRenderer {
           valueJson.append(calendar.get(GregorianCalendar.MINUTE)).append(",");
           valueJson.append(calendar.get(GregorianCalendar.SECOND));
           valueJson.append(")");
+          if (renderDateAsDateConstructor) {
+            // Rendering date as a call to Date constructor, e.g new Date(2011,1,1,0,0,0)
+            valueJson.insert(0, "new ");
+          } else {
+            // Rendering date in string format, e.g "Date(2011,1,1,0,0,0)"
+            valueJson.insert(0, "\"");
+            valueJson.append("\"");           
+          }
           break;
         default:
           throw new IllegalArgumentException("Illegal value Type " + type);
@@ -335,14 +367,14 @@ public class JsonRenderer {
     if ((isLastColumn) || (!isJsonNull)) {
       sb.append("{");
       // Value
-      sb.append("v:").append(valueJson);
+      sb.append("\"v\":").append(valueJson);
       // Formatted value
       if ((includeFormatting) && (!escapedFormattedString.equals(""))) {
-        sb.append(",f:'").append(escapedFormattedString).append("'");
+        sb.append(",\"f\":\"").append(escapedFormattedString).append("\"");
       }
       String customPropertiesString = getPropertiesMapString(cell.getCustomProperties());
       if (customPropertiesString != null) {
-        sb.append(",p:").append(customPropertiesString);
+        sb.append(",\"p\":").append(customPropertiesString);
       }
       sb.append("}");
     }
@@ -360,14 +392,14 @@ public class JsonRenderer {
   public static StringBuilder appendColumnDescriptionJson(
       ColumnDescription col, StringBuilder sb) {
     sb.append("{");
-    sb.append("id:'").append(EscapeUtil.jsonEscape(col.getId())).append("',");
-    sb.append("label:'").append(EscapeUtil.jsonEscape(col.getLabel())).append("',");
-    sb.append("type:'").append(col.getType().getTypeCodeLowerCase()).append("',");
-    sb.append("pattern:'").append(EscapeUtil.jsonEscape(col.getPattern())).append("'");
+    sb.append("\"id\":\"").append(EscapeUtil.jsonEscape(col.getId())).append("\",");
+    sb.append("\"label\":\"").append(EscapeUtil.jsonEscape(col.getLabel())).append("\",");
+    sb.append("\"type\":\"").append(col.getType().getTypeCodeLowerCase()).append("\",");
+    sb.append("\"pattern\":\"").append(EscapeUtil.jsonEscape(col.getPattern())).append("\"");
 
     String customPropertiesString = getPropertiesMapString(col.getCustomProperties());
     if (customPropertiesString != null) {
-      sb.append(",p:").append(customPropertiesString);
+      sb.append(",\"p\":").append(customPropertiesString);
     }
 
     sb.append("}");
@@ -386,9 +418,9 @@ public class JsonRenderer {
     if ((propertiesMap != null) && (!propertiesMap.isEmpty())) {
       List<String> customPropertiesStrings = Lists.newArrayList();
       for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
-        customPropertiesStrings.add("'"
-            + EscapeUtil.jsonEscape(entry.getKey()) + "':'"
-            + EscapeUtil.jsonEscape(entry.getValue()) + "'");
+        customPropertiesStrings.add("\""
+            + EscapeUtil.jsonEscape(entry.getKey()) + "\":\""
+            + EscapeUtil.jsonEscape(entry.getValue()) + "\"");
       }
       customPropertiesString = new StrBuilder("{")
           .appendWithSeparators(customPropertiesStrings, ",").append("}").toString();

@@ -286,11 +286,11 @@ public class DataSourceHelper {
         break;
       case JSONP:
         response = JsonRenderer.renderJsonResponse(
-            dataSourceRequest.getDataSourceParameters(), responseStatus, dataTable, true);
+            dataSourceRequest.getDataSourceParameters(), responseStatus, dataTable);
         break;
       case JSON:
         response = JsonRenderer.renderJsonResponse(
-            dataSourceRequest.getDataSourceParameters(), responseStatus, dataTable, false);
+            dataSourceRequest.getDataSourceParameters(), responseStatus, dataTable);
         break;
       default:
         // This should never happen.
@@ -348,10 +348,10 @@ public class DataSourceHelper {
         response = HtmlRenderer.renderHtmlError(responseStatus);
         break;
       case JSONP:
-        response = JsonRenderer.renderJsonResponse(dsParameters, responseStatus, null, true);
+        response = JsonRenderer.renderJsonResponse(dsParameters, responseStatus, null);
         break;
       case JSON:
-        response = JsonRenderer.renderJsonResponse(dsParameters, responseStatus, null, false);
+        response = JsonRenderer.renderJsonResponse(dsParameters, responseStatus, null);
         break;
       default:
         // This should never happen.
