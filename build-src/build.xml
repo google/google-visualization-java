@@ -58,7 +58,7 @@
         <pathelement location="${servlet-api.jar}"/>
       </classpath>
     </javac>
-    <jar destfile="${build}/visualization-datasource-1.0.3.jar"
+    <jar destfile="${build}/visualization-datasource-1.1.0.jar"
          basedir="${build.class.main}"/>
   </target>
 
@@ -124,7 +124,7 @@
 
   <!-- Jar the sources. -->
   <target name="source-jar">
-    <jar destfile="${build}/visualization-datasource-1.0.3-src.jar"
+    <jar destfile="${build}/visualization-datasource-1.1.0-src.jar"
          basedir="${src}/main/java" />
   </target>
 
