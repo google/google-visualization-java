@@ -316,6 +316,31 @@ public class DataTable {
   public TableCell getCell(int rowIndex, int colIndex) {
     return getRow(rowIndex).getCell(colIndex);
   }
+  
+  /**
+   * Replaces an existing cell at a specified position in this table with the specified cell.
+   * The value type of the new cell must match the type of the existing one.
+   *  
+   * @param rowIndex The row index.
+   * @param colIndex The column index.
+   * @param cell The cell to be stored at the specified position.
+   * 
+   * @return The cell that was replaced.
+   * 
+   * @throws TypeMismatchException Thrown if the new cell value type doesn't match
+   *    the table column value type.
+   * @throws IndexOutOfBoundsException Thrown if the position is out of range.
+   */
+  public TableCell setCell(int rowIndex, int colIndex, TableCell cell)
+      throws TypeMismatchException, IndexOutOfBoundsException {
+    TableRow row = rows.get(rowIndex);
+    if (!row.getCell(colIndex).getType().equals(cell.getType())) {
+      throw new TypeMismatchException("New cell value type does not match expected value type." +
+          " Expected type: " + row.getCell(colIndex).getType() +
+          " but was: " + cell.getType().toString());
+    }
+    return row.setCell(colIndex, cell);
+  }
 
   /**
    * Returns the value in the cell at the specified row and column indexes.

@@ -333,4 +333,48 @@ public class DataTableTest extends TestCase {
     TableCell cell = testData.getCell(1, 0);
     assertEquals("$ccc", cell.getFormattedValue());
   }
+  
+  public void testReplaceCell() throws Exception {
+    DataTable dataTable = testData.clone();
+    
+    TableCell newNumberValueCell = new TableCell(new NumberValue(5699), "5699$");
+    newNumberValueCell.setCustomProperty("testProperty", "A test property");
+    TableCell newBooleanValueCell = new TableCell(false);
+    TableCell newDateValueCell = new TableCell(new DateValue(2011, 3, 6), "03/06/2011");
+    
+    dataTable.setCell(1, 1, newNumberValueCell);
+    dataTable.setCell(2, 2, newBooleanValueCell);
+    dataTable.setCell(2, 3, newDateValueCell);
+    
+    assertEquals(newNumberValueCell.getValue(), dataTable.getValue(1, 1));
+    assertEquals(newNumberValueCell.getFormattedValue(),
+        dataTable.getCell(1,1).getFormattedValue());
+    assertEquals(newNumberValueCell.getCustomProperty("testProperty"),
+        dataTable.getCell(1,1).getCustomProperty("testProperty"));
+    assertEquals(newBooleanValueCell.getValue(), dataTable.getValue(2, 2));
+    assertEquals(newDateValueCell.getValue(), dataTable.getValue(2, 3));
+    assertEquals(newDateValueCell.getFormattedValue(),
+        dataTable.getCell(2,3).getFormattedValue());
+    
+    try {
+      dataTable.setCell(3, 3, new TableCell(100));
+      fail();
+    } catch (TypeMismatchException e) {
+      // Expected behavior.
+    }
+    
+    try {
+      dataTable.setCell(1, 1, new TableCell(false));
+      fail();
+    } catch (TypeMismatchException e) {
+      // Expected behavior.
+    }
+    
+    try {
+      dataTable.setCell(20, 20, new TableCell(100));
+      fail();
+    } catch (IndexOutOfBoundsException e) {
+      // Expected behavior.
+    }
+  }
 }

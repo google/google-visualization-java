@@ -115,6 +115,22 @@ public class TableRow {
   public TableCell getCell(int index) {
     return cells.get(index);
   }
+  
+  /**
+   * Package protected function.
+   * Replaces the cell at the specified position in this row with the specified cell.
+   * The value type of the new cell must match the that of the replaced one.
+   * 
+   * @param index The index of the cell to replace.
+   * @param cell The cell to be stored at the specified position.
+   * 
+   * @return The cell that was replaced.
+   * 
+   * @throws IndexOutOfBoundsException Thrown if the index out of range.
+   */
+  TableCell setCell(int index, TableCell cell) throws IndexOutOfBoundsException {
+    return cells.set(index, cell);
+  }
 
   /**
    * Retrieves a custom property. Returns null if it does not exist.
