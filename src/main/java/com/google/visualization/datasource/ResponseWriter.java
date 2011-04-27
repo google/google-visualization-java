@@ -40,7 +40,6 @@ public class ResponseWriter {
    */
   private ResponseWriter() {}
 
-
   /**
    * Sets the specified responseMessage on the given <code>HttpServletResponse</code>.
    * This method assumes the <code>StatusType</code> is 'OK'.
@@ -56,17 +55,24 @@ public class ResponseWriter {
     OutputType type = dataSourceParameters.getOutputType();
     switch (type) {
       case CSV:
-        setServletResponseCSV(responseMessage, dataSourceParameters, res);
+        setServletResponseCSV(dataSourceParameters, res);
+        writeServletResponse(responseMessage, res);
         break;
       case TSV_EXCEL:
-        setServletResponseTSVExcel(responseMessage, dataSourceParameters, res);
+        setServletResponseTSVExcel(dataSourceParameters, res);
+        writeServletResponse(responseMessage, res, "UTF-16LE", UTF_16LE_BOM);
         break;
       case HTML:
-        setServletResponseHTML(responseMessage, res);
+        setServletResponseHTML(res);
+        writeServletResponse(responseMessage, res);
         break;
       case JSONP:
+        setServletResponseJSONP(res);
+        writeServletResponse(responseMessage, res);
+        break;
       case JSON:
-        setServletResponseJSON(responseMessage, res);
+        setServletResponseJSON(res);
+        writeServletResponse(responseMessage, res);
         break;
       default:
         // This should never happen.
@@ -85,8 +91,8 @@ public class ResponseWriter {
    *
    * @throws IOException In case of a I/O error.
    */
-  private static void setServletResponseCSV(String responseMessage,
-      DataSourceParameters dataSourceParameters, HttpServletResponse res) throws IOException {
+  static void setServletResponseCSV(DataSourceParameters dataSourceParameters,
+      HttpServletResponse res) {
     res.setContentType("text/csv; charset=UTF-8");
     String outFileName = dataSourceParameters.getOutFileName();
     
@@ -95,8 +101,7 @@ public class ResponseWriter {
       outFileName = outFileName + ".csv";
     }
     
-    res.setHeader("content-disposition", "attachment; filename=" + outFileName);
-    writeServletResponse(responseMessage, res);
+    res.setHeader("Content-Disposition", "attachment; filename=" + outFileName);
   }
   
   /**
@@ -109,12 +114,11 @@ public class ResponseWriter {
    *
    * @throws IOException In case of a I/O error.
    */
-  private static void setServletResponseTSVExcel(String responseMessage,
-      DataSourceParameters dsParams, HttpServletResponse res) throws IOException {
+  static void setServletResponseTSVExcel(DataSourceParameters dsParams,
+      HttpServletResponse res) {
     res.setContentType("text/csv; charset=UTF-16LE");
     String outFileName = dsParams.getOutFileName();
     res.setHeader("Content-Disposition", "attachment; filename=" + outFileName);
-    writeServletResponse(responseMessage, res, "UTF-16LE", UTF_16LE_BOM);
   }
   
   /**
@@ -126,10 +130,21 @@ public class ResponseWriter {
    *
    * @throws IOException In case of a I/O error.
    */
-  private static void setServletResponseHTML(String responseMessage, HttpServletResponse res)
-      throws IOException {
+  static void setServletResponseHTML(HttpServletResponse res) {
     res.setContentType("text/html; charset=UTF-8");
-    writeServletResponse(responseMessage, res);
+  }
+  
+  /**
+   * Sets the HTTP servlet response for a JSONP output type.
+   * This method assumes the <code>StatusType</code> is 'OK'.
+   *
+   * @param responseMessage The response char sequence.
+   * @param res The HTTP response.
+   *
+   * @throws IOException In case of a I/O error.
+   */
+  static void setServletResponseJSONP(HttpServletResponse res) {
+    res.setContentType("text/javascript; charset=UTF-8");
   }
   
   /**
@@ -141,10 +156,8 @@ public class ResponseWriter {
    *
    * @throws IOException In case of a I/O error.
    */
-  private static void setServletResponseJSON(String responseMessage, HttpServletResponse res)
-      throws IOException {
-    res.setContentType("text/plain; charset=UTF-8");
-    writeServletResponse(responseMessage, res);
+  static void setServletResponseJSON(HttpServletResponse res) {
+    res.setContentType("application/json; charset=UTF-8");
   }
 
   /**

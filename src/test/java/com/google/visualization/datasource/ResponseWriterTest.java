@@ -29,9 +29,18 @@ import com.google.visualization.datasource.datatable.value.TextValue;
 import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.render.JsonRenderer;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import junit.framework.TestCase;
 
-import java.util.List;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 
 /**
@@ -150,5 +159,74 @@ public class ResponseWriterTest extends TestCase {
     assertEquals(
         "babylon(" + expected + ");",
         JsonRenderer.renderJsonResponse(dsParamsJsonP, responseStatus, data).toString());
+  }
+  
+  public void testCSVResponse() throws DataSourceException {
+    final String csvContentType = "text/csv; charset=UTF-8";
+    final String csvheaderName = "Content-Disposition";
+    final String csvheaderValue = "attachment; filename=testFile.csv";
+    
+    DataSourceParameters dsParamsCSV = 
+      new DataSourceParameters("outFileName:testFile;out:csv");
+    
+    HttpServletResponse mockHttpServletResponse = createMock(HttpServletResponse.class);
+    mockHttpServletResponse.setContentType(eq(csvContentType));
+    mockHttpServletResponse.setHeader(eq(csvheaderName), eq(csvheaderValue));
+    expectLastCall();
+    
+    replay(mockHttpServletResponse);   
+    ResponseWriter.setServletResponseCSV(dsParamsCSV, mockHttpServletResponse);
+    verify(mockHttpServletResponse);
+  }
+  
+  public void testTSVExcelResponse() throws DataSourceException {
+    final String tsvExcelContentType = "text/csv; charset=UTF-16LE";
+    final String headerName = "Content-Disposition";
+    final String headerValue = "attachment; filename=testFile.xls";
+    
+    DataSourceParameters dsParamsTsvExcel = 
+      new DataSourceParameters("outFileName:testFile.xls;out:tsv_excel");
+    
+    HttpServletResponse mockHttpServletResponse = createMock(HttpServletResponse.class);
+    mockHttpServletResponse.setContentType(eq(tsvExcelContentType));
+    mockHttpServletResponse.setHeader(eq(headerName), eq(headerValue));
+    expectLastCall();
+    
+    replay(mockHttpServletResponse);   
+    ResponseWriter.setServletResponseTSVExcel(dsParamsTsvExcel, mockHttpServletResponse);
+    verify(mockHttpServletResponse);
+  }
+  
+  public void testHTMLResponseContentType() {
+    final String HtmlContentType = "text/html; charset=UTF-8";
+    HttpServletResponse mockHttpServletResponse = createMock(HttpServletResponse.class);
+    mockHttpServletResponse.setContentType(eq(HtmlContentType));
+    expectLastCall();
+    
+    replay(mockHttpServletResponse);   
+    ResponseWriter.setServletResponseHTML(mockHttpServletResponse);
+    verify(mockHttpServletResponse);
+  }
+  
+  public void testJsonResponseContentType() {
+    final String jsonContentType = "application/json; charset=UTF-8";
+    HttpServletResponse mockHttpServletResponse = createMock(HttpServletResponse.class);
+    mockHttpServletResponse.setContentType(eq(jsonContentType));
+    expectLastCall();
+    
+    replay(mockHttpServletResponse);   
+    ResponseWriter.setServletResponseJSON(mockHttpServletResponse);
+    verify(mockHttpServletResponse);
+  }
+  
+  public void testJsonpResponseContentType() {
+    final String jsonpContentType = "text/javascript; charset=UTF-8";
+    HttpServletResponse mockHttpServletResponse = createMock(HttpServletResponse.class);
+    mockHttpServletResponse.setContentType(eq(jsonpContentType));
+    expectLastCall();
+    
+    replay(mockHttpServletResponse);   
+    ResponseWriter.setServletResponseJSONP(mockHttpServletResponse);
+    verify(mockHttpServletResponse);
   }
 }
