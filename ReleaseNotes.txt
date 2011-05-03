@@ -1,4 +1,4 @@
-Version 1.1.0
+Version 1.1.1
 -----------------------------------------   
 - Move from google-collect-1.0 to guava-r07.
 - Changed Json output to be valid Json format: Added quotation marks around
@@ -8,6 +8,7 @@ Version 1.1.0
 - Added setCell method to DataTable class.
 - Added support for SKIPPING clause in the query language.
 - Added support for MODULO operator in the query language.
+- Fixed bug: Response content type for JSON/P is not valid.
 - Fixed bug: java.util.TreeMap initialization in QueryEngine causes
   compilation error.
 - Fixed bug: Where clause with column names that contain spaces does not work

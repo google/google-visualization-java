@@ -10,7 +10,7 @@
   <groupId>com.google.visualization</groupId>
   <artifactId>visualization-datasource</artifactId>
   <name>Google Visualization Data Source Library</name>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <description>This library makes it easy to implement a Visualization data source so that you can
     easily chart or visualize your data from any of your data stores.
     The library implements the Google Visualization API wire protocol and query language.
