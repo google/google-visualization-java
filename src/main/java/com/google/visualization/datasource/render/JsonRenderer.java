@@ -43,7 +43,18 @@ import java.util.Map;
 
 /**
  * Takes a data table and returns a json string.
- *
+ * 
+ * The renderer renders a response which primarily contains the serializing of a data table.
+ * The response type can be either json or jsonp (a json format wrapped inside a callback method).
+ * The main difference regarding data table serialization between the two types, is the way dates
+ * are serialized. Dates have no standard representation in json thus they are rendered according
+ * to the future use of the response. When the response type is jsonp, the data table is likely to
+ * be evaluated with standard browser 'eval' and therefore date represented by Date constructor
+ * will be transformed into javaScript dates (as expected), e.g new Date(2011,1,1).
+ * When the response type is json, Date constructors can not be used (not defined in the json
+ * standard) and so custom date strings are used instead. In this case, custom parsing of the string
+ * is required to construct dates objects from their respective strings, e.g "Date(2011,1,1)".
+ * 
  * @author Nimrod T.
  */
 public class JsonRenderer {
@@ -92,9 +103,35 @@ public class JsonRenderer {
   }
 
   /**
+   * @deprecated As of version 1.1.1, isJsonp is removed and instead is inferred from dsParams.
+   *    Please use:
+   *    renderJsonResponse(DataSourceParameters dsParams, ResponseStatus responseStatus,
+   *        DataTable data)
+   *    
    * Returns the json response for the given data table.
    *
    * @param dsParams The datasource parameters.
+   * @param responseStatus The response status.
+   * @param data The data table.
+   * @param True if response should be rendered as jsonp, otherwise False.
+   *
+   * @return The json response for the given data table and parameters.
+   */
+  @Deprecated public static CharSequence renderJsonResponse(
+      DataSourceParameters dsParams,
+      ResponseStatus responseStatus,
+      DataTable data,
+      boolean isJsonp) {
+    dsParams.setOutputType(OutputType.JSONP);
+    return renderJsonResponse(dsParams, responseStatus, data);
+  }
+  
+  /**
+   * Returns the json response for the given data table.
+   *
+   * @param dsParams The datasource parameters. If the OutputType parameter is set to
+   *     JSONP the response will be rendered as JSONP. Otherwise a plain JSON string will
+   *     be returned.
    * @param responseStatus The response status.
    * @param data The data table.
    *
@@ -167,6 +204,25 @@ public class JsonRenderer {
   }
 
   /**
+   * @deprecated As of version 1.1.1, renderDateAsDateConstructor parameter added. Please use:
+   *    renderDataTable(DataTable dataTable, boolean includeValues, boolean includeFormatting,
+   *        boolean renderDateAsDateConstructor)
+   * 
+   * Generates a JSON representation of the data table object.
+   *
+   * @param includeValues False if the json should contain just meta-data and column descriptions
+   *     but without the data rows.
+   * @param includeFormatting False if formatting information should be omitted from the
+   *     generated json.
+   *       
+   * @return The char sequence with the Json string.
+   */
+  @Deprecated public static CharSequence renderDataTable(DataTable dataTable, boolean includeValues,
+      boolean includeFormatting) {
+    return renderDataTable(dataTable, includeValues, includeFormatting, true);
+  }
+  
+  /**
    * Generates a JSON representation of the data table object.
    *
    * @param includeValues False if the json should contain just meta-data and column descriptions
@@ -179,7 +235,7 @@ public class JsonRenderer {
    *     False if it should should be rendered as string.
    *     For example, when rendering the date 1/1/2011 as Date object constructor its value
    *     in the json string will be new Date(2011,1,1), and when rendered as string
-   *     will be "Date(2011,1,1)"
+   *     will be "Date(2011,1,1)". For further explanation, see class comment.
    *       
    * @return The char sequence with the Json string.
    */
@@ -252,6 +308,23 @@ public class JsonRenderer {
     sb.append("}"); // table.
     return sb;
   }
+  
+  /**
+   * @deprecated As of version 1.1.1, changed visibility to private.
+   *    
+   * Appends a Json representing a cell to the string buffer.
+   *
+   * @param cell The cell to write Json for.
+   * @param sb The string buffer to append to.
+   * @param includeFormatting Flase if formatting information should be omitted from the json.
+   * @param isLastColumn Is this the last column in the row.
+   *
+   * @return The input string builder.
+   */
+  @Deprecated public static StringBuilder appendCellJson(TableCell cell,
+      StringBuilder sb, boolean includeFormatting, boolean isLastColumn) {
+    return appendCellJson(cell, sb, includeFormatting, isLastColumn, true);
+  }
 
   /**
    * Appends a Json representing a cell to the string buffer.
@@ -266,11 +339,11 @@ public class JsonRenderer {
    *     False if it should should be rendered as string.
    *     For example, when rendering the date 1/1/2011 as Date object constructor its value
    *     in the json string will be new Date(2011,1,1), and when rendered as string
-   *     will be "Date(2011,1,1)"
+   *     will be "Date(2011,1,1)". For further explanation, see class comment.
    *
    * @return The input string builder.
    */
-  public static StringBuilder appendCellJson(TableCell cell, 
+  static StringBuilder appendCellJson(TableCell cell, 
       StringBuilder sb, boolean includeFormatting, boolean isLastColumn,
       boolean renderDateAsDateConstructor) {
     Value value = cell.getValue();
