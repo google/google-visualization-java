@@ -226,7 +226,7 @@ public class DataSourceHelperTest extends TestCase {
         new DataSourceParameters("out:jsonp"),
         ULocale.UK);
     assertEquals(
-        "google.visualization.Query.setResponse("
+        "// Data table response\ngoogle.visualization.Query.setResponse("
         + "{\"version\":\"0.6\",\"status\":\"ok\",\"sig\":\"1548939605\","
         + "\"table\":{\"cols\":[{\"id\":\"col1\",\"label\":\"column1\","
         + "\"type\":\"number\",\"pattern\":\"\"},"

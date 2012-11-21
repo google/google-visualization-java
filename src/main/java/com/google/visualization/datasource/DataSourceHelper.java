@@ -285,7 +285,9 @@ public class DataSourceHelper {
         response = HtmlRenderer.renderDataTable(dataTable, dataSourceRequest.getUserLocale());
         break;
       case JSONP:
-        response = JsonRenderer.renderJsonResponse(
+        // Appending a comment to the response to prevent the first characters to be the
+        // response handler which is not controlled by the server.
+        response = "// Data table response\n" + JsonRenderer.renderJsonResponse(
             dataSourceRequest.getDataSourceParameters(), responseStatus, dataTable);
         break;
       case JSON:
