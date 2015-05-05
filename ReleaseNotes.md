@@ -1,0 +1,25 @@
+# Version 1.1.1 #
+  * Move from google-collect-1.0 to guava-[r07](https://code.google.com/p/google-visualization-java/source/detail?r=07).
+  * Changed Json output to be valid Json format: Added quotation marks around all keys and string values. Date values are formated as"Date(2011,1,1)". Note: for jsonp dates remain as they were before and the Date object is returned in the json string, e.g., new Date(2011,1,1).
+  * Added setCell method to DataTable class.
+  * Added support for SKIPPING clause in the query language.
+  * Added support for MODULO operator in the query language.
+  * Fixed bug: Response content type for JSON/P is not valid.
+  * Fixed bug: java.util.TreeMap initialization in QueryEngine causes compilation error.
+  * Fixed bug: Where clause with column names that contain spaces does not work for SQL datasources ([Issue 16](https://code.google.com/p/google-visualization-java/issues/detail?id=16)).
+  * Fixed bug: SQL data source dates are shifted ([Issue 11](https://code.google.com/p/google-visualization-java/issues/detail?id=11)).
+  * Changed initialization of Timestamp in SQLDataSourceHelperTest.
+  * Add a message to the IllegalArgumentException thrown when a DateValue/DateTimeValue/TimeOfDayValue is created with a GregorianCalendar that is not GMT.
+  * Externalized error messages.
+  * Removed unnecessary servlet from web.xml.
+
+
+# Version 1.0.2 #
+  * Added maven build (pom.xml).
+  * Starting with this version this library is available in a maven web repository.
+  * Added tests.
+  * Added support for LIKE operator in the query language.
+  * Fixed bug: Export to HTML double escapes &nbsp ([Issue 2](https://code.google.com/p/google-visualization-java/issues/detail?id=2)).
+  * Fixed bug: Format and label clauses do not work for queries that contain scalar functions ([Issue 3](https://code.google.com/p/google-visualization-java/issues/detail?id=3)).
+  * Fixed bug: "is null" in the where clause of a query does not work for SQL datasources ([Issue 4](https://code.google.com/p/google-visualization-java/issues/detail?id=4)).
+  * Fixed bug: CSV output does not escape non text values with commas ([Issue 5](https://code.google.com/p/google-visualization-java/issues/detail?id=5)).
